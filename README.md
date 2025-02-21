@@ -4,6 +4,6 @@
 **Members of this project** :
 - Chuancheng Xia (jason040510)
 - Siyan Li (Kether0111)
-- Yunha Oh ()
+- Yunha Oh (Yunha Oh)
 - Thomas Laz (tvlaz144)
 - Dakshesh Kasliwal ()
