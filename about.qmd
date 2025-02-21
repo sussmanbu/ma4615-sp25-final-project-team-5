@@ -18,7 +18,9 @@ Jiaming is a Ph.D. student in Stats and is the Teaching Fellow for the course.
 ## Dan Sussman
 
 Dan is a professor in the Math/Stat department and is the instructor for the course. [Github](https://github.com/dpmcsuss)
-
+ 
+## Chuancheng Xia
+Chuancheng Xia is a student in math an CS. [Github](https://github.com/jason040510)
 <!-- Please leave in the information below -->
 
 ### About this Template.
