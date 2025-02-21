@@ -5,5 +5,5 @@
 - Chuancheng Xia (jason040510)
 - Siyan Li (Kether0111)
 - Yunha Oh ()
-- Thomas Laz ()
+- Thomas Laz (tvlaz144)
 - Dakshesh Kasliwal ()
