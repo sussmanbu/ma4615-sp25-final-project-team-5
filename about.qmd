@@ -17,8 +17,12 @@ Chuancheng Xia is a student in math an CS. [Github](https://github.com/jason0405
 
 ## Siyan Li
 
-Siyan is a Undergraduate student in Neurobiology and is a student for the course. [Github](https://github.com/Kether0111)
+Siyan is an undergraduate student in Neurobiology and is a student for the course. [Github](https://github.com/Kether0111)
 
+## Thomas Laz
+
+Thomas is an undergraduate student studiyng applied mathematics with a minor in public health.
+[Github](https://github.com/tvlaz144)
 <!-- Please leave in the information below -->
 
 ### About this Template.
