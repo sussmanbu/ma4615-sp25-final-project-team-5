@@ -23,6 +23,9 @@ Siyan is an undergraduate student in Neurobiology and is a student for the cours
 
 Thomas is an undergraduate student studiyng applied mathematics with a minor in public health.
 [Github](https://github.com/tvlaz144)
+
+## Dakshesh Kasliwal
+Dakshesh is an undergraduate student in Questrom concentrating in business analytics and marketing. [Github](https://github.com/DaksheshK)
 <!-- Please leave in the information below -->
 
 ### About this Template.
