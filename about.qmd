@@ -14,6 +14,11 @@ The members of this team are below.
 
 ## Chuancheng Xia
 Chuancheng Xia is a student in math an CS. [Github](https://github.com/jason040510)
+
+## Siyan Li
+
+Siyan is a Undergraduate student in Neurobiology and is a student for the course. [Github](https://github.com/Kether0111)
+
 <!-- Please leave in the information below -->
 
 ### About this Template.
