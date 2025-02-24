@@ -11,14 +11,21 @@ This comes from the file `about.qmd`.
 This is a website for the final project for MA[46]15 Data Science with R by Team TEAMNAME.
 The members of this team are below.
 
-## Jiaming Hu
 
-Jiaming is a Ph.D. student in Stats and is the Teaching Fellow for the course.
+## Chuancheng Xia
+Chuancheng Xia is a student in math an CS. [Github](https://github.com/jason040510)
 
-## Dan Sussman
+## Siyan Li
 
-Dan is a professor in the Math/Stat department and is the instructor for the course. [Github](https://github.com/dpmcsuss)
+Siyan is an undergraduate student in Neurobiology and is a student for the course. [Github](https://github.com/Kether0111)
 
+## Thomas Laz
+
+Thomas is an undergraduate student studiyng applied mathematics with a minor in public health.
+[Github](https://github.com/tvlaz144)
+
+## Dakshesh Kasliwal
+Dakshesh is an undergraduate student in Questrom concentrating in business analytics and marketing. [Github](https://github.com/DaksheshK)
 <!-- Please leave in the information below -->
 
 ### About this Template.
