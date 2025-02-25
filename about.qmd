@@ -26,6 +26,11 @@ Thomas is an undergraduate student studiyng applied mathematics with a minor in 
 
 ## Dakshesh Kasliwal
 Dakshesh is an undergraduate student in Questrom concentrating in business analytics and marketing. [Github](https://github.com/DaksheshK)
+
+## Yunha Oh
+
+Yunha is an undergraduate student majoring in Economics and minoring in Statistics. 
+[Github](https://github.com/yunha0296)
 <!-- Please leave in the information below -->
 
 ### About this Template.
