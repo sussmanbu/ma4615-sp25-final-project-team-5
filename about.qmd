@@ -8,7 +8,7 @@ about:
 
 This comes from the file `about.qmd`.
 
-This is a website for the final project for MA[46]15 Data Science with R by Team TEAMNAME.
+This is a website for the final project for MA[46]15 Data Science with R by Team 5.
 The members of this team are below.
 
 
@@ -21,7 +21,7 @@ Siyan is an undergraduate student in Neurobiology and is a student for the cours
 
 ## Thomas Laz
 
-Thomas is an undergraduate student studiyng applied mathematics with a minor in public health.
+Thomas is an undergraduate student studying applied mathematics with a minor in public health.
 [Github](https://github.com/tvlaz144)
 
 ## Dakshesh Kasliwal
