@@ -5,4 +5,22 @@ date: "2025-02-24"
 date-modified: "2025-02-24"
 draft: FALSE
 ---
+### Data 1
+HIV/AIDS Diagnoses by Neighborhood, Sex, and Race/Ethnicity
+Source: 
+https://data.cityofnewyork.us/Health/HIV-AIDS-Diagnoses-by-Neighborhood-Sex-and-Race-Et/ykvb-493p/about_data
+  The dataset consists of 8,976 rows and 11 columns, detailing various statistics on HIV and AIDS diagnoses in each borough of New York City and then each neighborhood in each borough from 2016 through 2020. This data is further grouped by race/ethnicity and sex. The data was reported to New York City’s Department of Health and Mental Hygiene and includes fields such as the number of HIV diagnoses, AIDS diagnoses, and their respective rates per 100,000 population, along with information on concurrent diagnoses and proportions.
+The main aspects we wish to analyze are any trends in HIV/AIDS diagnoses over time, variations across neighborhoods and demographic groups, and the proportion of concurrent HIV/AIDS diagnoses. Challenges include dealing with missing or inconsistent data as well as cleaning the dataset.
+### Data 2
+Health conditions among children under age 18, by selected characteristics: United States
+Source: 
+https://catalog.data.gov/dataset/health-conditions-among-children-under-age-18-by-selected-characteristics-united-states-53b56
+  The dataset contains 2,744 rows and 16 columns. The data focuses on health conditions among children under 18 years old in the United States, categorized by various characteristics, such as specific health conditions, age groups, and whether or not the child was insured. The data was collected through the National Health Interview Survey over many years, ranging from the late 1990s to the late 2010s.
+	The main questions to address include identifying trends in health conditions by race groups, how these conditions are distributed across various subcategories and the effect these additional variables have on those trends. The challenge will be to clean the dataset and condense information-dense columns, such as STUB_LABEL, into a format easier to read and work with in RStudio. 
+### Data 3
+Nutrition, Physical Activity, and Obesity - Women, Infant, and Child
+Source: 
+https://catalog.data.gov/dataset/nutrition-physical-activity-and-obesity-women-infant-and-child
+	The data set contains 12,852 rows and 31 columns. The dataset includes information on children aged 3 months to 4 years old on their nutrition and obesity status, as well as information about the geographical location, demographics, health-related questions, race/ethnicity, age, and the year. The data was collected from Women, Infant, and Children Participant and Program Characteristics (WIC-PC).
+	Through working with this dataset, we will analyze any possible discrepancies in the nutrition and weight of young children across different races/ethnicities, as well the impact additional factors like location have on these potential discrepancies. A potential challenge we may face during the data cleaning process is how we can deal with the missing values regarding the low completeness of the demographic columns. Another challenge lies in the large amount of redundant information contained within this dataset. Much of the data does not directly contribute to addressing our main question, such as columns Class and Topic. It is necessary to establish an effective data filtering mechanism to quickly identify valuable information. We may also need to rearrange the datasets because the chronological order is messed up in this dataset.
 
