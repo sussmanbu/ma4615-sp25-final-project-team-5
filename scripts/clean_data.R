@@ -1,13 +1,22 @@
-# This file is purely as an example.
-# Note, you may end up creating more than one cleaned data set and saving that
-# to separate files in order to work on different aspects of your project
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(readr))
+suppressPackageStartupMessages(library(here))
 
-library(tidyverse)
+hiv_data <- read_csv(here::here("dataset", "HIV_Data_Original_With_Boroughs_Filled_In.csv"),
+                     na = c("*", "NA"),
+                     col_types = cols(
+                       .default = col_double(),
+                       "Borough" = col_character(),
+                       "Neighborhood (U.H.F)" = col_character(),
+                       "SEX" = col_character(),
+                       "RACE/ETHNICITY" = col_character()
+                     ))
 
-loan_data <- read_csv(here::here("dataset", "loan_refusal.csv"))
+hiv_data <- hiv_data |>
+  mutate(`RACE/ETHNICITY` = str_replace_all(`RACE/ETHNICITY`, "\n", " "), `RACE/ETHNICITY` = str_trim(`RACE/ETHNICITY`))
 
-## CLEAN the data
-loan_data_clean <- loan_data |>
-  pivot_longer(2:5, names_to = "group", values_to = "refusal_rate")
+hiv_clean <- hiv_data |>
+  filter(complete.cases(hiv_data))
 
-write_rds(loan_data_clean, file = here::here("dataset", "loan_refusal_clean.rds"))
+write_rds(hiv_clean, here::here("dataset", "hiv_clean.rds"))
+
