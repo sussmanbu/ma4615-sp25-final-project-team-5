@@ -26,13 +26,13 @@ When looking at the collection of data, “respect for persons” is very import
 
 ### Data Loading and Cleaning
 
-The .rds file of our clean dataset was created successfully. The data was in a relatively clean state, with three revisions made so far. First, while the data from 2016-2021 has neighborhoods listed as well as the borough, the data from 2010-2013 only had the neighborhood, so the boroughs had to be filled in. We couldn't use the fill function because the data wasn't stored sequentially, so matching each neighborhood to a borough and filling in the boroughs in the csv file itself was the easiest way to do this. Second, all rows with any NA values were removed, using the complete.cases function from R's documentation. Third, the dataset itself stored the Asian/Pacific Islander race in different ways, despite the spelling being the same in the csv file, using a line break instead of a space sometimes, which was fixed using a combination of str_replace_all and str_trim. The collectors did something similar for Hispanic people, categorizing them as Latino/Hispanic from 2016-2021 and just as Hispanic from 2010-13. A similar process will be used to fix this discrepancy.
+The .rds file of our clean dataset was created successfully. The data was in a relatively clean state, with three revisions made so far. First, while the data from 2016-2021 has neighborhoods listed as well as the borough, the data from 2010-2013 only had the neighborhood, so the boroughs had to be filled in. We couldn't use the fill function because the data wasn't stored sequentially, so matching each neighborhood to a borough and filling in the boroughs in the csv file itself was the easiest way to do this. Second, all rows with any NA values were removed, using the complete.cases function from R's documentation. Third, the dataset itself stored the Asian/Pacific Islander race in different ways, despite the spelling being the same in the csv file, using a line break instead of a space sometimes, which was fixed using a combination of str_replace_all and str_trim. 
 
 Below is some basic code for a boxplot of the total number of HIV diagnoses, grouped by race.
 ```{r}
 suppressPackageStartupMessages(library(tidyverse))
-library(readr)
-library(here)
+suppressPackageStartupMessages(library(readr))
+suppressPackageStartupMessages(library(here))
 
 df <- read_rds(here::here("dataset", "hiv_clean.rds"))
 
@@ -59,4 +59,4 @@ ggplot(df, aes(x = reorder(`RACE/ETHNICITY`, -`TOTAL NUMBER OF HIV DIAGNOSES`),
   theme(legend.position = "none")
 ```
 
-Based on these graphs, some trends noticed are higher levels of cases for Black and Hispanic people, compared to other races, despite lower populations, indicating potential underlying causes of this discrepancy. As stated earlier, Latino/Hispanic and Hispanic are erroneously considered two different races, which will be fixed. The "races" all, other/unknown, and unknown will be removed in further analysis.
+Based on these graphs, some trends noticed are higher levels of cases for Black and Hispanic people, compared to other races, despite lower populations, indicating potential underlying causes of this discrepancy. The "races" all, other/unknown, and unknown will be removed in further analysis.
