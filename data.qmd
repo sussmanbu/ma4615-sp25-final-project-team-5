@@ -76,3 +76,22 @@ You will
 * Organization, clarity, cleanliness of the page
   * Make sure to remove excessive warnings, use clean easy-to-read code (without side scrolling), organize with sections, use bullets and other organization tools, etc.
   * This page should be self-contained.
+  
+```{r}
+library(tidyverse)
+hiv_clean
+```
+
+
+```{r}
+hiv_clean |> ggplot(aes(x=Borough)) + geom_bar()
+```
+```{r}
+hiv_clean |> 
+  group_by(`Neighborhood (U.H.F)`) |>
+  summarize(total_cases = sum(`TOTAL NUMBER OF HIV DIAGNOSES`))
+```
+
+
+
+  
