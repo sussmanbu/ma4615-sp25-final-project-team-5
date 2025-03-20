@@ -2,7 +2,7 @@ suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(readr))
 suppressPackageStartupMessages(library(here))
 
-hiv_data <- read_csv(here::here("dataset", "HIV_Data_Original_With_Boroughs_Filled_In.csv"),
+hiv_data <- read_csv(here::here("dataset", "HIV_Data_Original_With_Modifications.csv"),
                      na = c("*", "NA"),
                      col_types = cols(
                        .default = col_double(),
