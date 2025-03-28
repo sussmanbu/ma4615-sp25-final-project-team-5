@@ -39,7 +39,7 @@ df <- read_rds(here::here("dataset", "hiv_clean.rds"))
 df_clean <- df |>
   filter(is.finite(`TOTAL NUMBER OF HIV DIAGNOSES`))
 
-ggplot(df, aes(x = `RACE/ETHNICITY`, y = `TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES`, fill = `RACE/ETHNICITY`)) +
+ggplot(df_clean, aes(x = `RACE/ETHNICITY`, y = `TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES`, fill = `RACE/ETHNICITY`)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  
   labs(title = "Distribution of TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES",
@@ -51,7 +51,7 @@ ggplot(df, aes(x = `RACE/ETHNICITY`, y = `TOTAL NUMBER OF CONCURRENT HIV/AIDS DI
 ```
 
 ```{r}
-ggplot(df, aes(x = reorder(`RACE/ETHNICITY`, -`TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES`), 
+ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES`), 
                y = `TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES`, fill = `RACE/ETHNICITY`)) +
   geom_bar(stat = "identity") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
@@ -67,7 +67,7 @@ ggplot(df, aes(x = reorder(`RACE/ETHNICITY`, -`TOTAL NUMBER OF CONCURRENT HIV/AI
 Purpose: Show how diagnoses and proportions change over years by race
 
 ```{r}
-ggplot(df, aes(x = YEAR, y = `HIV DIAGNOSES PER 100,000 POPULATION`)) +
+ggplot(df_clean, aes(x = YEAR, y = `HIV DIAGNOSES PER 100,000 POPULATION`)) +
   geom_smooth(se = FALSE, method = "lm", linewidth = 1, color = "steelblue") +
   facet_wrap(~ `RACE/ETHNICITY`, scales = "free_y") +
   labs(
@@ -76,3 +76,23 @@ ggplot(df, aes(x = YEAR, y = `HIV DIAGNOSES PER 100,000 POPULATION`)) +
   ) +
   theme_minimal()
 ```
+
+```{r}
+df_clean
+```
+
+
+```{r}
+df_clean |> filter(`Neighborhood (U.H.F)`=="All" & SEX=="All"& Borough=="All")
+
+df_clean |> filter(`Neighborhood (U.H.F)`=="All" & SEX=="All"& Borough=="All") |> ggplot(
+  mapping = aes(x = YEAR, y = `PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES`)) + geom_point() + facet_wrap(~ `RACE/ETHNICITY`)
+
+df_clean |> filter(`Neighborhood (U.H.F)`=="All" & SEX!="All"& `RACE/ETHNICITY`!="All") |> ggplot(
+  mapping = aes(x = YEAR, y = `PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES`)) + geom_point() + facet_wrap(~ `Borough`)
+
+df_clean |> ggplot(
+  mapping = aes(x = YEAR, y = `PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES`)) + geom_point() + facet_wrap(Borough~`SEX`) 
+
+```
+
