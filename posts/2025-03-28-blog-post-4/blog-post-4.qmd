@@ -1,6 +1,6 @@
 ---
 title: "Blog Post 4"
-author: ""
+author: "Kasliwal, Dakshesh; Laz, Thomas; Li, Siyan; Oh, Yunha; Xia, Chuancheng"
 date: "2025-03-28"
 date-modified: "2025-03-28"
 draft: FALSE
