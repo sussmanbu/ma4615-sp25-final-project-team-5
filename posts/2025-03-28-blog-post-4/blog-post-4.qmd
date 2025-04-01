@@ -6,6 +6,8 @@ date-modified: "2025-03-28"
 draft: FALSE
 ---
 
+We began to explore several trends we noticed during our data analysis more thoroughly.
+
 From “Line Charts: Trends Over Time (data.qmd)”, the increase is observed only in the Asian/Pacific Islander category, even though a general reduction in HIV diagnoses rates over time across all racial/ethnic groups. 
 
 ##Comparing "Total Number of HIV Diagnoses" by Sex for Asian/Pacific Islanders
@@ -32,19 +34,19 @@ The bar graph clearly indicates a significant gender disparity in HIV diagnoses 
 ##Line Graph of HIV Diagnoses Rates per 100,000 Population Over Years by Sex
 ```{r}
 ggplot(df, aes(x = YEAR, y = as.numeric(`HIV DIAGNOSES PER 100,000 POPULATION`), color = SEX)) +
-  geom_line(size = 1.2) +
+  geom_line(linewidth = 1.2) +
   geom_point(size = 3) +
   labs(title = "HIV Diagnoses Rates (per 100,000) for Asian/Pacific Islanders by Sex",
        x = "Year",
        y = "HIV Diagnoses per 100,000 Population") +
   theme_minimal() +
   scale_x_continuous(breaks = unique(df$YEAR))
-
 ```
 
 The rate of HIV diagnoses for males (blue dots) is consistently higher than for females (green dots) across all years. Noticeably high spikes occur, especially around 2010-2013 and again in 2017-2018.
 
 For statistical modeling, we will need to do two types of modeling, depending on the variable(s) we want to analyze. For example, some of our variables, like "Total Number of HIV Diagnoses," are count variables, making Poisson regression the best choice for modeling. For other variables, like "HIV Diagnoses Per 100,000 Population," we can do linear regression, since these are continuous variables. Below is the preliminary statistical analysis exploring the relationship between "Total Number of HIV Diagnoses" and "Race/Ethnicity," using "White" as the reference variable. As stated above, because "Total Number of HIV Diagnoses" is a count variable, it fits best with a Poisson model.
+
 ```{r}
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(tidymodels))
