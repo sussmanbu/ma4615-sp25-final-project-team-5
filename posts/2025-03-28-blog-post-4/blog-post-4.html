@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Kasliwal, Dakshesh; Laz, Thomas; Li, Siyan; Oh, Yunha; Xia, Chuancheng">
+<meta name="dcterms.date" content="2025-03-28">
 
-<title>MA [46]15 Final Project – MA [46]15 Final Project Team 5</title>
+<title>Blog Post 4 – MA [46]15 Final Project Team 5</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,27 +22,59 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -68,77 +102,19 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
 
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-subtitle','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-subtitle","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
-
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">MA [46]15 Final Project Team 5</span>
     </a>
   </div>
@@ -149,19 +125,19 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./big_picture.html"> 
+    <a class="nav-link" href="../../big_picture.html"> 
 <span class="menu-text">Big Picture</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./analysis.html"> 
+    <a class="nav-link" href="../../analysis.html"> 
 <span class="menu-text">Analysis</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./data.html"> 
+    <a class="nav-link" href="../../data.html"> 
 <span class="menu-text">Data</span></a>
   </li>  
 </ul>
@@ -174,282 +150,148 @@ window.Quarto = {
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-page-left">
-      <h1 class="title">MA [46]15 Final Project</h1>
+    <div class="quarto-title column-body">
+      <h1 class="title">Blog Post 4</h1>
                       </div>
   </div>
     
   
-  <div class="quarto-title-meta column-page-left">
+  <div class="quarto-title-meta">
 
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Kasliwal, Dakshesh; Laz, Thomas; Li, Siyan; Oh, Yunha; Xia, Chuancheng </p>
+            </div>
+    </div>
       
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 28, 2025</p>
+      </div>
+    </div>
     
+      <div>
+      <div class="quarto-title-meta-heading">Modified</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date-modified">March 28, 2025</p>
+      </div>
+    </div>
       
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(8)</span></div></div></div>
+    
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
 
 
-<p><img src="images/data-science.png" class="img-fluid"></p>
-<section id="final-project-due-may-5-2024-at-1159pm." class="level1">
-<h1>Final Project due May 5, 2024 at 11:59pm.</h1>
-<p>This comes from the <code>index.qmd</code> file.</p>
+<p>We began to explore several trends we noticed during our data analysis more thoroughly.</p>
+<p>From “Line Charts: Trends Over Time (data.qmd)”, the increase is observed only in the Asian/Pacific Islander category, even though a general reduction in HIV diagnoses rates over time across all racial/ethnic groups.</p>
+<p>##Comparing “Total Number of HIV Diagnoses” by Sex for Asian/Pacific Islanders</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(tidyverse))</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>here() starts at /home/tvlaz/MA415/ma4615-sp25-final-project-team-5</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>, <span class="st">"hiv_clean.rds"</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> SEX, <span class="at">y =</span> <span class="fu">as.numeric</span>(<span class="st">`</span><span class="at">TOTAL NUMBER OF HIV DIAGNOSES</span><span class="st">`</span>), <span class="at">fill =</span> SEX)) <span class="sc">+</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Total HIV Diagnoses for Asian/Pacific Islanders by Sex"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Sex"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Total Number of HIV Diagnoses"</span>) <span class="sc">+</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="blog-post-4_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The bar graph clearly indicates a significant gender disparity in HIV diagnoses among Asian/Pacific Islanders, with males accounting for a substantially higher number of cases compared to females. The number of diagnoses among males is several times higher than that among females, highlighting a pronounced vulnerability or increased risk exposure for males in this population.</p>
+<p>##Line Graph of HIV Diagnoses Rates per 100,000 Population Over Years by Sex</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> YEAR, <span class="at">y =</span> <span class="fu">as.numeric</span>(<span class="st">`</span><span class="at">HIV DIAGNOSES PER 100,000 POPULATION</span><span class="st">`</span>), <span class="at">color =</span> SEX)) <span class="sc">+</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"HIV Diagnoses Rates (per 100,000) for Asian/Pacific Islanders by Sex"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Year"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"HIV Diagnoses per 100,000 Population"</span>) <span class="sc">+</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">unique</span>(df<span class="sc">$</span>YEAR))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="blog-post-4_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The rate of HIV diagnoses for males (blue dots) is consistently higher than for females (green dots) across all years. Noticeably high spikes occur, especially around 2010-2013 and again in 2017-2018.</p>
+<p>For statistical modeling, we will need to do two types of modeling, depending on the variable(s) we want to analyze. For example, some of our variables, like “Total Number of HIV Diagnoses,” are count variables, making Poisson regression the best choice for modeling. For other variables, like “HIV Diagnoses Per 100,000 Population,” we can do linear regression, since these are continuous variables. Below is the preliminary statistical analysis exploring the relationship between “Total Number of HIV Diagnoses” and “Race/Ethnicity,” using “White” as the reference variable. As stated above, because “Total Number of HIV Diagnoses” is a count variable, it fits best with a Poisson model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(tidyverse))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(tidymodels))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>hiv_clean <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>, <span class="st">"hiv_clean.rds"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span> <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"All"</span>, <span class="st">"Unknown"</span>, <span class="st">"Other/Unknown"</span>))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(hiv_clean, <span class="at">prop =</span> <span class="fl">0.8</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>training <span class="ot">&lt;-</span> <span class="fu">training</span>(split)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>training<span class="sc">$</span><span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="fu">factor</span>(training<span class="sc">$</span><span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>training<span class="sc">$</span><span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="fu">relevel</span>(training<span class="sc">$</span><span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>, <span class="at">ref =</span> <span class="st">"White"</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">glm</span>(<span class="st">`</span><span class="at">TOTAL NUMBER OF HIV DIAGNOSES</span><span class="st">`</span> <span class="sc">~</span> <span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>, <span class="at">family =</span> poisson, training)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = `TOTAL NUMBER OF HIV DIAGNOSES` ~ `RACE/ETHNICITY`, 
+    family = poisson, data = training)
+
+Deviance Residuals: 
+   Min      1Q  Median      3Q     Max  
+-8.374  -4.788  -2.550  -0.442  83.068  
+
+Coefficients:
+                                       Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)                             2.43911    0.01085  224.80   &lt;2e-16 ***
+`RACE/ETHNICITY`Asian/Pacific Islander -0.82686    0.02073  -39.88   &lt;2e-16 ***
+`RACE/ETHNICITY`Black                   1.11793    0.01224   91.37   &lt;2e-16 ***
+`RACE/ETHNICITY`Hispanic                0.91781    0.01254   73.20   &lt;2e-16 ***
+`RACE/ETHNICITY`Multiracial            -4.23087    0.15468  -27.35   &lt;2e-16 ***
+`RACE/ETHNICITY`Native American        -7.28723    0.70666  -10.31   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 230390  on 3660  degrees of freedom
+Residual deviance: 186302  on 3655  degrees of freedom
+AIC: 197198
+
+Number of Fisher Scoring iterations: 6</code></pre>
+</div>
+</div>
+<p>Using the estimates, the rate ratio, or how much more likely one group is to have an HIV diagnosis compared to the reference group, which is white people in this case, can be calculated. Asian/Pacific Islanders have an approximate rate ratio of e^(-0.73989) ≈ 0.477. Asian/Pacific Islanders have 0.477 times as many, or approximately 52.3% fewer, HIV diagnoses as white people. For black people, the rate ratio is e^(1.03738) ≈ 2.82, meaning they have approximately 2.82 times as many, or 282% more diagnoses than white people. For Hispanic people, the rate ratio is approximately 2.48, meaning they have 2.48 times as many cases as white people. For multiracial people, the rate ratio is 0.017, meaning they have about 98.3% fewer cases than white people. Finally, for Native Americans, the rate ratio is 0.00073, meaning they have about 99.93% fewer cases than white people. Every z-value is &gt; |10|, meaning indicating race has a very strong correlation with HIV diagnoses, which is confirmed by the p-values all being &lt;2e-16, indicating statistical significance.</p>
+<p>A point of concern is with the deviance residuals and potential overdispersion. The median is negative, indicating the model tended to overestimate the number of HIV diagnoses; however, the max is 70.741, meaning the model grossly underestimated the number of cases at some point. Combining this with a minimum of -7.842 suggests some observations poorly fit the model, indicating potential overdispersion of the dataset. Checking for overdispersion can be done by dividing the residual deviance by the degrees of freedom, which in our case = 159079/3655 ≈ 43.52, confirming the suspicion of overdispersion. In future analysis, changing the model to better account for this overdispersion will be done, in order to achieve the best estimates possible. Likely, this will involve using a negative binomial distribution, which allows the variance to be greater than the mean, unlike the Poisson distribution, which assumes the mean and variance are equal.</p>
 
 
 
-</section>
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-listing-date-sort="1743134400000" data-listing-file-modified-sort="1743477449047" data-listing-date-modified-sort="1743134400000" data-listing-reading-time-sort="4" data-listing-word-count-sort="739">
-<div class="thumbnail">
-<p><a href="./posts/2025-03-28-blog-post-4/blog-post-4.html" class="no-external"></a></p><a href="./posts/2025-03-28-blog-post-4/blog-post-4.html" class="no-external">
-<p class="card-img-top"><img src="posts/2025-03-28-blog-post-4/blog-post-4_files/figure-html/unnamed-chunk-1-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2025-03-28-blog-post-4/blog-post-4.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/2025-03-28-blog-post-4/blog-post-4.html" class="no-external">Blog Post 4</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/2025-03-28-blog-post-4/blog-post-4.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./posts/2025-03-28-blog-post-4/blog-post-4.html" class="no-external">We began to explore several trends we noticed during our data analysis more thoroughly.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/2025-03-28-blog-post-4/blog-post-4.html" class="no-external">
-<div class="listing-date">
-Mar 28, 2025
-</div>
-<div class="listing-author">
-Kasliwal, Dakshesh; Laz, Thomas; Li, Siyan; Oh, Yunha; Xia, Chuancheng
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-listing-date-sort="1742356800000" data-listing-file-modified-sort="1742868463980" data-listing-date-modified-sort="1742356800000" data-listing-reading-time-sort="2" data-listing-word-count-sort="375">
-<div class="thumbnail">
-<p><a href="./posts/2025-03-19-blog-post-3/blog-post-3.html" class="no-external"></a></p><a href="./posts/2025-03-19-blog-post-3/blog-post-3.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2025-03-19-blog-post-3/blog-post-3.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/2025-03-19-blog-post-3/blog-post-3.html" class="no-external">Blog post 3</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/2025-03-19-blog-post-3/blog-post-3.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./posts/2025-03-19-blog-post-3/blog-post-3.html" class="no-external">Since publishing blog post 2, we made a change to our cleaned dataset. In our .csv file, each row categorizes data by borough, neighborhood, race, gender, and year.…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/2025-03-19-blog-post-3/blog-post-3.html" class="no-external">
-<div class="listing-date">
-Mar 19, 2025
-</div>
-<div class="listing-author">
-Kasliwal, Dakshesh; Laz, Thomas; Li, Siyan; Oh, Yunha; Xia, Chuancheng
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-listing-date-sort="1741150800000" data-listing-file-modified-sort="1742268544613" data-listing-date-modified-sort="1741150800000" data-listing-reading-time-sort="5" data-listing-word-count-sort="914">
-<div class="thumbnail">
-<p><a href="./posts/2025-03-05-blog-post-2/blog-post-2.html" class="no-external"></a></p><a href="./posts/2025-03-05-blog-post-2/blog-post-2.html" class="no-external">
-<p class="card-img-top"><img src="posts/2025-03-05-blog-post-2/blog-post-2_files/figure-html/unnamed-chunk-1-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2025-03-05-blog-post-2/blog-post-2.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/2025-03-05-blog-post-2/blog-post-2.html" class="no-external">Blog post 2</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/2025-03-05-blog-post-2/blog-post-2.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./posts/2025-03-05-blog-post-2/blog-post-2.html" class="no-external">We chose to analyze the dataset about HIV cases in New York City.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/2025-03-05-blog-post-2/blog-post-2.html" class="no-external">
-<div class="listing-date">
-Mar 5, 2025
-</div>
-<div class="listing-author">
-Kasliwal, Dakshesh; Laz, Thomas; Li, Siyan; Oh, Yunha; Xia, Chuancheng
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-listing-date-sort="1740373200000" data-listing-file-modified-sort="1741035176906" data-listing-date-modified-sort="1740978000000" data-listing-reading-time-sort="3" data-listing-word-count-sort="457">
-<div class="thumbnail">
-<p><a href="./posts/2025-02-24-blog-post-1/blog-post-1.html" class="no-external"></a></p><a href="./posts/2025-02-24-blog-post-1/blog-post-1.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2025-02-24-blog-post-1/blog-post-1.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/2025-02-24-blog-post-1/blog-post-1.html" class="no-external">Blog Post 1</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/2025-02-24-blog-post-1/blog-post-1.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./posts/2025-02-24-blog-post-1/blog-post-1.html" class="no-external">This dataset consists of 8,976 rows and 11 columns, detailing various statistics on HIV and AIDS diagnoses in each borough of New York City and then each neighborhood in…</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/2025-02-24-blog-post-1/blog-post-1.html" class="no-external">
-<div class="listing-date">
-Feb 24, 2025
-</div>
-<div class="listing-author">
-Kasliwal, Dakshesh; Laz, Thomas; Li, Siyan; Oh, Yunha; Xia, Chuancheng
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-listing-date-sort="1728014400000" data-listing-file-modified-sort="1740780737522" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="232">
-<div class="thumbnail">
-<p><a href="./posts/2024-10-04-general-tips/general-tips.html" class="no-external"></a></p><a href="./posts/2024-10-04-general-tips/general-tips.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2024-10-04-general-tips/general-tips.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/2024-10-04-general-tips/general-tips.html" class="no-external">General Tips</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/2024-10-04-general-tips/general-tips.html" class="no-external"></a>
-</div>
-<div class="listing-description">
-<a href="./posts/2024-10-04-general-tips/general-tips.html" class="no-external">Some small but important tips to follow. </a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/2024-10-04-general-tips/general-tips.html" class="no-external">
-<div class="listing-date">
-Oct 4, 2024
-</div>
-<div class="listing-author">
-Daniel Sussman
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="5" data-categories="" data-listing-date-sort="1708923600000" data-listing-file-modified-sort="1740780737522" data-listing-date-modified-sort="1708923600000" data-listing-reading-time-sort="1" data-listing-word-count-sort="56">
-<div class="thumbnail">
-<p><a href="./posts/2023-12-20-examples/examples.html" class="no-external"></a></p><a href="./posts/2023-12-20-examples/examples.html" class="no-external">
-<p class="card-img-top"><img src="posts/2023-12-20-examples/examples_files/figure-html/unnamed-chunk-1-1.png"  class="thumbnail-image card-img"/></p>
-</a><p><a href="./posts/2023-12-20-examples/examples.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/2023-12-20-examples/examples.html" class="no-external">Examples</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/2023-12-20-examples/examples.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-
-</div>
-<div class="listing-description">
-<a href="./posts/2023-12-20-examples/examples.html" class="no-external">Here are some examples of changing the size of a figure.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/2023-12-20-examples/examples.html" class="no-external">
-<div class="listing-date">
-Feb 26, 2024
-</div>
-<div class="listing-author">
-Daniel Sussman
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="6" data-categories="" data-listing-date-sort="1708664400000" data-listing-file-modified-sort="1740780737522" data-listing-date-modified-sort="1708664400000" data-listing-reading-time-sort="3" data-listing-word-count-sort="402">
-<div class="thumbnail">
-<p><a href="./posts/2023-10-15-getting-started/getting-started.html" class="no-external"></a></p><a href="./posts/2023-10-15-getting-started/getting-started.html" class="no-external">
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-</a><p><a href="./posts/2023-10-15-getting-started/getting-started.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/2023-10-15-getting-started/getting-started.html" class="no-external">Getting started</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/2023-10-15-getting-started/getting-started.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-
-</div>
-<div class="listing-description">
-<a href="./posts/2023-10-15-getting-started/getting-started.html" class="no-external">Directions to set up your website and create your first post. </a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/2023-10-15-getting-started/getting-started.html" class="no-external">
-<div class="listing-date">
-Feb 23, 2024
-</div>
-<div class="listing-author">
-Daniel Sussman
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="7" data-categories="" data-listing-date-sort="1708491600000" data-listing-file-modified-sort="1740780737522" data-listing-date-modified-sort="1708491600000" data-listing-reading-time-sort="3" data-listing-word-count-sort="404">
-<div class="thumbnail">
-<p><a href="./posts/2023-10-13-first-team-meeting/first-team-meeting.html" class="no-external"></a></p><a href="./posts/2023-10-13-first-team-meeting/first-team-meeting.html" class="no-external">
-<p><img loading="lazy" src="./posts/2023-10-13-first-team-meeting/a-business-team-giving-fist-bump-in-agreement.jpg" class="thumbnail-image"></p>
-</a><p><a href="./posts/2023-10-13-first-team-meeting/first-team-meeting.html" class="no-external"></a></p>
-</div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="./posts/2023-10-13-first-team-meeting/first-team-meeting.html" class="no-external">First Team Meeting</a>
-</h3>
-<div class="listing-subtitle">
-<a href="./posts/2023-10-13-first-team-meeting/first-team-meeting.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-
-</div>
-<div class="listing-description">
-<a href="./posts/2023-10-13-first-team-meeting/first-team-meeting.html" class="no-external">This post details the steps you’ll take for your first team meeting. </a>
-</div>
-</div>
-<div class="metadata">
-<a href="./posts/2023-10-13-first-team-meeting/first-team-meeting.html" class="no-external">
-<div class="listing-date">
-Feb 21, 2024
-</div>
-<div class="listing-author">
-Daniel Sussman
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
