@@ -1,0 +1,17 @@
+{
+  "hash": "4201d6e5436b089bfc5c88dde800dfff",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Blog Post 4\"\nauthor: \"\"\ndate: \"2025-03-28\"\ndate-modified: \"2025-03-28\"\ndraft: FALSE\n---\n\n\n\nFrom “Line Charts: Trends Over Time (data.qmd)”, the increase is observed only in the Asian/Pacific Islander category, even though a general reduction in HIV diagnoses rates over time across all racial/ethnic groups. \n\n##Comparing \"Total Number of HIV Diagnoses\" by Sex for Asian/Pacific Islanders\n\n\n::: {.cell}\n\n```{.r .cell-code}\nsuppressPackageStartupMessages(library(tidyverse))\n```\n\n::: {.cell-output .cell-output-stderr}\n\n```\nWarning: package 'lubridate' was built under R version 4.3.3\n```\n\n\n:::\n\n```{.r .cell-code}\nlibrary(readr)\nlibrary(here)\n```\n\n::: {.cell-output .cell-output-stderr}\n\n```\nhere() starts at /Users/yunha1/Desktop/ma4615-sp25-final-project-team-5\n```\n\n\n:::\n\n```{.r .cell-code}\ndf <- read_rds(here::here(\"dataset\", \"hiv_clean.rds\"))\n\n\nggplot(df, aes(x = SEX, y = as.numeric(`TOTAL NUMBER OF HIV DIAGNOSES`), fill = SEX)) +\n  geom_bar(stat = \"identity\") +\n  labs(title = \"Total HIV Diagnoses for Asian/Pacific Islanders by Sex\",\n       x = \"Sex\",\n       y = \"Total Number of HIV Diagnoses\") +\n  theme_minimal() +\n  theme(legend.position = \"none\")\n```\n\n::: {.cell-output-display}\n![](blog-post-4_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n:::\n\n\n\nThe bar graph clearly indicates a significant gender disparity in HIV diagnoses among Asian/Pacific Islanders, with males accounting for a substantially higher number of cases compared to females. The number of diagnoses among males is several times higher than that among females, highlighting a pronounced vulnerability or increased risk exposure for males in this population.\n\n\n##Line Graph of HIV Diagnoses Rates per 100,000 Population Over Years by Sex\n\n\n::: {.cell}\n\n```{.r .cell-code}\nggplot(df, aes(x = YEAR, y = as.numeric(`HIV DIAGNOSES PER 100,000 POPULATION`), color = SEX)) +\n  geom_line(size = 1.2) +\n  geom_point(size = 3) +\n  labs(title = \"HIV Diagnoses Rates (per 100,000) for Asian/Pacific Islanders by Sex\",\n       x = \"Year\",\n       y = \"HIV Diagnoses per 100,000 Population\") +\n  theme_minimal() +\n  scale_x_continuous(breaks = unique(df$YEAR))\n```\n\n::: {.cell-output .cell-output-stderr}\n\n```\nWarning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.\nℹ Please use `linewidth` instead.\n```\n\n\n:::\n\n::: {.cell-output-display}\n![](blog-post-4_files/figure-html/unnamed-chunk-2-1.png){width=672}\n:::\n:::\n\n\n\nThe rate of HIV diagnoses for males (blue dots) is consistently higher than for females (green dots) across all years. Noticeably high spikes occur, especially around 2010-2013 and again in 2017-2018.\n\n",
+    "supporting": [
+      "blog-post-4_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

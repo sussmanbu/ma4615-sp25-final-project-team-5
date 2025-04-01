@@ -6,3 +6,41 @@ date-modified: "2025-03-28"
 draft: FALSE
 ---
 
+From “Line Charts: Trends Over Time (data.qmd)”, the increase is observed only in the Asian/Pacific Islander category, even though a general reduction in HIV diagnoses rates over time across all racial/ethnic groups. 
+
+##Comparing "Total Number of HIV Diagnoses" by Sex for Asian/Pacific Islanders
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+library(readr)
+library(here)
+
+df <- read_rds(here::here("dataset", "hiv_clean.rds"))
+
+
+ggplot(df, aes(x = SEX, y = as.numeric(`TOTAL NUMBER OF HIV DIAGNOSES`), fill = SEX)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Total HIV Diagnoses for Asian/Pacific Islanders by Sex",
+       x = "Sex",
+       y = "Total Number of HIV Diagnoses") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+The bar graph clearly indicates a significant gender disparity in HIV diagnoses among Asian/Pacific Islanders, with males accounting for a substantially higher number of cases compared to females. The number of diagnoses among males is several times higher than that among females, highlighting a pronounced vulnerability or increased risk exposure for males in this population.
+
+
+##Line Graph of HIV Diagnoses Rates per 100,000 Population Over Years by Sex
+```{r}
+ggplot(df, aes(x = YEAR, y = as.numeric(`HIV DIAGNOSES PER 100,000 POPULATION`), color = SEX)) +
+  geom_line(size = 1.2) +
+  geom_point(size = 3) +
+  labs(title = "HIV Diagnoses Rates (per 100,000) for Asian/Pacific Islanders by Sex",
+       x = "Year",
+       y = "HIV Diagnoses per 100,000 Population") +
+  theme_minimal() +
+  scale_x_continuous(breaks = unique(df$YEAR))
+
+```
+
+The rate of HIV diagnoses for males (blue dots) is consistently higher than for females (green dots) across all years. Noticeably high spikes occur, especially around 2010-2013 and again in 2017-2018.
+
