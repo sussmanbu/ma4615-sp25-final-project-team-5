@@ -82,7 +82,8 @@ ggplot(df_clean, aes(x = YEAR, y = `HIV DIAGNOSES PER 100,000 POPULATION`)) +
 
 ```{r}
 df_clean$Group <- paste(df_clean$`RACE/ETHNICITY`, df_clean$SEX, sep="_") # group race and sex in a new column 
-df_clean <- df_clean |> group_by(YEAR, `RACE/ETHNICITY`, SEX) |> mutate(count=n()) |> ungroup() # this is supposed to see how many of each sex are within every race/year 
+
+df_clean2 <- df_clean |> group_by(YEAR, `RACE/ETHNICITY`, SEX) |> mutate(count=n()) |> ungroup() # this is supposed to see how many of each sex are within every race/year 
 
 
 
@@ -93,7 +94,7 @@ df_clean |> filter(`Neighborhood (U.H.F)`=="All" & Borough=="All" & `SEX`=="All"
 df_clean |> filter(`Neighborhood (U.H.F)`=="All" & Borough=="All")|> ggplot(mapping = aes(x = YEAR, color = SEX , y = `PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES`)) + geom_point() + geom_line() + facet_wrap(~ `RACE/ETHNICITY`) # # PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES over the years by race and sex 
 
 
-df_clean |> filter(`Neighborhood (U.H.F)`=="All" & Borough=="All")|> ggplot(
+df_clean2 |> filter(`Neighborhood (U.H.F)`=="All" & Borough=="All")|> ggplot(
   mapping = aes(x = YEAR, color = SEX , y = count)) + geom_point() + geom_line() + facet_wrap(~ `RACE/ETHNICITY`) # count of each sex faceted by race 
 
 # 
