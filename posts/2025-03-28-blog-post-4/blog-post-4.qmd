@@ -44,3 +44,25 @@ ggplot(df, aes(x = YEAR, y = as.numeric(`HIV DIAGNOSES PER 100,000 POPULATION`),
 
 The rate of HIV diagnoses for males (blue dots) is consistently higher than for females (green dots) across all years. Noticeably high spikes occur, especially around 2010-2013 and again in 2017-2018.
 
+For statistical modeling, we will need to do two types of modeling, depending on the variable(s) we want to analyze. For example, some of our variables, like "Total Number of HIV Diagnoses," are count variables, making Poisson regression the best choice for modeling. For other variables, like "HIV Diagnoses Per 100,000 Population," we can do linear regression, since these are continuous variables. Below is the preliminary statistical analysis exploring the relationship between "Total Number of HIV Diagnoses" and "Race/Ethnicity," using "White" as the reference variable. As stated above, because "Total Number of HIV Diagnoses" is a count variable, it fits best with a Poisson model.
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(tidymodels))
+
+hiv_clean <- readRDS(here::here("dataset", "hiv_clean.rds")) |>
+  filter(!`RACE/ETHNICITY` %in% c("All", "Unknown", "Other/Unknown"))
+
+split <- initial_split(hiv_clean, prop = 0.8)
+training <- training(split)
+training$`RACE/ETHNICITY` <- factor(training$`RACE/ETHNICITY`)
+training$`RACE/ETHNICITY` <- relevel(training$`RACE/ETHNICITY`, ref = "White")
+
+mod <- glm(`TOTAL NUMBER OF HIV DIAGNOSES` ~ `RACE/ETHNICITY`, family = poisson, training)
+summary(mod)
+```
+Using the estimates, the rate ratio, or how much more likely one group is to have an HIV diagnosis compared to the reference group, which is white people in this case, can be calculated. Asian/Pacific Islanders have an approximate rate ratio of e^(-0.73989) ≈ 0.477. Asian/Pacific Islanders have 0.477 times as many, or approximately 52.3% fewer, HIV diagnoses as white people. For black people, the rate ratio is e^(1.03738) ≈ 2.82, meaning they have approximately 2.82 times as many, or 282% more diagnoses than white people. For Hispanic people, the rate ratio is approximately 2.48, meaning they have 2.48 times as many cases as white people. For multiracial people, the rate ratio is 0.017, meaning they have about 98.3% fewer cases than white people. Finally, for Native Americans, the rate ratio is 0.00073, meaning they have about 99.93% fewer cases than white people. Every z-value is > 
+|10|, meaning indicating race has a very strong correlation with HIV diagnoses, which is confirmed by the p-values all being <2e-16, indicating statistical significance. 
+
+A point of concern is with the deviance residuals and potential overdispersion. The median is negative, indicating the model tended to overestimate the number of HIV diagnoses; however, the max is 70.741, meaning the model grossly underestimated the number of cases at some point. Combining this with a minimum of -7.842 suggests some observations poorly fit the model, indicating potential overdispersion of the dataset. Checking for overdispersion can be done by dividing the residual deviance by the degrees of freedom, which in our case = 159079/3655 ≈ 43.52, confirming the suspicion of overdispersion. In future analysis, changing the model to better account for this overdispersion will be done, in order to achieve the best estimates possible. Likely, this will involve using a negative binomial distribution, which allows the variance to be greater than the mean, unlike the Poisson distribution, which assumes the mean and variance are equal.
+
+
