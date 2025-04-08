@@ -1,5 +1,26 @@
 ---
-title: "blog-post-5"
-format: html
+title: "Blog Post 5"
+author: "Kasliwal, Dakshesh; Laz, Thomas; Li, Siyan; Oh, Yunha; Xia, Chuancheng"
+date: "2025-04-07"
+date-modified: "2025-04-07"
+draft: FALSE
 ---
 
+We are currently trying to merge census data with our dataset, to look for more predictors that might contribute to the different HIV/AIDS contractions dynamics we've already uncovered. It has been difficult to find datasets that can directly join with our dataset because of the way our original dataset is aggregated, using specific regions within New York City where there is a U.H.F. hospital, but we've found some datasets containing useful information that we may merge to further our analysis. Our current next step is to clean the datasets so that joining them with our original dataset can be done. Below are some of the datasets.
+
+### [Population](https://data.dathere.com/dataset/nyc-neighborhoods)
+
+This link contains data on the population of each borough and neighborhood in New York City in 2024. However, the problem is that the division of neighborhoods in this dataset is somewhat different from our original dataset.
+
+### [Prison](https://www.prisonpolicy.org/origin/ny/uhf_districts.html)
+
+This link contains population data for neighborhoods that are largely the same as those in our original dataset. However, the problem is that the website does not provide a downloadable dataset.
+
+### [Planning](https://popfactfinder.planning.nyc.gov/#11.67/40.7198/-73.9515)
+
+This link contains more complete data on each neighborhood, including population size, ethnicity, and age.
+However, we have encountered some problems. First, our original dataset contains a column for neighborhoods. Unfortunately, most census datasets do not base their surveys on neighborhoods. This means that it is difficult for us to directly merge the census dataset into the original dataset. In addition, among the limited data on neighborhoods, the criteria for dividing the boundaries of many neighborhoods are different. New York City has several different sets of rules for defining neighborhoods, such as NTA (Neighborhood Tabulation Areas) and U.H.F (United Hospital Fund Neighborhood). Our original dataset uses U.H.F. This further limits our ability to find a dataset that we can use directly. For the census data, our next step is to see if we can transfer the Neighborhood information from other datasets to our original dataset by defining the boundaries of Neighborhood in our original dataset. If this is difficult to achieve, we may give up Neighborhood and directly merge the data based on borough.
+
+### [Environment and Health Data](https://a816-dohbesp.nyc.gov/IndicatorPublic/data-explorer/economic-conditions/?id=103#display=summary)
+
+This link is to New York City’s official Environment and Health Data portal. On that website, New York City’s government publishes datasets collected by the American Community Survey on various topics, such as neighborhood poverty, unemployment, and health insurance rates. The particular link above links to neighborhood poverty, but a dataset containing data on the aforementioned categories can be accessed by clicking on the corresponding header on the left side of the page, under the “Datasets” header. Below that, there are datasets on housing and social conditions, such as race, incarceration, and education level. .csv files of every dataset can be downloaded.
