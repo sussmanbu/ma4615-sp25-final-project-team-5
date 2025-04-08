@@ -6,11 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Daniel Sussman">
-<meta name="dcterms.date" content="2024-02-23">
-<meta name="description" content="Directions to set up your website and create your first post.">
+<meta name="author" content="Kasliwal, Dakshesh; Laz, Thomas; Li, Siyan; Oh, Yunha; Xia, Chuancheng">
+<meta name="dcterms.date" content="2025-04-07">
 
-<title>Getting started – MA [46]15 Final Project Team 5</title>
+<title>Blog Post 5 – MA [46]15 Final Project Team 5</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -118,13 +117,8 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Getting started</h1>
-                  <div>
-        <div class="description">
-          <p>Directions to set up your website and create your first post.</p>
-        </div>
-      </div>
-                </div>
+      <h1 class="title">Blog Post 5</h1>
+                      </div>
   </div>
     
   
@@ -133,21 +127,21 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Author</div>
       <div class="quarto-title-meta-contents">
-               <p>Daniel Sussman </p>
+               <p>Kasliwal, Dakshesh; Laz, Thomas; Li, Siyan; Oh, Yunha; Xia, Chuancheng </p>
             </div>
     </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">February 23, 2024</p>
+        <p class="date">April 7, 2025</p>
       </div>
     </div>
     
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">February 23, 2024</p>
+        <p class="date-modified">April 7, 2025</p>
       </div>
     </div>
       
@@ -165,51 +159,22 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p>Below, the items marked with <strong>[[OP]]</strong> should only be done by one person on the team.</p>
-<section id="to-get-started" class="level3">
-<h3 class="anchored" data-anchor-id="to-get-started">To get started</h3>
-<ol type="1">
-<li><strong>[[OP]]</strong> One person from the team should click the Github Classroom link on Teams.</li>
-<li><strong>[[OP]]</strong> That person types in the group name for their group.</li>
-<li>The rest of the team now clicks the Github Classroom link and selects their team from the dropdown list.</li>
-<li>Finally, each of you can clone the repository to your laptop like a normal assignment.</li>
-</ol>
+<p>We are currently trying to merge census data with our dataset, to look for more predictors that might contribute to the different HIV/AIDS contractions dynamics we’ve already uncovered. It has been difficult to find datasets that can directly join with our dataset because of the way our original dataset is aggregated, using specific regions within New York City where there is a U.H.F. hospital, but we’ve found some datasets containing useful information that we may merge to further our analysis. Our current next step is to clean the datasets so that joining them with our original dataset can be done. Below are some of the datasets.</p>
+<section id="population" class="level3">
+<h3 class="anchored" data-anchor-id="population"><a href="https://data.dathere.com/dataset/nyc-neighborhoods">Population</a></h3>
+<p>This link contains data on the population of each borough and neighborhood in New York City in 2024. However, the problem is that the division of neighborhoods in this dataset is somewhat different from our original dataset.</p>
 </section>
-<section id="setting-up-the-site" class="level3">
-<h3 class="anchored" data-anchor-id="setting-up-the-site">Setting up the site</h3>
-<ol type="1">
-<li><strong>[[OP]]</strong> Open the terminal and run <code>quarto publish gh-pages</code>.</li>
-<li><strong>[[OP]]</strong> Select <code>Yes</code> to the prompt: <br> <code>? Publish site to https://sussmanbu.github.io/ma4615-fa23-final-project-TEAMNAME/ using gh-pages? (Y/n)</code></li>
-<li><strong>[[OP]]</strong> Wait for the process to finish.</li>
-<li>Once it is done, you can go to the URL it asked you about to see your site.</li>
-</ol>
-<p><strong>Note</strong>: This is the process you will use every time you want to update your published site. Make sure to always follow the steps below for rendering, previewing, and committing your changes before doing these publish steps. Anyone can publish in the future.</p>
+<section id="prison" class="level3">
+<h3 class="anchored" data-anchor-id="prison"><a href="https://www.prisonpolicy.org/origin/ny/uhf_districts.html">Prison</a></h3>
+<p>This link contains population data for neighborhoods that are largely the same as those in our original dataset. However, the problem is that the website does not provide a downloadable dataset.</p>
 </section>
-<section id="customize-your-site" class="level3">
-<h3 class="anchored" data-anchor-id="customize-your-site">Customize your site</h3>
-<ol type="1">
-<li><strong>[[OP]]</strong> Open the <code>_quarto.yml</code> file and update the title to include your team name.</li>
-<li><strong>[[OP]]</strong> Go to the <code>about.qmd</code> and remove the TF’s and professor’s names.</li>
-<li>add your own along with a short introduction and a link to your Github user page.</li>
-<li><strong>[[OP]]</strong> Render the site.</li>
-<li><strong>[[OP]]</strong> Check and make sure you didn’t get any errors.</li>
-<li><strong>[[OP]]</strong> Commit your changes and push.</li>
-<li><strong>[[OP]]</strong> Repeat the steps under Setting up your site.</li>
-</ol>
-<p>Once one person is done with this, each teammate in the group can, in turn, repeat steps 3-7. Before doing so, make sure to <code>pull</code> the changes from teammates before starting to make new changes. (We’ll talk soon about ways to organize your work and resolve conflicts.)</p>
+<section id="planning" class="level3">
+<h3 class="anchored" data-anchor-id="planning"><a href="https://popfactfinder.planning.nyc.gov/#11.67/40.7198/-73.9515">Planning</a></h3>
+<p>This link contains more complete data on each neighborhood, including population size, ethnicity, and age. However, we have encountered some problems. First, our original dataset contains a column for neighborhoods. Unfortunately, most census datasets do not base their surveys on neighborhoods. This means that it is difficult for us to directly merge the census dataset into the original dataset. In addition, among the limited data on neighborhoods, the criteria for dividing the boundaries of many neighborhoods are different. New York City has several different sets of rules for defining neighborhoods, such as NTA (Neighborhood Tabulation Areas) and U.H.F (United Hospital Fund Neighborhood). Our original dataset uses U.H.F. This further limits our ability to find a dataset that we can use directly. For the census data, our next step is to see if we can transfer the Neighborhood information from other datasets to our original dataset by defining the boundaries of Neighborhood in our original dataset. If this is difficult to achieve, we may give up Neighborhood and directly merge the data based on borough.</p>
 </section>
-<section id="start-your-first-post" class="level3">
-<h3 class="anchored" data-anchor-id="start-your-first-post">Start your first post</h3>
-<ol type="1">
-<li>To start your first post first, run <code>remotes::install_github("sussmanbu/quartopost")</code> in your Console.</li>
-<li><strong>[[OP]]</strong> Run <code>quartopost::quartopost()</code> (or click Addins-&gt;Create Quarto Post, or use C-Shift-P, type “Create Quarto” and press enter to run the command).</li>
-</ol>
-<p>Now you can start working on your post. You’ll want to render your post to see what it will look like on the site.</p>
-<ul>
-<li>Every time you want to <strong>make a new post</strong>, you can repeat step 2 above.</li>
-<li>When you want to <strong>publish your progress</strong>, follow steps 4-7 from Customize your site.</li>
-</ul>
-<p>Finally, make sure to read through everything on <a href="https://sussmanbu.github.io/ma4615-final-project-quarto">this site</a> which has the directions and rubric for the final project.</p>
+<section id="environment-and-health-data" class="level3">
+<h3 class="anchored" data-anchor-id="environment-and-health-data"><a href="https://a816-dohbesp.nyc.gov/IndicatorPublic/data-explorer/economic-conditions/?id=103#display=summary">Environment and Health Data</a></h3>
+<p>This link is to New York City’s official Environment and Health Data portal. On that website, New York City’s government publishes datasets collected by the American Community Survey on various topics, such as neighborhood poverty, unemployment, and health insurance rates. The particular link above links to neighborhood poverty, but a dataset containing data on the aforementioned categories can be accessed by clicking on the corresponding header on the left side of the page, under the “Datasets” header. Below that, there are datasets on housing and social conditions, such as race, incarceration, and education level. .csv files of every dataset can be downloaded.</p>
 
 
 </section>
