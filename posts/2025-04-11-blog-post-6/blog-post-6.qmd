@@ -1,8 +1,30 @@
 ---
 title: "Blog Post 6"
-author: ""
+author: "Kasliwal, Dakshesh; Laz, Thomas; Li, Siyan; Oh, Yunha; Xia, Chuancheng"
 date: "2025-04-11"
 date-modified: "2025-04-11"
 draft: FALSE
 ---
 
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(readr))
+suppressPackageStartupMessages(library(here))
+
+hiv_clean <- readRDS(here::here("dataset", "hiv_clean.rds"))
+
+hiv_total <- hiv_clean |>
+  filter(!Borough %in% "All") |>
+  group_by(Borough) |>
+  summarize(
+    total_hiv_count = sum(`TOTAL NUMBER OF HIV DIAGNOSES`),
+    total_aids_count = sum(`TOTAL NUMBER OF AIDS DIAGNOSES`))
+
+ggplot(hiv_total, aes(x = Borough, y = total_hiv_count, fill = Borough)) +
+  geom_bar(stat = "identity")
+
+ggplot(hiv_total, aes(x = Borough, y = total_aids_count, fill = Borough)) +
+  geom_bar(stat = "identity")
+```
+
+ 
