@@ -16,15 +16,44 @@ hiv_clean <- readRDS(here::here("dataset", "hiv_clean.rds"))
 hiv_total <- hiv_clean |>
   filter(!Borough %in% "All") |>
   group_by(Borough) |>
+  filter(`Neighborhood (U.H.F)` != "All", SEX == "All", `RACE/ETHNICITY` == "All") |>
   summarize(
     total_hiv_count = sum(`TOTAL NUMBER OF HIV DIAGNOSES`),
     total_aids_count = sum(`TOTAL NUMBER OF AIDS DIAGNOSES`))
 
 ggplot(hiv_total, aes(x = Borough, y = total_hiv_count, fill = Borough)) +
-  geom_bar(stat = "identity")
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Total Number of HIV Cases per Borough",
+    x = "Borough",
+    y = "Total Number of HIV Cases")
 
 ggplot(hiv_total, aes(x = Borough, y = total_aids_count, fill = Borough)) +
-  geom_bar(stat = "identity")
-```
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Total Number of AIDS Cases per Borough",
+    x = "Borough",
+    y = "Total Number of AIDS Cases")
 
- 
+hiv_race <- hiv_clean |>
+  filter(!`RACE/ETHNICITY` %in% c("All", "Unknown", "Other/Unknown")) |>
+  group_by(`RACE/ETHNICITY`) |>
+  filter(`Neighborhood (U.H.F)` != "All", Borough != "All", SEX == "All") |>
+  summarize(
+    total_hiv_count = sum(`TOTAL NUMBER OF HIV DIAGNOSES`),
+    total_aids_count = sum(`TOTAL NUMBER OF AIDS DIAGNOSES`))
+
+ggplot(hiv_race, aes(x = `RACE/ETHNICITY`, y = total_hiv_count, fill = `RACE/ETHNICITY`)) +
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Total Number of HIV Cases per Simple Race",
+    x = "Race",
+    y = "Total Number of HIV Cases")
+
+ggplot(hiv_race, aes(x = `RACE/ETHNICITY`, y = total_aids_count, fill = `RACE/ETHNICITY`)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Total Number of AIDS Cases per Simple Race",
+    x = "Race",
+    y = "Total Number of AIDS Cases")
+```
