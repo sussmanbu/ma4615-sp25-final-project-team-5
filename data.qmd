@@ -87,33 +87,69 @@ df_clean2 <- df_clean |> group_by(YEAR, `RACE/ETHNICITY`, SEX) |> mutate(count=n
 
 
 
-df_clean |> filter(`Neighborhood (U.H.F)`=="All" & Borough=="All" & `SEX`=="All") |> ggplot(
-  mapping = aes(x = YEAR, y = `PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES`)) + geom_point() + geom_line() + facet_wrap(~ `RACE/ETHNICITY`) # PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES over the years by race 
+# df_clean |> filter(`Neighborhood (U.H.F)`=="All" & Borough=="All" & `SEX`=="All") |> ggplot(
+#   mapping = aes(x = YEAR, y = `TOTAL NUMBER OF HIV DIAGNOSES`)) + geom_point() + geom_line() + facet_wrap(~ `RACE/ETHNICITY`) # PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES over the years by race 
 
 
-df_clean |> filter(`Neighborhood (U.H.F)`=="All" & Borough=="All")|> ggplot(mapping = aes(x = YEAR, color = SEX , y = `PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES`)) + geom_point() + geom_line() + facet_wrap(~ `RACE/ETHNICITY`) # # PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES over the years by race and sex 
-
-# df_clean |> group_by(YEAR, SEX) |> 
-#   summarize(count = n(), .groups = "drop") |> ungroup() |> 
-#   ggplot(mapping = aes(x = YEAR, y = count, color = SEX)) + 
-#   geom_point() + 
-#   geom_line() + 
-#   facet_wrap(~ `RACE/ETHNICITY`) +
-#   labs(y = "Count of SEX")
+# df_clean |> filter(`Neighborhood (U.H.F)`=="All" & Borough=="All")|> ggplot(mapping = aes(x = YEAR, color = SEX , y = `PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES`)) + geom_point() + geom_line() + facet_wrap(~ `RACE/ETHNICITY`) # # PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES over the years by race and sex 
 
 
 
-# 
-# 
-# df_clean |> filter(`Neighborhood (U.H.F)`=="All" & SEX=="All"& Borough=="Bronx") |> ggplot(
-#   mapping = aes(x = YEAR, color=`RACE/ETHNICITY`, y = `PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES`)) + geom_point() + geom_line()
-# 
-# 
-# df_clean |> filter(`Neighborhood (U.H.F)`=="All" & SEX!="All"& `RACE/ETHNICITY`!="All") |> ggplot(
-#   mapping = aes(x = YEAR, y = `PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES`)) + geom_point() + facet_wrap(~ `RACE/ETHNICITY`)
-# 
-# df_clean |> ggplot(
-#   mapping = aes(x = YEAR, y = `PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES`), fill=`RACE/ETHNICITY`) + geom_point()  
+df_clean
+
+
+ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`TOTAL NUMBER OF HIV DIAGNOSES`), 
+               y = `TOTAL NUMBER OF HIV DIAGNOSES`, fill = `RACE/ETHNICITY`)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "TOTAL NUMBER OF HIV DIAGNOSES by Race/Ethnicity",
+       x = "Race/Ethnicity",
+       y = "Total Number of HIV Diagnoses") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+
+ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`HIV DIAGNOSES PER 100,000 POPULATION`), 
+               y = `HIV DIAGNOSES PER 100,000 POPULATION`, fill = `RACE/ETHNICITY`)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "TOTAL NUMBER OF HIV DIAGNOSES/100K by Race/Ethnicity",
+       x = "Race/Ethnicity",
+       y = "Total Number of HIV Diagnoses PER 100K") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES`), 
+               y = `PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES`, fill = `RACE/ETHNICITY`)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "Proportion of Concurrent HIV/AIDS Diagnoses by Race/Ethnicity",
+       x = "Race/Ethnicity",
+       y = "Proportion of Concurrent HIV/AIDS Diagnoses") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`TOTAL NUMBER OF AIDS DIAGNOSES`), 
+               y = `TOTAL NUMBER OF AIDS DIAGNOSES`, fill = `RACE/ETHNICITY`)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "TOTAL NUMBER OF AIDS DIAGNOSES by Race/Ethnicity",
+       x = "Race/Ethnicity",
+       y = "TOTAL NUMBER OF AIDS DIAGNOSES") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`AIDS DIAGNOSES PER 100,000 POPULATION`), 
+               y = `AIDS DIAGNOSES PER 100,000 POPULATION`, fill = `RACE/ETHNICITY`)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "AIDS DIAGNOSES PER 100,000 POPULATION by Race/Ethnicity",
+       x = "Race/Ethnicity",
+       y = "AIDS DIAGNOSES PER 100,000 POPULATION") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+
 
 
 ```
