@@ -6,7 +6,7 @@ date-modified: "2025-04-11"
 draft: FALSE
 ---
 
-For this week's blog post, we devoted most of our effort into brainstorming how we're going to present the data on our website. We tried to pur ourselves in the place of someone who has no idea what we're analyzing and determine the best way to make our findings comprehensible to this person. We decided the best way to begin was by displaying a series of basic plots displaying the most basic aspects of our data. For example, below are two plots. One displays the total number of HIV cases in each borough and the other displays the total number of HIV cases for each race. This seemed like the first logical step because when someone reads that we're analyzing HIV data, the first thing they probably think is, "How many cases are there?". 
+For this week's blog post, we devoted most of our effort into brainstorming how we're going to present the data on our website. We tried to put ourselves in the place of someone who has no idea what we're analyzing and determine the best way to make our findings comprehensible to this person. We decided the best way to begin was by displaying a series of basic plots displaying the most basic aspects of our data. For example, below are two plots. One displays the total number of HIV cases in each borough and the other displays the total number of HIV cases for each race. This seemed like the first logical step because when someone reads that we're analyzing HIV data, the first thing they probably think is, "How many cases are there?". 
 
 ```{r echo=FALSE}
 suppressPackageStartupMessages(library(tidyverse))
@@ -45,7 +45,7 @@ ggplot(hiv_race, aes(x = `RACE/ETHNICITY`, y = total_hiv_count, fill = `RACE/ETH
     x = "Race",
     y = "Total Number of HIV Cases")
 ```
-Now that we made these basic plots, we decided the next step is to identify any trends and do slightly below surface-level analysis on them. We made other plots we plan to include on our final website and one trend we noticed is that Brooklyn always had the most total cases for boroughs, and black people always had the most total cases for race. When someone sees these raw totals, the first thign we anticipate them wondering is, "Well, is this just because there are more people in Brooklyn than the other boroughs and more black people than any other race?". To assuage these concerns, we move to slightly below surface-level analysis, which is adjusting for population. Below are two plots. They are boxplots displaying the number of HIV cases per 100,000 people for each borough and race.
+Now that we made these basic plots, we decided the next step is to identify any trends and do slightly below surface-level analysis on them. We made other plots we plan to include on our final website and one trend we noticed is that Brooklyn always had the most total cases for boroughs, and black people always had the most total cases for race. When someone sees these raw totals, the first thing we anticipate them wondering is, "Well, is this just because there are more people in Brooklyn than the other boroughs and more black people than any other race?". To assuage these concerns, we move to slightly below surface-level analysis, which is adjusting for population. Below are two plots. They are boxplots displaying the number of HIV cases per 100,000 people for each borough and race.
 
 ```{r echo=FALSE}
 hiv_100 <- hiv_clean |>
@@ -103,6 +103,6 @@ ggplot() +
   scale_fill_viridis_c(option = "D")
 ```
 
-We anticipate that readers will have their next concerned assuaged by this map. In case anyone isn;t familiar with NYC's geography, the western island is Staten Island, the southwestern portion of the city is Brooklyn, the southeastern portion is Queens, the northwestern portion is Manhatten, and the northeastern portion is the Bronx. As displayed by the maps, Brooklyn, the Bronx, and Manhattan, the areas with the highest total and average number of cases, have the most black and Hispanic residents, while Queens and Staten Island, which have the fewest cases, have fewer black and Hispanic residents.
+We anticipate that readers will have their next concerned assuaged by this map. In case anyone isn't familiar with NYC's geography, the western island is Staten Island, the southwestern portion of the city is Brooklyn, the southeastern portion is Queens, the northwestern portion is Manhattan, and the northeastern portion is the Bronx. As displayed by the maps, Brooklyn, the Bronx, and Manhattan, the areas with the highest total and average number of cases, have the most black and Hispanic residents, while Queens and Staten Island, which have the fewest cases, have fewer black and Hispanic residents.
 
 The next question we anticipate readers to ask is why do areas with more black and Hispanic residents have more HIV cases and this is what we will continue to analyze for the duration of the semester.
