@@ -167,8 +167,10 @@ suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(sf))
 suppressPackageStartupMessages(library(readr))
 suppressPackageStartupMessages(library(stringr))
+suppressPackageStartupMessages(library(shinylive))
+options("readr.edition" = 1)
 
-hiv_data &lt;- read_rds("dataset/hiv_clean.rds") |&gt;
+hiv_data &lt;- read_rds("https://sussmanbu.github.io/ma4615-sp25-final-project-team-5/dataset_for_shiny/hiv_clean.rds") |&gt;
   mutate(
     neighborhood = str_remove(`Neighborhood (U.H.F)`, "\\s*\\d{3}$"),
     sex = SEX,
@@ -178,7 +180,7 @@ hiv_data &lt;- read_rds("dataset/hiv_clean.rds") |&gt;
     aids_rate = `AIDS DIAGNOSES PER 100,000 POPULATION`
   )
 
-nyc_geo &lt;- st_read("dataset/NYC_geography-master/NYC_geography-master/UHF42.geo.json")
+nyc_geo &lt;- st_read("https://sussmanbu.github.io/ma4615-sp25-final-project-team-5/dataset_for_shiny/UHF42.geo.json")
 
 # UI
 ui &lt;- fluidPage(
@@ -243,7 +245,7 @@ server &lt;- function(input, output, session) {
 })
 }
 
-shinyApp(ui, server)</code></pre>
+shinyApp(ui = ui, server = server)</code></pre>
 
 
 
