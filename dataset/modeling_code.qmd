@@ -50,11 +50,11 @@ models_by_neighborhood <- pov_c |>
   )
 
 jt <- hiv_clean |>
-  left_join(models_by_neighborhood, by = c("YEAR", "Neighborhood (U.H.F)"))
+  left_join(models_by_neighborhood, by = c("YEAR", "Neighborhood (U.H.F)")) #This is just a test to make sure the files were joining correctly. This will be deleted before the final publish.
 ```
 
 ```{r}
-race_total <- read_csv(here::here("dataset", "NYC EH Data Portal - Race and ethnicity (filtered).csv"))
+race_total <- read_csv(here::here("dataset", "NYC EH Data Portal - Race and ethnicity (filtered) (1).csv"))
 
 rt <- race_total |>
   mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
