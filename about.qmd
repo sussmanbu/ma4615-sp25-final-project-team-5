@@ -1,0 +1,38 @@
+---
+title: "About"
+image: images/profile.jpg
+about:
+  template: jolla
+---
+
+
+This comes from the file `about.qmd`.
+
+This is a website for the final project for MA[46]15 Data Science with R by Team 5.
+The members of this team are below.
+
+
+## Chuancheng Xia
+Chuancheng Xia is a student in math an CS. [Github](https://github.com/jason040510)
+
+## Siyan Li
+
+Siyan is an undergraduate student in Neurobiology and is a student for the course. [Github](https://github.com/Kether0111)
+
+## Thomas Laz
+
+Thomas is an undergraduate student studying applied mathematics with a minor in public health.
+[Github](https://github.com/tvlaz144)
+
+## Dakshesh Kasliwal
+Dakshesh is an undergraduate student in Questrom concentrating in business analytics and marketing. [Github](https://github.com/DaksheshK)
+
+## Yunha Oh
+
+Yunha is an undergraduate student majoring in Economics and minoring in Statistics. 
+[Github](https://github.com/yunha0296)
+<!-- Please leave in the information below -->
+
+### About this Template.
+
+This is based off of the standard Quarto website template from RStudio (2023.09.0 Build 463).

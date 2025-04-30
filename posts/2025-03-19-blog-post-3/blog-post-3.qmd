@@ -1,0 +1,13 @@
+---
+title: "Blog post 3"
+author: "Kasliwal, Dakshesh; Laz, Thomas; Li, Siyan; Oh, Yunha; Xia, Chuancheng"
+date: "2025-03-19"
+date-modified: "2025-03-19"
+draft: FALSE
+---
+
+Since publishing blog post 2, we made a change to our cleaned dataset. In our .csv file, each row categorizes data by borough, neighborhood, race, gender, and year. Typically, there is one row for each category per year. For example, there is one row with data on white males who went to the hospital in Gramercy Park, Manhattan every year; however, in only 2020, this wasn't the case. In 2020, there were two rows for each category, each with different numbers reported for our HIV/AIDS statistics. For example, only 2020 had two rows with data on white males who went to the hospital in Gramercy Park, Manhattan, and each row completely different data values. In order to aggregate the data in 2020 the same way it's aggregated every other year, the separate rows were merged together. Because of this, our dataset has approximately 900 fewer rows, but no data's lost. This was accomplished by going into the .csv file itself, creating a pivot table, and inserting the merged values into the dataset. This new .csv is available in the dataset folder, along with the original dataset, in case we deem it necessary to have the data aggregated that way for 2020 again. Since we see no reason to do so at the present time, our clean_data.R script was edited to use the .csv with the merged rows.
+
+Further cleaning to the dataset was done as well. Similar to the issue with the way the race variable "Asian/Pacific Islander" was stored last blog post, all entries that had a space in the name, like Gramercy Park, were stored two different ways in the dataset, although invisible when looking at a table. Sometimes, the would be stored with a linebreak to create a space, instead of using the space bar. For the ease of looking at the names in a table, we removed the linebreaks and replaced them with spaces. We also added spaces to some names. For neighborhoods with "east side" or "west side" in their names, like Upper East Side, they were sometimes stored as "eastside" and "westside" in the dataset, without the space. We added spaces so they would match with the proper spelling of the neighborhoods.
+
+Finally, we made preliminary changes to our data page.

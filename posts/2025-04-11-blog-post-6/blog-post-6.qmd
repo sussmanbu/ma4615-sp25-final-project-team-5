@@ -1,0 +1,144 @@
+---
+title: "Blog Post 6"
+author: "Kasliwal, Dakshesh; Laz, Thomas; Li, Siyan; Oh, Yunha; Xia, Chuancheng"
+date: "2025-04-11"
+date-modified: "2025-04-11"
+draft: FALSE
+---
+
+For this week's blog post, we devoted most of our effort into brainstorming how we're going to present the data on our website. We tried to put ourselves in the place of someone who has no idea what we're analyzing and determine the best way to make our findings comprehensible to this person. We decided the best way to begin was by displaying a series of basic plots displaying the most basic aspects of our data. For example, below are two plots. One displays the total number of HIV cases in each borough and the other displays the total number of HIV cases for each race. This seemed like the first logical step because when someone reads that we're analyzing HIV data, the first thing they probably think is, "How many cases are there?". 
+
+```{r echo=FALSE}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(readr))
+suppressPackageStartupMessages(library(here))
+
+hiv_clean <- readRDS(here::here("dataset", "hiv_clean.rds"))
+
+hiv_total <- hiv_clean |>
+  filter(!Borough %in% "All") |>
+  group_by(Borough) |>
+  filter(`Neighborhood (U.H.F)` != "All", SEX == "All", `RACE/ETHNICITY` == "All") |>
+  summarize(
+    total_hiv_count = sum(`TOTAL NUMBER OF HIV DIAGNOSES`),
+    total_aids_count = sum(`TOTAL NUMBER OF AIDS DIAGNOSES`))
+
+ggplot(hiv_total, aes(x = Borough, y = total_hiv_count, fill = Borough)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Total Number of HIV Cases per Borough",
+    x = "Borough",
+    y = "Total Number of HIV Cases")
+
+hiv_race <- hiv_clean |>
+  filter(!`RACE/ETHNICITY` %in% c("All", "Unknown", "Other/Unknown")) |>
+  group_by(`RACE/ETHNICITY`) |>
+  filter(`Neighborhood (U.H.F)` != "All", Borough != "All", SEX == "All") |>
+  summarize(
+    total_hiv_count = sum(`TOTAL NUMBER OF HIV DIAGNOSES`),
+    total_aids_count = sum(`TOTAL NUMBER OF AIDS DIAGNOSES`))
+
+ggplot(hiv_race, aes(x = `RACE/ETHNICITY`, y = total_hiv_count, fill = `RACE/ETHNICITY`)) +
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Total Number of HIV Cases per Simple Race",
+    x = "Race",
+    y = "Total Number of HIV Cases")
+```
+Now that we made these basic plots, we decided the next step is to identify any trends and do slightly below surface-level analysis on them. We made other plots we plan to include on our final website and one trend we noticed is that Brooklyn always had the most total cases for boroughs, and black people always had the most total cases for race. When someone sees these raw totals, the first thing we anticipate them wondering is, "Well, is this just because there are more people in Brooklyn than the other boroughs and more black people than any other race?". To assuage these concerns, we move to slightly below surface-level analysis, which is adjusting for population. Below are two plots. They are boxplots displaying the number of HIV cases per 100,000 people for each borough and race.
+
+```{r echo=FALSE}
+hiv_100 <- hiv_clean |>
+  filter(!Borough %in% "All") |>
+  group_by(Borough) |>
+  filter(`Neighborhood (U.H.F)` != "All", `RACE/ETHNICITY` == "All", SEX == "All")
+
+ggplot(hiv_100, aes(x = Borough, y = `HIV DIAGNOSES PER 100,000 POPULATION`, fill = Borough)) +
+  geom_boxplot() +
+  labs(
+    title = "Number of HIV Cases per 100,000 per Borough",
+    x = "Borough",
+    y = "Number of HIV Cases per 100,000"
+  )
+
+hiv_prop <- hiv_clean |>
+  filter(!`RACE/ETHNICITY` %in% c("All", "Unknown", "Other/Unknown")) |>
+  group_by(`RACE/ETHNICITY`) |>
+  filter(Borough != "All", `Neighborhood (U.H.F)` != "All", SEX == "All") 
+
+ggplot(hiv_prop, aes(x = `RACE/ETHNICITY`, y = `HIV DIAGNOSES PER 100,000 POPULATION`, fill = `RACE/ETHNICITY`)) +
+  geom_boxplot() +
+  labs(
+    title = "Number of HIV Cases per 100,000 per Simple Race",
+    x = "Simple Race",
+    y = "Number of HIV Cases per 100,000"
+  )
+
+hiv_clean |> distinct(YEAR)
+```
+These plots should answer that basic question of normalizing population. For example, in the boroughs plot, we see the question about total population did have an impact on Brooklyn having the most total HIV cases, as the boxplots display, it has the third highest average number of HIV cases per 100,000, despite having the most total HIV cases, indicating that if all boroughs had the same population, Brooklyn might not have the most total cases. When it comes to race, however, we see population had little-to-no affect; black people had the most total cases and the hgihest number of average cases per 100,000 people. 
+
+The next question we anticipate people wondering is, "Do the boroughs with more cases have more black and Hispanic people than boroughs with fewer cases?". Since black and Hispanic people have more cases on average than white and Asian/Pacific Islanders, it seems logical that the boroughs with more cases have more of those demographics. Below are two plots. Each is a map of New York City, broken down into 42 smaller neighborhoods, based on the locations served by UHF hospitals. The first displays areas based on the proportion of black residents, and the second displays the proportion of Hispanic residents in each neighborhood. The data on proportions came from New York City's official Environment and Health data portal, one of the datasets we wrote about in our previous blog post and the shapefiles were downloaded online.
+
+```{r echo=FALSE}
+library(sf)
+library(readr)
+library(here)
+
+shape <- st_read(here::here("dataset", "NYC_geography-master", "NYC_geography-master", "uhf42_shapefiles", "UHF42.shp"), quiet = TRUE)
+
+race <- read_csv(here::here("dataset", "NYC EH Data Portal - Race and ethnicity (filtered).csv"),
+                 col_types = cols(GeoID = col_character()))
+
+race <- race |>
+  rename("id" = "GeoID") |>
+  select(id, `Black alone (percent)`, `Hispanic alone (percent)`)
+
+joined <- shape |>
+  left_join(race, by = "id")
+
+ggplot() +
+  geom_sf(data = joined, aes(fill = `Black alone (percent)`), alpha = 0.8) +
+  scale_fill_viridis_c(option = "D")
+
+ggplot() +
+  geom_sf(data = joined, aes(fill = `Hispanic alone (percent)`), alpha = 0.8) +
+  scale_fill_viridis_c(option = "D")
+
+
+```
+
+We anticipate that readers will have their next concerned assuaged by this map. In case anyone isn't familiar with NYC's geography, the western island is Staten Island, the southwestern portion of the city is Brooklyn, the southeastern portion is Queens, the northwestern portion is Manhattan, and the northeastern portion is the Bronx. As displayed by the maps, Brooklyn, the Bronx, and Manhattan, the areas with the highest total and average number of cases, have the most black and Hispanic residents, while Queens and Staten Island, which have the fewest cases, have fewer black and Hispanic residents.
+
+The next question we anticipate readers to ask is why do areas with more black and Hispanic residents have more HIV cases and this is what we will continue to analyze for the duration of the semester.
+
+```{r echo=FALSE}
+library(sf)
+library(readr)
+library(here)
+
+shape <- st_read(here::here("dataset", "NYC_geography-master", "NYC_geography-master", "uhf34_shapefiles", "UHF34.shp"), quiet = TRUE)
+
+insurance <- NYC_EH_Data_Portal_Health_insurance_adults_filtered_1_ |> col_types = cols(GeoID = col_character())
+                 
+
+insurance <- insurance |> filter(Geography != c("New York City", "Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island"))|> select(GeoID, `Black alone (percent)`, `Hispanic alone (percent)`)
+
+joined <- shape |>
+  left_join(race, by = "id")
+
+ggplot() +
+  geom_sf(data = joined, aes(fill = `Black alone (percent)`), alpha = 0.8) +
+  scale_fill_viridis_c(option = "D")
+
+ggplot() +
+  geom_sf(data = joined, aes(fill = `Hispanic alone (percent)`), alpha = 0.8) +
+  scale_fill_viridis_c(option = "D")
+
+
+```
+
+
+
+
+

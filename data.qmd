@@ -1,0 +1,156 @@
+---
+title: Data
+description: We describe the sources of our data and the cleaning process.
+toc: true
+draft: false
+editor: 
+  markdown: 
+    wrap: sentence
+---
+
+![](images/data-import-cheatsheet-thumbs.png)
+
+This comes from the file `data.qmd`.
+
+**Data Overview**
+
+Our dataset is [HIV/AIDS Diagnoses by Neighborhood, Sex, and Race/Ethnicity](https://data.cityofnewyork.us/Health/HIV-AIDS-Diagnoses-by-Neighborhood-Sex-and-Race-Et/ykvb-493p/about_data). The data was originally collected from the New York City Department of Health and Mental Hygiene (NYC DOHMH), which collected and compiled information on new HIV and AIDS diagnoses reported through March 31, 2021. Specifically, this dataset covers cases diagnosed from calendar years 2016 through 2020. The data were collected to monitor trends in HIV and AIDS diagnoses, enabling public health officials to track disease patterns, guide prevention and treatment strategies, and identify disparities across different neighborhoods and demographic groups within NYC. Cases are stratified by United Hospital Fund (UHF) neighborhoods, sex, and race/ethnicity, allowing for targeted public health responses. The original dataset can typically be obtained directly from the NYC DOHMH or accessed through official public health data portals maintained by New York City.
+
+**Cleaning the Data**
+
+The first step in cleaning the dataset was filling in missing borough values for data compiled from 2010-13. The original dataset always compiled the neighborhood, but didn’t start including the borough until 2016. Because of the data not being stored according to borough, but having neighborhoods from different boroughs stored in neighboring cells, the fill command couldn’t be used because it would take the last borough value and fill that in for all missing borough values, which would attribute that borough to incorrect neighborhoods. Instead, we made a copy of the original dataset and used a command within the spreadsheet to assign each neighborhood the proper borough and then pasted that command into each blank value and had the spreadsheet fill in the missing values.
+
+Next, we ensured all variables were stored the same way. In the original dataset, the authors sometimes compiled the same variable in different ways. One of the most common disparities was in how variables with a space in the name were stored. Sometimes, instead of using a space, the authors used a linebreak. When viewing these names in the .csv file or in an imported dataset in R, the difference was invisible, but when trying to perform analysis, R would consider these variables with the same name to be two different variables, due to the linebreak. In order to fix this, all linebreaks were replaced with spaces, which can be seen in our clean_data.R script. 
+
+There were other ways a slightly different spelling made R consider a variable referring to the same place or people as two different variables. Sometimes, it was due to a lack of a space where there sometimes was a space, as in the neighborhood Upper East Side. In the original dataset, sometimes this was stored as "Upper Eastside." We added a space to variables stored like this, in order for the variable names to coincide with the actual names of the neighborhoods. Another storage difference was with the Hispanic race variable. Sometimes it was stored as "Latino/Hispanic" and other times as just "Hispanic"; we stored every instance of it as "Hispanic" for simplicity. Finally, we used the complete.cases function to filter out all rows with NA values.
+
+**Visualization**
+
+\(1\) Bar plots and Box plots
+
+Purpose: Show total counts or rates across racial groups
+
+```{r}
+suppressPackageStartupMessages(library(tidyverse))
+library(readr)
+library(here)
+
+df <- read_rds(here::here("dataset", "hiv_clean.rds"))
+df_clean <- df |>
+  filter(is.finite(`TOTAL NUMBER OF HIV DIAGNOSES`))
+
+ggplot(df_clean, aes(x = `RACE/ETHNICITY`, y = `TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES`, fill = `RACE/ETHNICITY`)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  
+  labs(title = "Distribution of TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES",
+       x = "Race/Ethnicity",
+       y = "TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES") +
+  theme_minimal() +
+  theme(legend.position = "none") +
+  coord_cartesian(ylim = c(0, 100)) 
+```
+
+```{r}
+ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES`), 
+               y = `TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES`, fill = `RACE/ETHNICITY`)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES by Race/Ethnicity",
+       x = "Race/Ethnicity",
+       y = "Total Number of AIDS Diagnoses") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+\(2\) Line Charts: Trends Over Time
+
+Purpose: Show how diagnoses and proportions change over years by race
+
+```{r}
+ggplot(df_clean, aes(x = YEAR, y = `HIV DIAGNOSES PER 100,000 POPULATION`)) +
+  geom_smooth(se = FALSE, method = "lm", linewidth = 1, color = "steelblue") +
+  facet_wrap(~ `RACE/ETHNICITY`, scales = "free_y") +
+  labs(
+    title = "HIV Diagnoses per 100,000 Over Time by Race (Linear Fit)",
+    x = "Year", y = "HIV Diagnoses per 100,000"
+  ) +
+  theme_minimal()
+```
+
+
+
+
+```{r}
+df_clean$Group <- paste(df_clean$`RACE/ETHNICITY`, df_clean$SEX, sep="_") # group race and sex in a new column 
+
+df_clean2 <- df_clean |> group_by(YEAR, `RACE/ETHNICITY`, SEX) |> mutate(count=n()) |> ungroup() # this is supposed to see how many of each sex are within every race/year 
+
+
+
+# df_clean |> filter(`Neighborhood (U.H.F)`=="All" & Borough=="All" & `SEX`=="All") |> ggplot(
+#   mapping = aes(x = YEAR, y = `TOTAL NUMBER OF HIV DIAGNOSES`)) + geom_point() + geom_line() + facet_wrap(~ `RACE/ETHNICITY`) # PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES over the years by race 
+
+
+# df_clean |> filter(`Neighborhood (U.H.F)`=="All" & Borough=="All")|> ggplot(mapping = aes(x = YEAR, color = SEX , y = `PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES`)) + geom_point() + geom_line() + facet_wrap(~ `RACE/ETHNICITY`) # # PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES over the years by race and sex 
+
+
+
+df_clean
+
+
+ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`TOTAL NUMBER OF HIV DIAGNOSES`), 
+               y = `TOTAL NUMBER OF HIV DIAGNOSES`, fill = `RACE/ETHNICITY`)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "TOTAL NUMBER OF HIV DIAGNOSES by Race/Ethnicity",
+       x = "Race/Ethnicity",
+       y = "Total Number of HIV Diagnoses") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+
+ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`HIV DIAGNOSES PER 100,000 POPULATION`), 
+               y = `HIV DIAGNOSES PER 100,000 POPULATION`, fill = `RACE/ETHNICITY`)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "TOTAL NUMBER OF HIV DIAGNOSES/100K by Race/Ethnicity",
+       x = "Race/Ethnicity",
+       y = "Total Number of HIV Diagnoses PER 100K") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES`), 
+               y = `PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES`, fill = `RACE/ETHNICITY`)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "Proportion of Concurrent HIV/AIDS Diagnoses by Race/Ethnicity",
+       x = "Race/Ethnicity",
+       y = "Proportion of Concurrent HIV/AIDS Diagnoses") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`TOTAL NUMBER OF AIDS DIAGNOSES`), 
+               y = `TOTAL NUMBER OF AIDS DIAGNOSES`, fill = `RACE/ETHNICITY`)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "TOTAL NUMBER OF AIDS DIAGNOSES by Race/Ethnicity",
+       x = "Race/Ethnicity",
+       y = "TOTAL NUMBER OF AIDS DIAGNOSES") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`AIDS DIAGNOSES PER 100,000 POPULATION`), 
+               y = `AIDS DIAGNOSES PER 100,000 POPULATION`, fill = `RACE/ETHNICITY`)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "AIDS DIAGNOSES PER 100,000 POPULATION by Race/Ethnicity",
+       x = "Race/Ethnicity",
+       y = "AIDS DIAGNOSES PER 100,000 POPULATION") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+
+
+
+```
+
