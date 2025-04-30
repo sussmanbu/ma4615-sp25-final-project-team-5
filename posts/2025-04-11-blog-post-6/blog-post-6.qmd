@@ -73,11 +73,10 @@ ggplot(hiv_prop, aes(x = `RACE/ETHNICITY`, y = `HIV DIAGNOSES PER 100,000 POPULA
     x = "Simple Race",
     y = "Number of HIV Cases per 100,000"
   )
-<<<<<<< HEAD
+
 
 hiv_clean |> distinct(YEAR)
-=======
->>>>>>> origin/main
+
 ```
 These plots should answer that basic question of normalizing population. For example, in the boroughs plot, we see the question about total population did have an impact on Brooklyn having the most total HIV cases, as the boxplots display, it has the third highest average number of HIV cases per 100,000, despite having the most total HIV cases, indicating that if all boroughs had the same population, Brooklyn might not have the most total cases. When it comes to race, however, we see population had little-to-no affect; black people had the most total cases and the hgihest number of average cases per 100,000 people. 
 
@@ -107,19 +106,15 @@ ggplot() +
 ggplot() +
   geom_sf(data = joined, aes(fill = `Hispanic alone (percent)`), alpha = 0.8) +
   scale_fill_viridis_c(option = "D")
-<<<<<<< HEAD
 
-
-=======
->>>>>>> origin/main
 ```
 
 We anticipate that readers will have their next concerned assuaged by this map. In case anyone isn't familiar with NYC's geography, the western island is Staten Island, the southwestern portion of the city is Brooklyn, the southeastern portion is Queens, the northwestern portion is Manhattan, and the northeastern portion is the Bronx. As displayed by the maps, Brooklyn, the Bronx, and Manhattan, the areas with the highest total and average number of cases, have the most black and Hispanic residents, while Queens and Staten Island, which have the fewest cases, have fewer black and Hispanic residents.
 
-<<<<<<< HEAD
+
 The next question we anticipate readers to ask is why do areas with more black and Hispanic residents have more HIV cases and this is what we will continue to analyze for the duration of the semester.
 
-```{r echo=FALSE}
+```{r eval=FALSE}
 library(sf)
 library(readr)
 library(here)

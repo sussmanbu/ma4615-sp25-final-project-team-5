@@ -4,12 +4,13 @@ format: html
 ---
 
 ```{r}
-nyc_health_insurance <- NYC_EH_Data_Portal_Health_insurance_adults_filtered_1_ 
+library(readr)
+nyc_health_insurance <- read_csv("dataset/NYC EH Data Portal - Health insurance (adults) (filtered)(1).csv")
 
 nyc_health_insurance 
 
-hiv_clean
+hiv_clean <- read_rds("https://sussmanbu.github.io/ma4615-sp25-final-project-team-5/dataset_for_shiny/hiv_clean.rds")
 
-nyc_health_insurance |> distinct(Geography)
+#nyc_health_insurance |> distinct(Geography)
 ```
 

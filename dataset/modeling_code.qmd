@@ -9,8 +9,10 @@ title: "Modeling Code"
 author: "Team 5"
 editor: visual
 ---
+
 ```{r}
 library(tidyverse)
+hiv_clean <- read_rds("https://sussmanbu.github.io/ma4615-sp25-final-project-team-5/dataset_for_shiny/hiv_clean.rds")
 pov <- read_csv(here::here("dataset","NYC EH Data Portal - Neighborhood poverty (filtered) (1).csv"))
 pov_c <- pov |>
   mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
