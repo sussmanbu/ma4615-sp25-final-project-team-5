@@ -8,7 +8,11 @@ editor:
     wrap: sentence
 ---
 
+<<<<<<< HEAD
 ![](images/data-import-cheatsheet-thumbs.png)
+=======
+![](images/Image.png)
+>>>>>>> origin/main
 
 This comes from the file `data.qmd`.
 
@@ -154,3 +158,85 @@ ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`AIDS DIAGNOSES PER 100,000 
 
 ```
 
+<<<<<<< HEAD
+=======
+
+```{r}
+df_sex_summary <- df %>%
+  filter(SEX %in% c("Male", "Female")) %>%
+  group_by(SEX) %>%
+  summarise(Total_HIV = sum(`TOTAL NUMBER OF HIV DIAGNOSES`, na.rm = TRUE))
+
+# Plot the aggregated totals using geom_col
+ggplot(df_sex_summary, aes(x = SEX, y = Total_HIV, fill = SEX)) +
+  geom_col(width = 0.6) +
+  labs(title = "Total HIV Diagnoses by Sex", 
+       x = "Sex", 
+       y = "Total HIV Diagnoses") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+df_aids_sex <- df %>%
+  filter(SEX %in% c("Male", "Female")) %>%
+  group_by(SEX) %>%
+  summarise(Total_AIDS = sum(`TOTAL NUMBER OF AIDS DIAGNOSES`, na.rm = TRUE))
+
+# Plot the aggregated totals using geom_col
+ggplot(df_aids_sex, aes(x = SEX, y = Total_AIDS, fill = SEX)) +
+  geom_col(width = 0.6) +
+  labs(title = "Total AIDS Diagnoses by Sex", 
+       x = "Sex", 
+       y = "Total AIDS Diagnoses") +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+df_hiv_rate_sex <- df %>%
+  filter(SEX %in% c("Male", "Female")) %>%
+  group_by(SEX) %>%
+  summarise(avg_rate = mean(`HIV DIAGNOSES PER 100,000 POPULATION`, na.rm = TRUE))
+
+# Plot the aggregated average rates using geom_col
+ggplot(df_hiv_rate_sex, aes(x = SEX, y = avg_rate, fill = SEX)) +
+  geom_col(width = 0.6, show.legend = FALSE) +
+  labs(title = "Average HIV Diagnoses per 100,000 by Sex", 
+       x = "Sex", 
+       y = "HIV Diagnoses per 100,000 Population") +
+  theme_minimal()
+```
+```{r}
+df_aids_rate <- df %>%
+  filter(SEX %in% c("Male", "Female")) %>%
+  group_by(SEX) %>%
+  summarise(avg_aids_rate = mean(`AIDS DIAGNOSES PER 100,000 POPULATION`, na.rm = TRUE))
+
+# Plot the aggregated average rates using geom_col
+ggplot(df_aids_rate, aes(x = SEX, y = avg_aids_rate, fill = SEX)) +
+  geom_col(width = 0.6, show.legend = FALSE) +
+  labs(title = "Average AIDS Diagnoses per 100,000 by Sex", 
+       x = "Sex", 
+       y = "AIDS Diagnoses per 100,000 Population") +
+  theme_minimal()
+```
+```{r}
+borough_summary <- df %>%
+  filter(!is.na(Borough) & Borough != "All") %>%
+  group_by(Borough) %>%
+  summarise(Total_HIV = sum(`TOTAL NUMBER OF HIV DIAGNOSES`, na.rm = TRUE)) %>%
+  arrange(desc(Total_HIV)) %>%
+  slice(1:10)
+
+# Create a bar chart for the top 10 boroughs by total HIV diagnoses
+ggplot(borough_summary, aes(x = reorder(Borough, -Total_HIV), y = Total_HIV, fill = Borough)) +
+  geom_col(width = 0.7, show.legend = FALSE) +
+  labs(title = "Top 10 Boroughs by Total HIV Diagnoses",
+       x = "Borough",
+       y = "Total HIV Diagnoses") +
+  theme_minimal()
+
+
+
+
+
+```
+
+>>>>>>> origin/main
