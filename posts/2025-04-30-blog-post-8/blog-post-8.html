@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Kasliwal, Dakshesh; Laz, Thomas; Li, Siyan; Oh, Yunha; Xia, Chuancheng">
-<meta name="dcterms.date" content="2025-04-22">
+<meta name="dcterms.date" content="2025-04-30">
 
-<title>Blog Post 7 – MA [46]15 Final Project Team 5</title>
+<title>Blog Post 8 – MA [46]15 Final Project Team 5</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -117,7 +117,7 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Blog Post 7</h1>
+      <h1 class="title">Blog Post 8</h1>
                       </div>
   </div>
     
@@ -134,14 +134,14 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">April 22, 2025</p>
+        <p class="date">April 30, 2025</p>
       </div>
     </div>
     
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">April 22, 2025</p>
+        <p class="date-modified">April 30, 2025</p>
       </div>
     </div>
       
@@ -159,8 +159,17 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p>For this blog post, we created a basic form of our interactive. This interactive component allows users to explore HIV/AIDS-related data across New York City by borough and neighborhood. Users can filter the data by year, sex, and race/ethnicity through intuitive drop-down menus, making it easy to examine disparities across different demographic groups and time periods. Additionally, users can toggle between different metrics, such as HIV diagnoses rate and AIDS diagnoses rate, to gain a more comprehensive understanding of how these factors intersect. This component is highly effective because it presents complex public health data in a visually engaging and geographically contextualized manner, enabling deeper insight into spatial and demographic patterns of health inequality in NYC.</p>
-<p>You can explore the interactive map at the link below: <a href="https://jason040510.shinyapps.io/nyc-map/">Click here to open the Interactive Map Explorer</a></p>
+<p>For this week’s blog post, we continued working on the final analytical aspects of our project, and began the process of making our website aesthetically appealing and presenting the data in an understandable and streamlined way. Below are answers to the three major questions for this blog post.</p>
+<p><strong>How are you continuing your exploratory data analysis?</strong></p>
+<p>This week, we finally got our interactive published using shinyapps.io</p>
+<p>We also continued adding predictors to our main dataset before constructing the final statistical model. So far, we’ve added an estimated poverty rate and estimated proportions of each major race in each neighborhood.</p>
+<p>We decided to model our dataset after the dataset from Homework 8. For each year, we took each borough and each UHF 42 neighborhood and filtered to include the entries where both race and sex are all. This will allow us to have one row of observation, easing the modeling process. For each row, we will have a predictor, including the ones mentioned above, and we hope to add health insurance rate, a gender proportion, age proportion, high school graduation rate, crowded housing rate, and incarceration rates.</p>
+<p>We’re also continuing to make maps displaying this information that we might use in our Big Picture page. These will be done using the UHF shapefiles we used in blog post 6.</p>
+<p><strong>What is your thesis?</strong></p>
+<p>Based on the findings we’ve made over the course of this project, our thesis will be along the lines of: “In New York City, Hispanic, and especially black people, have increased rates of contracting HIV, compared to the other demographics in New York City.”</p>
+<p><strong>How do you plan to polish your visualizations and tables?</strong></p>
+<p>We’ve been satisfied with the use of shapefiles and using a continuous gradient to color in the neighborhoods. Using the gt package to create tables is something we’re also considering. We’ve already begun adding our own images to the website.</p>
+<p>The biggest way we’ve thought about visualization is how we can lead the readers in a logical direction with our graphs. We want to guide readers to asking themselves certain questions and then having the next graphs answer those questions and create new ones, until we’ve told the entire story. As we continue to finalize the exact path we want to take readers down, we’ll use other methods of visualization to enhance the experience.</p>
 
 
 

@@ -1,0 +1,12 @@
+name: ProjectApp
+title: ProjectApp
+username: tvlaz144
+account: tvlaz144
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 14654526
+bundleId: 10207012
+url: https://tvlaz144.shinyapps.io/ProjectApp/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
