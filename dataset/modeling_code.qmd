@@ -17,22 +17,6 @@ pov <- read_csv(here::here("dataset","NYC EH Data Portal - Neighborhood poverty 
 pov_c <- pov |>
   mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
 
-models_by_borough <- pov_c |>
-  group_by(Borough) |>
-  nest() |>
-  mutate(
-    model = map(data, ~ lm(Percent ~ poly(midpoint, 2), data = .x)),
-    newdata = list(tibble(midpoint = 2007:2021)),
-    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
-  ) |>
-  select(Borough, predicted) |>
-  unnest(predicted) |>
-  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
-  rename(
-    YEAR = midpoint,
-    `Estimated Poverty Rate` = estimated_rate
-  )
-
 models_by_neighborhood <- pov_c |>
   filter(GeoTypeDesc == "UHF 42") |>
   group_by(Geography) |>
@@ -50,9 +34,6 @@ models_by_neighborhood <- pov_c |>
     `Neighborhood (U.H.F)` = Geography,
     `Estimated Poverty Rate` = estimated_rate
   )
-
-jt <- hiv_clean |>
-  left_join(models_by_neighborhood, by = c("YEAR", "Neighborhood (U.H.F)")) #This is just a test to make sure the files were joining correctly. This will be deleted before the final publish.
 ```
 
 ```{r}
@@ -60,128 +41,6 @@ race_total <- read_csv(here::here("dataset", "NYC EH Data Portal - Race and ethn
 
 rt <- race_total |>
   mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
-
-asian_citywide <- rt |>
-  filter(GeoTypeDesc == "Citywide") |>
-  group_by(Geography) |>
-  nest() |>
-  mutate(
-    model = map(data, ~ lm(`Asian alone (percent)` ~ poly(midpoint, 2), data = .x)),
-    newdata = list(tibble(midpoint = 2007:2021)),
-    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
-  ) |>
-  select(Geography, predicted) |>
-  unnest(predicted) |>
-  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015))
-
-black_citywide <- rt |>
-  filter(GeoTypeDesc == "Citywide") |>
-  group_by(Geography) |>
-  nest() |>
-  mutate(
-    model = map(data, ~ lm(`Black alone (percent)` ~ poly(midpoint, 2), data = .x)),
-    newdata = list(tibble(midpoint = 2007:2021)),
-    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
-  ) |>
-  select(Geography, predicted) |>
-  unnest(predicted) |>
-  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015))
-
-hispanic_citywide <- rt |>
-  filter(GeoTypeDesc == "Citywide") |>
-  group_by(Geography) |>
-  nest() |>
-  mutate(
-    model = map(data, ~ lm(`Hispanic alone (percent)` ~ poly(midpoint, 2), data = .x)),
-    newdata = list(tibble(midpoint = 2007:2021)),
-    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
-  ) |>
-  select(Geography, predicted) |>
-  unnest(predicted) |>
-  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015))
-
-white_citywide <- rt |>
-  filter(GeoTypeDesc == "Citywide") |>
-  group_by(Geography) |>
-  nest() |>
-  mutate(
-    model = map(data, ~ lm(`White alone (percent)` ~ poly(midpoint, 2), data = .x)),
-    newdata = list(tibble(midpoint = 2007:2021)),
-    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
-  ) |>
-  select(Geography, predicted) |>
-  unnest(predicted) |>
-  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015))
-```
-
-```{r}
-asian_boroughs <- rt |>
-  filter(GeoTypeDesc == "Borough") |>
-  group_by(Geography) |>
-  nest() |>
-  mutate(
-    model = map(data, ~ lm(`Asian alone (percent)` ~ poly(midpoint, 2), data = .x)),
-    newdata = list(tibble(midpoint = 2007:2021)),
-    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
-  ) |>
-  select(Geography, predicted) |>
-  unnest(predicted) |>
-  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
-  rename(
-    Borough = Geography,
-    YEAR = midpoint
-  )
-
-black_boroughs <- rt |>
-  filter(GeoTypeDesc == "Borough") |>
-  group_by(Geography) |>
-  nest() |>
-  mutate(
-    model = map(data, ~ lm(`Black alone (percent)` ~ poly(midpoint, 2), data = .x)),
-    newdata = list(tibble(midpoint = 2007:2021)),
-    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
-  ) |>
-  select(Geography, predicted) |>
-  unnest(predicted) |>
-  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
-  rename(
-    Borough = Geography,
-    YEAR = midpoint
-  )
-
-hispanic_boroughs <- rt |>
-  filter(GeoTypeDesc == "Borough") |>
-  group_by(Geography) |>
-  nest() |>
-  mutate(
-    model = map(data, ~ lm(`Hispanic alone (percent)` ~ poly(midpoint, 2), data = .x)),
-    newdata = list(tibble(midpoint = 2007:2021)),
-    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
-  ) |>
-  select(Geography, predicted) |>
-  unnest(predicted) |>
-  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
-  rename(
-    Borough = Geography,
-    YEAR = midpoint
-  )
-
-white_boroughs <- rt |>
-  filter(GeoTypeDesc == "Borough") |>
-  group_by(Geography) |>
-  nest() |>
-  mutate(
-    model = map(data, ~ lm(`White alone (percent)` ~ poly(midpoint, 2), data = .x)),
-    newdata = list(tibble(midpoint = 2007:2021)),
-    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
-  ) |>
-  select(Geography, predicted) |>
-  unnest(predicted) |>
-  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
-  rename(
-    Borough = Geography,
-    YEAR = midpoint
-  )
 ```
 
 ```{r}
@@ -253,3 +112,8 @@ white_uhf <- rt |>
     YEAR = midpoint
   )
 ```
+
+```{r}
+
+```
+
