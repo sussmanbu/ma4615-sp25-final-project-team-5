@@ -1,137 +1,150 @@
 ---
-title: "Big Picture"
-description: "A 538/Upshot style article about the data."
+title: "An Unequal Epidemic: How HIV Hits NYC Communities Differently"
+description: "Exploring the Racial, Gender, and Geographic Disparities in HIV/AIDS Diagnoses Across New York City"
 toc: true
 draft: FALSE
 filters:
   - shinylive
 ---
 
-![](images/The_Big_Picture_2.jpeg)
+![](images/Big_Picture.png)
 
-This comes from the file `big_picture.qmd`.
+# Overview
+In New York City, HIV and AIDS have been public health concerns for decades. But not all New Yorkers face the same level of risk. Our analysis reveals a troubling reality: your race, gender, and where you live can dramatically affect your likelihood of being diagnosed with HIV or AIDS. Through accessible visuals and an interactive map, we show how these disparities play out across the five boroughs — and why it matters.
 
-Think of this page as your 538/Upshot style article. This means that you should try to tell a story through the data and your analysis. Read articles from those sites and similar sites to get a feeling for what they are like. Try to write in the style of a news or popular article. Importantly, this page should be geared towards the general public. You shouldn't assume the reader understands how to interpret a linear regression or a complicated plot. Focus on interpretation and visualizations.
-
-
-
----
-
-
-### Interactive
-
-Your Big Data page should also include a small interactive dashboard. The dashboard should be created either using Shinylive, as below. This interactive component should in some way support your thesis from your big picture page. Good interactives often provide both high-level understanding of the data while allowing a user to investigate specific scenarios, observations, subgroups, etc.
-
-
-
-
-```{r}
-#| eval: false
-#| standalone: true
-#| viewerHeight: 640 # You will have to adjust this to fit everything
-
-
-library(shiny)
+# Visualizing Disparities
+### Disparity by Race and Sex
+We began by plotting total HIV and AIDS diagnoses by race and sex. Two consistent patterns emerged:
+Race-Based Disparities: Black and Hispanic individuals had significantly higher total diagnoses and diagnosis rates per 100,000 population compared to White and Asian/Pacific Islander populations.This disparity highlights how systemic barriers — including unequal access to healthcare, HIV testing, early treatment, and education — contribute to the progression from HIV to AIDS in marginalized communities. While advances in medicine have made AIDS largely preventable with timely care, these benefits are not reaching all groups equally.
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
-options("readr.edition" = 1) # keep this to ensure you can download the data
+library(readr)
+library(here)
 
+df <- read_rds(here::here("dataset", "hiv_clean.rds"))
 
-# Define UI for app that draws a histogram ----
-ui <- fluidPage(
+df_clean <- df |>
+  filter(is.finite(`TOTAL NUMBER OF HIV DIAGNOSES`))
 
-  # App title ----
-  titlePanel("Hello Shiny!"),
+df_clean$Group <- paste(df_clean$`RACE/ETHNICITY`, df_clean$SEX, sep = "_")
 
-  # Sidebar layout with input and output definitions ----
-  verticalLayout(
-      # Input: Slider for the number of bins ----
-      sliderInput(inputId = "bins",
-                  label = "Number of bins:",
-                  min = 1,
-                  max = 50,
-                  value = 30),
+df_clean2 <- df_clean |> 
+  group_by(YEAR, `RACE/ETHNICITY`, SEX) |> 
+  mutate(count = n()) |> 
+  ungroup()
 
-      # Output: Histogram ----
-      plotOutput(outputId = "distPlot")
-
+# Improve axis labels for AIDS Diagnoses
+ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`AIDS DIAGNOSES PER 100,000 POPULATION`), 
+                     y = `AIDS DIAGNOSES PER 100,000 POPULATION`, fill = `RACE/ETHNICITY`)) +
+  geom_bar(stat = "identity") +
+  labs(title = "AIDS Diagnoses per 100,000 by Race/Ethnicity",
+       x = "Race/Ethnicity",
+       y = "AIDS Diagnoses per 100,000 Population") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 40, hjust = 1, size = 12),
+    axis.title.x = element_text(size = 13),
+    axis.title.y = element_text(size = 13),
+    plot.title = element_text(size = 15, face = "bold"),
+    legend.position = "none"
   )
-)
+ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`HIV DIAGNOSES PER 100,000 POPULATION`), 
+               y = `HIV DIAGNOSES PER 100,000 POPULATION`, fill = `RACE/ETHNICITY`)) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "TOTAL NUMBER OF HIV DIAGNOSES/100K by Race/Ethnicity",
+       x = "Race/Ethnicity",
+       y = "Total Number of HIV Diagnoses PER 100K") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 40, hjust = 1, size = 12),
+    axis.title.x = element_text(size = 13),
+    axis.title.y = element_text(size = 13),
+    plot.title = element_text(size = 15, face = "bold"),
+    legend.position = "none"
+  )
 
-# Define server logic required to draw a histogram ----
-server <- function(input, output) {
-  # The URL below has to point to a dataset on your github pages website
-  # I recommend creating a small-ish rds file that has only the data relevant to 
-  # the interactive.
-  data <- read_rds("https://sussmanbu.github.io/ma4615-final-project-quarto/dataset_for_shiny/combined_regional_data.rds")
-  
-  output$distPlot <- renderPlot({
-    ggplot(data, aes(x = refusal_rate)) +
-      geom_histogram(bins = input$bins + 1)
+```
+### Gender-Based Disparities
+Across all racial groups, males consistently showed higher diagnosis rates than females—especially pronounced among Asian/Pacific Islanders.This chart highlights a striking gender disparity in the average rate of AIDS diagnoses per 100,000 people in New York City. The data shows that males are diagnosed with AIDS at more than double the rate of females, with an average well above 25 per 100,000 compared to less than 10 for females. This pattern holds across multiple racial and geographic groups and has persisted over time. The reasons behind this disparity are complex and may include differences in risk behaviors, testing frequency, social stigma, or access to early HIV treatment, which can prevent the progression to AIDS. This gap underscores the need for gender-specific public health interventions, especially outreach, education, and prevention programs targeted at high-risk male populations. 
+```{r echo=FALSE}
+df <- read_rds("dataset/hiv_clean.rds")
+df_aids_rate <- df %>%
+  filter(SEX %in% c("Male", "Female")) %>%
+  group_by(SEX) %>%
+  summarise(avg_aids_rate = mean(`AIDS DIAGNOSES PER 100,000 POPULATION`, na.rm = TRUE))
 
-  })
+# Plot the aggregated average rates using geom_col
+ggplot(df_aids_rate, aes(x = SEX, y = avg_aids_rate, fill = SEX)) +
+  geom_col(width = 0.6, show.legend = FALSE) +
+  labs(title = "Average AIDS Diagnoses per 100,000 by Sex", 
+       x = "Sex", 
+       y = "AIDS Diagnoses per 100,000 Population") +
+  theme_minimal()
+df_hiv_rate_sex <- df %>%
+  filter(SEX %in% c("Male", "Female")) %>%
+  group_by(SEX) %>%
+  summarise(avg_rate = mean(`HIV DIAGNOSES PER 100,000 POPULATION`, na.rm = TRUE))
+ggplot(df_hiv_rate_sex, aes(x = SEX, y = avg_rate, fill = SEX)) +
+  geom_col(width = 0.6, show.legend = FALSE) +
+  labs(title = "Average HIV Diagnoses per 100,000 by Sex", 
+       x = "Sex", 
+       y = "HIV Diagnoses per 100,000 Population") +
+  theme_minimal()
+```
+### Trends Over Time
+Next, we explored changes in diagnosis rates over the five-year span.
+While overall diagnosis rates declined across most groups, one outlier stood out: Asian/Pacific Islander males, whose rates did not follow the downward trend and in some years increased.
+This pattern challenges assumptions that HIV/AIDS is primarily a concern within traditionally high-risk populations. While this group has historically had lower rates, the rising trend suggests they may now be facing growing risk.
 
-}
+```{r echo=FALSE}
+df <- read_rds(here::here("dataset", "hiv_clean.rds"))
+df_clean <- df |>
+  filter(is.finite(`TOTAL NUMBER OF HIV DIAGNOSES`))
+ggplot(df_clean, aes(x = YEAR, y = `HIV DIAGNOSES PER 100,000 POPULATION`)) +
+  geom_smooth(se = FALSE, method = "lm", linewidth = 1, color = "steelblue") +
+  facet_wrap(~ `RACE/ETHNICITY`, scales = "free_y") +
+  labs(
+    title = "HIV Diagnoses per 100,000 Over Time by Race (Linear Fit)",
+    x = "Year", y = "HIV Diagnoses per 100,000"
+  ) +
+  theme_minimal()
 
-# Create Shiny app ----
-shinyApp(ui = ui, server = server)
+```
+### Disparities in Boroughs
+The geographic distribution of HIV diagnoses in New York City reveals stark disparities between boroughs. As shown in the bar chart above, Brooklyn has the highest total number of diagnoses, followed closely by the Bronx and Manhattan. Queens trails behind with moderately fewer cases, while Staten Island stands out with dramatically lower numbers. These differences are not simply a reflection of population size — they also highlight broader structural inequities. Boroughs like Brooklyn and the Bronx, which are home to larger Black and Hispanic populations and have higher poverty rates, also bear the greatest burden of HIV. These findings suggest that social and economic conditions, not just individual behavior, play a critical role in HIV transmission. Meanwhile, the low case count in Staten Island may reflect better access to health care, lower population density, or even underreporting. Overall, this chart emphasizes that where a person lives in NYC can have a significant impact on their exposure to health risks, reinforcing the need for place-based public health interventions.
+
+```{r echo=FALSE}
+borough_summary <- df %>%
+  filter(!is.na(Borough) & Borough != "All") %>%
+  group_by(Borough) %>%
+  summarise(Total_HIV = sum(`TOTAL NUMBER OF HIV DIAGNOSES`, na.rm = TRUE)) %>%
+  arrange(desc(Total_HIV)) %>%
+  slice(1:10)
+
+# Create a bar chart for the top 10 boroughs by total HIV diagnoses
+ggplot(borough_summary, aes(x = reorder(Borough, -Total_HIV), y = Total_HIV, fill = Borough)) +
+  geom_col(width = 0.7, show.legend = FALSE) +
+  labs(title = "Top 10 Boroughs by Total HIV Diagnoses",
+       x = "Borough",
+       y = "Total HIV Diagnoses") +
+  theme_minimal()
+
 ```
 
-To get the shinylive-r working.
- 
-1. Make sure your shiny app works as a regular r chunk.
-2. Make sure that the chunk is completely self-contained. Meaning all packages and data are loaded inside that chunk. It can't rely on any other chunks.
-3. For the data that you are using for shiny, copy the rds file or any other files into the scripts folder, and then publish your website.
-4. Where you load in your data, change it to use a URL to the data set which will now be on your website. Something like read_rds("https://sussmanbu.github.io/ma-4615-fa24-final-project-group-a/scripts/dataset_for_shiny.rds")
-5. Check that the chunk still works as a regular r chunk.
-6. Change it to a shinylive-r chunk.
-7. Commit and publish your work.
+# Interactive
 
-I recommend keeping the data used for the shiny interactive relatively small, though this isn't completely necessary.
+To make the patterns in our data more accessible and meaningful, we created an interactive map of New York City that allows users to explore HIV and AIDS diagnosis rates by neighborhood. This tool provides a dynamic way to visualize disparities by year, sex, race/ethnicity, and type of diagnosis (HIV vs. AIDS). With just a few clicks, you can see how certain neighborhoods — particularly in the Bronx, Brooklyn, and parts of Manhattan — consistently report higher diagnosis rates. You can also observe how specific demographic groups are impacted differently depending on location. For instance, selecting “Asian/Pacific Islander” and “Male” reveals neighborhoods where HIV rates are unexpectedly high for that group, reinforcing one of our key findings. This map empowers users to interact with the data in real time, uncovering patterns that might be missed in static charts. Ultimately, it reinforces our central message: the HIV/AIDS epidemic in NYC is deeply shaped by geography, race, and gender — and our response must be just as specific and targeted.
 
----
+You can explore the interactive map at the link below:
+[Click here to open the Interactive Map Explorer](https://jason040510.shinyapps.io/nyc-map/)
 
+# Conclusion
 
-
-
-## Rubric: On this page
-
-
-* Title
-  * Your big picture page should have a creative/click-bait-y title/headline that provides a hint about your thesis.
-* Clarity of Explanation
-  * You should have a clear thesis/goal for this page. What are you trying to show? Make sure that you explain your analysis in detail but don't go into top much mathematics or statistics. The audience for this page is the general public (to the extent possible). Your thesis should be a statement, not a question.
-  * Each figure should be very polished and also not too complicated. There should be a clear interpretation of the figure so the figure has a clear purpose. Even something like a histogram can be difficult to interpret for non-experts.
-* Creativity
-  * Do your best to make things interesting. Think of a how a news article or a magazine story might draw you in. Think of how each part of your analysis supports the previous part or provides a different perspective.
-* Interactive component
-  * Quality and ease of use of the interactive components.
-Is it clear what can be explored using your interactive components?
-Does it enhance and reinforce your conclusions?
-* This page should be self-contained.
-  
-**Note**: This page should have no code visible, i.e. use `#| echo: FALSE`.  
+Our analysis makes one thing clear: HIV and AIDS do not affect all New Yorkers equally. The burden of this epidemic falls disproportionately on Black and Hispanic communities, men, and residents of underserved boroughs like Brooklyn and the Bronx. While overall diagnosis rates have declined in recent years, the story is far from one of universal progress. Rising rates among Asian/Pacific Islander males and persistent disparities across neighborhoods show that public health improvements have not been evenly distributed.
+This isn’t just a health issue — it’s a reflection of deeper structural inequalities in healthcare access, education, income, and stigma. The HIV/AIDS epidemic in NYC is a mirror of the city’s broader social landscape, revealing who is most likely to be overlooked or left behind.
+Looking ahead, such data should not merely serve as a record, but rather as a call to action. Public health strategies must be precise, inclusive, and equity-oriented to ensure that prevention, testing, and care services truly benefit the people and regions that need them most.
 
 
 
 
-## Rubric: Other components
-
-### Video Recording
-
-Make a video recording (probably using Zoom) demonstrating your interactive components.
-You should provide a quick explanation of your data and demonstrate some of the conclusions from your EDA.
-This video should be no longer than 4 minutes.
-Include a link to your video (and password if needed) in your README.md file on your Github repository. You are not required to provide a link on the website.
-This can be presented by any subset of the team members.
-
-
-### Rest of the Site
-
-Finally, here are important things to keep in mind for the rest of the site. 
-
-The main title of your page is informative.
-Each post has an author/description/informative title.
-All lab required posts are present.
-Each page (including the home page) has a nice featured image associated with it.
-Your about page is up to date and clean.
-You have removed the generic posts from the initial site template.

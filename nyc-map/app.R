@@ -34,7 +34,8 @@ ui <- fluidPage(
     sidebarPanel(
       selectInput("year", "Year", choices = unique(hiv_data$year)),
       selectInput("sex", "Sex", choices = unique(hiv_data$sex)),
-      selectInput("race", "Race/Ethnicity", choices = unique(hiv_data$race_ethnicity)),
+      selectInput("race", "Race/Ethnicity", 
+                  choices = unique(hiv_data$race_ethnicity[hiv_data$race_ethnicity != "Unknown"])),
       selectInput("metric", "Metric",
                   choices = c("HIV Diagnosis Rate" = "hiv_rate",
                               "AIDS Diagnosis Rate" = "aids_rate"))
