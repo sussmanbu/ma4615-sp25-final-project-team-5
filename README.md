@@ -8,3 +8,6 @@
 - Yunha Oh (yunha0296)
 - Thomas Laz (tvlaz144)
 - Dakshesh Kasliwal ()
+
+### Interactive Component Demo Video
+Watch the demo here: [YouTube Video](https://youtu.be/AUdIa2rR20M)
