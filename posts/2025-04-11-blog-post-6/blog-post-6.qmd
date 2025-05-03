@@ -73,12 +73,12 @@ ggplot(hiv_prop, aes(x = `RACE/ETHNICITY`, y = `HIV DIAGNOSES PER 100,000 POPULA
     x = "Simple Race",
     y = "Number of HIV Cases per 100,000"
   )
-<<<<<<< HEAD
+
+
 
 hiv_clean |> distinct(YEAR)
-=======
->>>>>>> origin/main
 ```
+
 These plots should answer that basic question of normalizing population. For example, in the boroughs plot, we see the question about total population did have an impact on Brooklyn having the most total HIV cases, as the boxplots display, it has the third highest average number of HIV cases per 100,000, despite having the most total HIV cases, indicating that if all boroughs had the same population, Brooklyn might not have the most total cases. When it comes to race, however, we see population had little-to-no affect; black people had the most total cases and the hgihest number of average cases per 100,000 people. 
 
 The next question we anticipate people wondering is, "Do the boroughs with more cases have more black and Hispanic people than boroughs with fewer cases?". Since black and Hispanic people have more cases on average than white and Asian/Pacific Islanders, it seems logical that the boroughs with more cases have more of those demographics. Below are two plots. Each is a map of New York City, broken down into 42 smaller neighborhoods, based on the locations served by UHF hospitals. The first displays areas based on the proportion of black residents, and the second displays the proportion of Hispanic residents in each neighborhood. The data on proportions came from New York City's official Environment and Health data portal, one of the datasets we wrote about in our previous blog post and the shapefiles were downloaded online.
@@ -107,16 +107,14 @@ ggplot() +
 ggplot() +
   geom_sf(data = joined, aes(fill = `Hispanic alone (percent)`), alpha = 0.8) +
   scale_fill_viridis_c(option = "D")
-<<<<<<< HEAD
 
+joined
+as.data.frame(joined)
 
-=======
->>>>>>> origin/main
 ```
 
 We anticipate that readers will have their next concerned assuaged by this map. In case anyone isn't familiar with NYC's geography, the western island is Staten Island, the southwestern portion of the city is Brooklyn, the southeastern portion is Queens, the northwestern portion is Manhattan, and the northeastern portion is the Bronx. As displayed by the maps, Brooklyn, the Bronx, and Manhattan, the areas with the highest total and average number of cases, have the most black and Hispanic residents, while Queens and Staten Island, which have the fewest cases, have fewer black and Hispanic residents.
 
-<<<<<<< HEAD
 The next question we anticipate readers to ask is why do areas with more black and Hispanic residents have more HIV cases and this is what we will continue to analyze for the duration of the semester.
 
 ```{r echo=FALSE}
@@ -124,31 +122,111 @@ library(sf)
 library(readr)
 library(here)
 
-shape <- st_read(here::here("dataset", "NYC_geography-master", "NYC_geography-master", "uhf34_shapefiles", "UHF34.shp"), quiet = TRUE)
+shape <- st_read(here::here("dataset", "NYC_geography-master", "NYC_geography-master", "uhf34_shapefiles", "CHS_UHF_34_DOHMH_2004.shp"), quiet = TRUE)
 
-insurance <- NYC_EH_Data_Portal_Health_insurance_adults_filtered_1_ |> col_types = cols(GeoID = col_character())
-                 
+shape <- shape |> rename(GeoID=UHFtxt) |> select(GeoID) |> filter(GeoID!=0)
 
-insurance <- insurance |> filter(Geography != c("New York City", "Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island"))|> select(GeoID, `Black alone (percent)`, `Hispanic alone (percent)`)
+insurance <- read_csv(here::here("dataset", "NYC EH Data Portal - Health insurance (adults) (filtered)(1).csv"),
+                 col_types = cols(GeoID = col_character()))
 
-joined <- shape |>
-  left_join(race, by = "id")
+insurance <- insurance |> mutate(percent_only = str_extract(Percent, "^[0-9.]+"))
+
+insurance_uhf <- insurance |> filter(!(Geography %in% c("New York City", "Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island")))
+
+##################################################################################################
+
+insurance_uhf_filter_2021<-insurance_uhf |> filter(TimePeriod=="2021")|>select(GeoID, percent_only)
+
+insurance_uhf_filter_2020<-insurance_uhf |> filter(TimePeriod=="2020")|>select(GeoID, percent_only)
+
+insurance_uhf_filter_2019<-insurance_uhf |> filter(TimePeriod=="2019")|>select(GeoID, percent_only)
+
+insurance_uhf_filter_2018<-insurance_uhf |> filter(TimePeriod=="2018")|>select(GeoID, percent_only)
+
+insurance_uhf_filter_2017<-insurance_uhf |> filter(TimePeriod=="2017")|>select(GeoID, percent_only)
+
+insurance_uhf_filter_2016<-insurance_uhf |> filter(TimePeriod=="2016")|>select(GeoID, percent_only)
+
+insurance_uhf_filter_2013<-insurance_uhf |> filter(TimePeriod=="2013")|>select(GeoID, percent_only)
+
+insurance_uhf_filter_2012<-insurance_uhf |> filter(TimePeriod=="2012")|>select(GeoID, percent_only)
+
+##################################################################################################
+
+joined_2021 <- shape |> left_join(insurance_uhf_filter_2021, by = "GeoID") |> mutate(percent_only = as.double(percent_only))
+
+joined_2020 <- shape |> left_join(insurance_uhf_filter_2020, by = "GeoID") |> mutate(percent_only = as.double(percent_only))
+
+joined_2019 <- shape |> left_join(insurance_uhf_filter_2019, by = "GeoID") |> mutate(percent_only = as.double(percent_only))
+
+joined_2018 <- shape |> left_join(insurance_uhf_filter_2018, by = "GeoID") |> mutate(percent_only = as.double(percent_only))
+
+joined_2017 <- shape |> left_join(insurance_uhf_filter_2017, by = "GeoID") |> mutate(percent_only = as.double(percent_only))
+
+joined_2016 <- shape |> left_join(insurance_uhf_filter_2016, by = "GeoID") |> mutate(percent_only = as.double(percent_only))
+
+joined_2013 <- shape |> left_join(insurance_uhf_filter_2012, by = "GeoID") |> mutate(percent_only = as.double(percent_only))
+
+joined_2012 <- shape |> left_join(insurance_uhf_filter_2012, by = "GeoID") |> mutate(percent_only = as.double(percent_only))
+
+##################################################################################################
+
+all_data <- bind_rows(
+  joined_2021,
+  joined_2020,
+  joined_2019,
+  joined_2018,
+  joined_2017,
+  joined_2016,
+  joined_2013,
+  joined_2012
+)
+
+##################################################################################################
+
+# Global min and max for color scale
+global_min <- min(all_data$percent_only, na.rm = TRUE)
+global_max <- max(all_data$percent_only, na.rm = TRUE)
+
+##################################################################################################
 
 ggplot() +
-  geom_sf(data = joined, aes(fill = `Black alone (percent)`), alpha = 0.8) +
-  scale_fill_viridis_c(option = "D")
+  geom_sf(data = joined_2021, aes(fill = percent_only), alpha = 0.8) +
+  scale_fill_viridis_c(option = "D", limits = c(global_min, global_max)) +
+  labs(title = "2021")
 
 ggplot() +
-  geom_sf(data = joined, aes(fill = `Hispanic alone (percent)`), alpha = 0.8) +
-  scale_fill_viridis_c(option = "D")
+  geom_sf(data = joined_2020, aes(fill = percent_only), alpha = 0.8) +
+  scale_fill_viridis_c(option = "D", limits = c(global_min, global_max)) +
+  labs(title = "2020")
 
+ggplot() +
+  geom_sf(data = joined_2019, aes(fill = percent_only), alpha = 0.8) +
+  scale_fill_viridis_c(option = "D", limits = c(global_min, global_max)) +
+  labs(title = "2019")
 
+ggplot() +
+  geom_sf(data = joined_2018, aes(fill = percent_only), alpha = 0.8) +
+  scale_fill_viridis_c(option = "D", limits = c(global_min, global_max)) +
+  labs(title = "2018")
+
+ggplot() +
+  geom_sf(data = joined_2017, aes(fill = percent_only), alpha = 0.8) +
+  scale_fill_viridis_c(option = "D", limits = c(global_min, global_max)) +
+  labs(title = "2017")
+
+ggplot() +
+  geom_sf(data = joined_2016, aes(fill = percent_only), alpha = 0.8) +
+  scale_fill_viridis_c(option = "D", limits = c(global_min, global_max)) +
+  labs(title = "2016")
+
+ggplot() +
+  geom_sf(data = joined_2013, aes(fill = percent_only), alpha = 0.8) +
+  scale_fill_viridis_c(option = "D", limits = c(global_min, global_max)) +
+  labs(title = "2013")
+
+ggplot() +
+  geom_sf(data = joined_2012, aes(fill = percent_only), alpha = 0.8) +
+  scale_fill_viridis_c(option = "D", limits = c(global_min, global_max)) +
+  labs(title = "2012")
 ```
-
-
-
-
-
-=======
-The next question we anticipate readers to ask is why do areas with more black and Hispanic residents have more HIV cases and this is what we will continue to analyze for the duration of the semester.
->>>>>>> origin/main

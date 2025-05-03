@@ -9,9 +9,10 @@ title: "Modeling Code"
 author: "Team 5"
 editor: visual
 ---
+
 ```{r}
 library(tidyverse)
-pov <- read_csv(here::here("dataset","NYC EH Data Portal - Neighborhood poverty (filtered) (1).csv"))
+pov <- read_csv(here::here("dataset","NYC EH Data Portal - Neighborhood poverty (filtered) (1).csv"), show_col_types = FALSE)
 pov_c <- pov |>
   mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
 
@@ -250,4 +251,8 @@ white_uhf <- rt |>
     "Neighborhood (U.H.F)" = Geography,
     YEAR = midpoint
   )
+```
+
+```{r}
+models_by_borough
 ```
