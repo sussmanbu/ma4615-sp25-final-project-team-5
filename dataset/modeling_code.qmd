@@ -17,7 +17,7 @@ pov <- read_csv(here::here("dataset","NYC EH Data Portal - Neighborhood poverty 
 pov_c <- pov |>
   mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
 
-models_by_neighborhood <- pov_c |>
+pov_by_neighborhood <- pov_c |>
   filter(GeoTypeDesc == "UHF 42") |>
   group_by(Geography) |>
   nest() |>
@@ -33,6 +33,16 @@ models_by_neighborhood <- pov_c |>
     YEAR = midpoint,
     `Neighborhood (U.H.F)` = Geography,
     `Estimated Poverty Rate` = estimated_rate
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
   )
 ```
 
@@ -59,6 +69,16 @@ asian_uhf <- rt |>
   rename(
     "Neighborhood (U.H.F)" = Geography,
     YEAR = midpoint
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
   )
 
 black_uhf <- rt |>
@@ -76,6 +96,16 @@ black_uhf <- rt |>
   rename(
     "Neighborhood (U.H.F)" = Geography,
     YEAR = midpoint
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
   )
 
 hispanic_uhf <- rt |>
@@ -93,6 +123,16 @@ hispanic_uhf <- rt |>
   rename(
     "Neighborhood (U.H.F)" = Geography,
     YEAR = midpoint
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
   )
 
 white_uhf <- rt |>
@@ -110,10 +150,224 @@ white_uhf <- rt |>
   rename(
     "Neighborhood (U.H.F)" = Geography,
     YEAR = midpoint
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
   )
 ```
 
 ```{r}
+grad <- read_csv(here::here("dataset","NYC EH Data Portal - Graduated high school (filtered).csv"))
 
+grad_f <- grad |>
+  mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
+
+grad_by_neighborhood <- grad_f |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(Percent ~ poly(midpoint, 2), data = .x)),
+    newdata = list(tibble(midpoint = 2007:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
+  rename(
+    YEAR = midpoint,
+    `Neighborhood (U.H.F)` = Geography,
+    `Estimated High School Graduation Rate` = estimated_rate
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  ) |>
+  mutate(`Estimated Non-High School Graduation Rate` = 100 - `Estimated High School Graduation Rate`) |>
+  select(-`Estimated High School Graduation Rate`)
+```
+
+```{r}
+unemp <- read_csv(here::here("dataset", "NYC EH Data Portal - Unemployment (filtered).csv"))
+
+unemp_f <- unemp |>
+  mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
+
+unemp_by_neighborhood <- unemp_f |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(Percent ~ poly(midpoint, 2), data = .x)),
+    newdata = list(tibble(midpoint = 2007:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
+  rename(
+    YEAR = midpoint,
+    `Neighborhood (U.H.F)` = Geography,
+    `Estimated Unemployment Rate` = estimated_rate
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  )
+```
+
+```{r}
+rb <- read_csv(here::here("dataset", "NYC EH Data Portal - Rent-burdened households (filtered).csv"))
+
+rb_f <- rb |>
+  mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
+
+rb_by_uhf <- rb_f |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(Percent ~ poly(midpoint, 2), data = .x)),
+    newdata = list(tibble(midpoint = 2007:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
+  rename(
+    YEAR = midpoint,
+    `Neighborhood (U.H.F)` = Geography,
+    `Estimated Rent-Burdened Household Rate` = estimated_rate
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  )
+```
+
+```{r}
+ooh <- read_csv(here::here("dataset", "NYC EH Data Portal - Owner-occupied homes (filtered).csv"))
+
+ooh_f <- ooh |>
+  mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
+
+ooh_by_uhf <- ooh_f |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(Percent ~ poly(midpoint, 2), data = .x)),
+    newdata = list(tibble(midpoint = 2007:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
+  rename(
+    YEAR = midpoint,
+    `Neighborhood (U.H.F)` = Geography,
+    `Estimated Owner-Occupied Home Rate` = estimated_rate
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  ) |>
+  mutate(`Estimated Non-Owner-Occupied Home Rate` = 100 - `Estimated Owner-Occupied Home Rate`) |>
+  select(-`Estimated Owner-Occupied Home Rate`)
+```
+```{r}
+cpov <- read_csv(here::here("dataset", "NYC EH Data Portal - Child poverty (under age 5) (filtered).csv"))
+
+cpov_f <- cpov |>
+  mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
+
+cpov_by_uhf <- cpov_f |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(Percent ~ poly(midpoint, 2), data = .x)),
+    newdata = list(tibble(midpoint = 2007:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
+  rename(
+    YEAR = midpoint,
+    `Neighborhood (U.H.F)` = Geography,
+    `Estimated Child Poverty Rate` = estimated_rate
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  )
+```
+
+```{r}
+hiv_filt <- hiv_clean |>
+  filter(`Neighborhood (U.H.F)` != "All", `RACE/ETHNICITY` == "All", SEX == "All")
+
+join1 <- hiv_filt |>
+  left_join(pov_by_neighborhood, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join2 <- join1 |>
+  left_join(asian_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join3 <- join2 |>
+  left_join(black_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join4 <- join3 |>
+  left_join(hispanic_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join5 <- join4 |>
+  left_join(white_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join6 <- join5 |>
+  left_join(grad_by_neighborhood, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join7 <- join6 |>
+  left_join(unemp_by_neighborhood, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join8 <- join7 |>
+  left_join(rb_by_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join9 <- join8 |>
+  left_join(ooh_by_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join10 <- join9 |>
+  left_join(cpov_by_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
 ```
 
