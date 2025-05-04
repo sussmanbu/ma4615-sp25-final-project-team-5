@@ -113,10 +113,7 @@ as.data.frame(joined)
 
 We anticipate that readers will have their next concerned assuaged by this map. In case anyone isn't familiar with NYC's geography, the western island is Staten Island, the southwestern portion of the city is Brooklyn, the southeastern portion is Queens, the northwestern portion is Manhattan, and the northeastern portion is the Bronx. As displayed by the maps, Brooklyn, the Bronx, and Manhattan, the areas with the highest total and average number of cases, have the most black and Hispanic residents, while Queens and Staten Island, which have the fewest cases, have fewer black and Hispanic residents.
 
-<<<<<<< HEAD
-=======
 
->>>>>>> e52b51c0cfd73e18d7bb1230d902cad5467c55de
 The next question we anticipate readers to ask is why do areas with more black and Hispanic residents have more HIV cases and this is what we will continue to analyze for the duration of the semester.
 
 ```{r eval=FALSE}
@@ -125,8 +122,19 @@ library(readr)
 library(here)
 
 shape <- st_read(here::here("dataset", "NYC_geography-master", "NYC_geography-master", "uhf34_shapefiles", "CHS_UHF_34_DOHMH_2004.shp"), quiet = TRUE)
+st_crs(shape)
+st_geometry(shape)
+```
+```{r}
+shape_uhf34 <- st_set_crs(shape, 2263)
+```
 
+
+
+```{r}
 shape <- shape |> rename(GeoID=UHFtxt) |> select(GeoID) |> filter(GeoID!=0)
+
+
 
 insurance <- read_csv(here::here("dataset", "NYC EH Data Portal - Health insurance (adults) (filtered)(1).csv"),
                  col_types = cols(GeoID = col_character()))
@@ -232,3 +240,4 @@ ggplot() +
   scale_fill_viridis_c(option = "D", limits = c(global_min, global_max)) +
   labs(title = "2012")
 ```
+
