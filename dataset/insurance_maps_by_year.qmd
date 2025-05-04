@@ -3,11 +3,12 @@ title: "insurance_maps_by_year"
 format: html
 ---
 
-```{r eval=FALSE}
+```{r}
 suppressPackageStartupMessages(library(sf))
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(readr))
 suppressPackageStartupMessages(library(here))
+library(leaflet)
 
 shape <- st_read(here::here("dataset", "NYC_geography-master", "NYC_geography-master", "uhf34_shapefiles", "CHS_UHF_34_DOHMH_2004.shp"), quiet = TRUE)
 
@@ -125,11 +126,49 @@ library(sf)
 library(readr)
 library(here)
 
-shape <- st_read(here::here("dataset", "NYC_geography-master", "NYC_geography-master", "uhf34_shapefiles", "CHS_UHF_34_DOHMH_2004.shp"), quiet = TRUE)
-st_crs(shape)
-st_geometry(shape)
+shape_uhf34 <- st_read(here::here("dataset", "NYC_geography-master", "NYC_geography-master", "uhf34_shapefiles", "CHS_UHF_34_DOHMH_2004.shp"), quiet = TRUE)
+shape_uhf42 <- st_read(here::here("dataset", "NYC_geography-master", "NYC_geography-master", "uhf42_shapefiles", "UHF42.shp"), quiet = TRUE)
 
-# shape_uhf34 <- st_set_crs(shape, 2263)
+st_crs(shape_uhf34)
+st_geometry(shape_uhf34)
+
+shape_uhf34_setcrs <- st_set_crs(shape_uhf34, 2263)
+
+uhf34_setcrs <- st_transform(shape_uhf34_setcrs, st_crs(shape_uhf42))
+
+```
+
+
+```{r eval=FALSE}
+uhf34_setcrs
+```
+
+
+```{r eval=FALSE}
+library(ggplot2)
+
+ggplot() +
+  geom_sf(data = uhf42_setcrs, fill = NA, color = "blue", size = 1) +  # UHF42 in blue
+  geom_sf(data = uhf34_setcrs, fill = NA, color = "red", size = 0.5, linetype = "dashed") +  # UHF34 in red dashed
+  labs(title = "Comparison of UHF42 (Blue) and UHF34 (Red Dashed) Neighborhoods") +
+  theme_minimal() 
+
+# + geom_sf_label(data = uhf34_setcrs, aes(label = UHF_NAME))
+
+```
+
+```{r}
+
+
+# uhf42_latlon <- st_transform(uhf42_setcrs, 4326)
+# uhf34_latlon <- st_transform(uhf34_setcrs, 4326)
+# 
+# leaflet() |>
+#   addTiles() |>
+#   addPolygons(data = uhf42_latlon, color = "blue", weight = 2, fillOpacity = 0.2, group = "UHF42") |>
+#   addPolygons(data = uhf34_latlon, color = "red", weight = 1, fillOpacity = 0.2, group = "UHF34") |>
+#   addLayersControl(overlayGroups = c("UHF42", "UHF34"),
+#                    options = layersControlOptions(collapsed = FALSE))
 
 ```
 
