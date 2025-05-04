@@ -14,7 +14,9 @@ editor: visual
 library(tidyverse)
 
 pov <- read_csv(here::here("dataset","NYC EH Data Portal - Neighborhood poverty (filtered) (1).csv"), show_col_types = FALSE)
+
 hiv_clean <- read_rds("https://sussmanbu.github.io/ma4615-sp25-final-project-team-5/dataset_for_shiny/hiv_clean.rds")
+
 pov <- read_csv(here::here("dataset","NYC EH Data Portal - Neighborhood poverty (filtered) (1).csv"))
 
 pov_c <- pov |>
@@ -46,40 +48,6 @@ pov_by_neighborhood <- pov_c |>
   `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
   `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
   `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
-  )
-
-models_by_neighborhood <- pov_c |>
-  filter(GeoTypeDesc == "UHF 42") |>
-  group_by(Geography) |>
-  nest() |>
-  mutate(
-    model = map(data, ~ lm(Percent ~ poly(midpoint, 2), data = .x)),
-    newdata = list(tibble(midpoint = 2007:2021)),
-    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
-  ) |>
-  select(Geography, predicted) |>
-  unnest(predicted) |>
-  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
-  rename(
-    YEAR = midpoint,
-    `Neighborhood (U.H.F)` = Geography,
-    `Estimated Poverty Rate` = estimated_rate
-  )
-
-models_by_borough <- pov_c |>
-  group_by(Borough) |>
-  nest() |>
-  mutate(
-    model = map(data, ~ lm(Percent ~ poly(midpoint, 2), data = .x)),
-    newdata = list(tibble(midpoint = 2007:2021)),
-    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
-  ) |>
-  select(Borough, predicted) |>
-  unnest(predicted) |>
-  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
-  rename(
-    YEAR = midpoint,
-    `Estimated Poverty Rate` = estimated_rate
   )
 ```
 
@@ -339,6 +307,7 @@ ooh_by_uhf <- ooh_f |>
   mutate(`Estimated Non-Owner-Occupied Home Rate` = 100 - `Estimated Owner-Occupied Home Rate`) |>
   select(-`Estimated Owner-Occupied Home Rate`)
 ```
+
 ```{r}
 cpov <- read_csv(here::here("dataset", "NYC EH Data Portal - Child poverty (under age 5) (filtered).csv"))
 
@@ -371,13 +340,110 @@ cpov_by_uhf <- cpov_f |>
   `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
   `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
   )
+```
 
+```{r}
+asth <- read_csv(here::here("dataset", "NYC EH Data Portal - Asthma hospitalizations (adults) (filtered).csv"))
 
+asth_f <- asth |>
+  mutate(`Age-adjusted rate per 10,000` = as.numeric(gsub("\\*", "", `Age-adjusted rate per 10,000`))) |>
+  select(-`Estimated annual rate per 10,000`)
 
+asth_uhf <- asth_f |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(`Age-adjusted rate per 10,000` ~ poly(TimePeriod, 2), data = .x)),
+    newdata = list(tibble(TimePeriod = 2005:2022)),
+    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!TimePeriod %in% c(2005, 2006, 2007, 2008, 2009, 2014, 2015, 2022)) |>
+  rename(
+    YEAR = TimePeriod,
+    `Neighborhood (U.H.F)` = Geography,
+    `Estimated Asthma Hospitalization Rate` = estimated_rate
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  )
+```
+```{r}
+hc <- read_csv(here::here("dataset", "NYC EH Data Portal - Household crowding (filtered) (1).csv"))
 
-models_by_borough
+hc_f <- hc |>
+  mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
 
+hc_uhf <- hc_f |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(Percent ~ poly(midpoint, 2), data = .x)),
+    newdata = list(tibble(midpoint = 2007:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
+  rename(
+    YEAR = midpoint,
+    `Neighborhood (U.H.F)` = Geography,
+    `Estimated Crowded Household Rate` = estimated_rate
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  )
+```
 
+```{r}
+hi <- read_csv(here::here("dataset", "NYC EH Data Portal - Health insurance (adults) (filtered)(1).csv"))
+
+map_uhf <- read_csv(here::here("dataset", "UHF34_to_UHF42 .csv")) |>
+  mutate(`Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Staple - St. George", "Stapleton - St. George"))
+
+hi_f <- hi |>
+  filter(GeoTypeDesc == "UHF 34") |>
+  rename(YEAR = TimePeriod) |>
+  select(YEAR, GeoTypeDesc, Geography, Percent) |>
+  mutate(
+    Percent = str_remove_all(Percent, "\\*|\\s*\\(.*\\)"),
+    Percent = as.numeric(Percent)
+  ) |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(`Percent` ~ poly(YEAR, 2), data = .x)),
+    newdata = list(tibble(YEAR = 2010:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!YEAR %in% c(2014, 2015)) |>
+  mutate(`Estimated Non-Health Insurance Rate` = 100 - `estimated_rate`) |>
+  select(-`estimated_rate`)
+
+hi_uhf <- hi_f |>
+  left_join(map_uhf, by = "Geography") |>
+  ungroup() |>
+  select(-Geography)
+```
+
+```{r}
 hiv_filt <- hiv_clean |>
   filter(`Neighborhood (U.H.F)` != "All", `RACE/ETHNICITY` == "All", SEX == "All")
 
@@ -410,6 +476,22 @@ join9 <- join8 |>
 
 join10 <- join9 |>
   left_join(cpov_by_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join11 <- join10 |>
+  left_join(asth_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join12 <- join11 |>
+  left_join(hc_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join13 <- join12 |>
+  left_join(hi_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
 ```
 
+```{r}
+mod_formula <- `TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES` ~ `YEAR` + `Neighborhood (U.H.F)` + `Estimated Poverty Rate` + `Estimated Non-High School Graduation Rate` + `Estimated Unemployment Rate` + `Estimated Rent-Burdened Household Rate` + `Estimated Non-Owner-Occupied Home Rate` + `Estimated Child Poverty Rate` + `Estimated Asthma Hospitalization Rate` + `Estimated Crowded Household Rate` + `Estimated Non-Health Insurance Rate` + `black_prop`
+
+mod1 <- glm(mod_formula, family = poisson, data = join13)
+
+summary(mod1)
+```
 
