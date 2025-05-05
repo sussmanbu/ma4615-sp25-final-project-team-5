@@ -488,10 +488,63 @@ join13 <- join12 |>
 ```
 
 ```{r}
-mod_formula <- `TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES` ~ `YEAR` + `Neighborhood (U.H.F)` + `Estimated Poverty Rate` + `Estimated Non-High School Graduation Rate` + `Estimated Unemployment Rate` + `Estimated Rent-Burdened Household Rate` + `Estimated Non-Owner-Occupied Home Rate` + `Estimated Child Poverty Rate` + `Estimated Asthma Hospitalization Rate` + `Estimated Crowded Household Rate` + `Estimated Non-Health Insurance Rate` + `black_prop`
+mod_formula <- `TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES` ~ `YEAR` + `Estimated Poverty Rate` + `Estimated Non-High School Graduation Rate` + `Estimated Unemployment Rate` + `Estimated Rent-Burdened Household Rate` + `Estimated Non-Owner-Occupied Home Rate` + `Estimated Child Poverty Rate` + `Estimated Asthma Hospitalization Rate` + `Estimated Crowded Household Rate` + `Estimated Non-Health Insurance Rate` + `black_prop`
+
+mod2_formula <- `TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES` ~ `YEAR` + `Neighborhood (U.H.F)` + `Estimated Poverty Rate` + `Estimated Non-High School Graduation Rate` + `Estimated Unemployment Rate` + `Estimated Rent-Burdened Household Rate` + `Estimated Non-Owner-Occupied Home Rate` + `Estimated Child Poverty Rate` + `Estimated Asthma Hospitalization Rate` + `Estimated Crowded Household Rate` + `Estimated Non-Health Insurance Rate` + `black_prop`
 
 mod1 <- glm(mod_formula, family = poisson, data = join13)
 
+mod2 <- glm(mod2_formula, family = poisson, data = join13)
+
 summary(mod1)
+AIC(mod1)
+BIC(mod1)
+logLik(mod1)
+pearson_resid <- sum(residuals(mod1, type = "pearson")^2)
+pearson_resid
+```
+
+```{r}
+library(broom)
+library(gt)
+
+tidy(mod1) |>
+  mutate(
+    estimate = exp(estimate),
+    estimate = round(estimate, 3),
+    std.error = round(std.error, 3),
+    p.value = round(p.value, 4)
+  ) |>
+  select(term, estimate, std.error, p.value) |>
+  rename(
+    Predictor = term,
+    `Rate Ratio` = estimate,
+    `Std. Error` = std.error,
+    `P-Value` = p.value
+  ) |>
+  gt() |>
+  tab_header(
+    title = "Exponentiated Coefficients from Poisson Regression Model"
+  ) |>
+  sub_missing(
+    columns = everything(),
+    missing_text = "-"
+  )
+```
+```{r}
+fit_stats <- data.frame(
+  Statistic = c("Deviance", "AIC", "BIC", "Log-Likelihood", "Pearson Chi-Square"),
+  Value = c(deviance(mod1), AIC(mod1), BIC(mod1), logLik(mod1), pearson_resid)
+)
+
+fit_stats |>
+  gt() |>
+  tab_header(
+    title = "Fit Statistics of the Poisson Regression Model"
+  ) |>
+  fmt_number(
+    columns = vars(Value),
+    decimals = 2
+  )
 ```
 

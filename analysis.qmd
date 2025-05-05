@@ -9,62 +9,773 @@ draft: false
 
 This comes from the file `analysis.qmd`.
 
-We describe here our detailed data analysis. This page will provide an overview of what questions you addressed, illustrations of relevant aspects of the data with tables and figures, and a statistical model that attempts to answer part of the question. You'll also reflect on next steps and further analysis.
+```{r echo=FALSE}
+suppressPackageStartupMessages(library(tidyverse))
 
-The audience for this page is someone like your class mates, so you can expect that they have some level of statistical and quantitative sophistication and understand ideas like linear and logistic regression, coefficients, confidence intervals, overfitting, etc. 
+pov <- read_csv(here::here("dataset","NYC EH Data Portal - Neighborhood poverty (filtered) (1).csv"), show_col_types = FALSE)
 
-While the exact number of figures and tables will vary and depend on your analysis, you should target around 5 to 6. An overly long analysis could lead to losing points.
-If you want you can link back to your blog posts or create separate pages with more details.
+hiv_clean <- read_rds("https://sussmanbu.github.io/ma4615-sp25-final-project-team-5/dataset_for_shiny/hiv_clean.rds")
 
-The style of this paper should aim to be that of an academic paper. 
-I don't expect this to be of publication quality but you should keep that aim in mind.
-Avoid using "we" too frequently, for example "We also found that ...". Describe your methodology and your findings but don't describe your whole process.
+pov <- read_csv(here::here("dataset","NYC EH Data Portal - Neighborhood poverty (filtered) (1).csv"), show_col_types = FALSE)
 
-### Example of loading data
+pov_c <- pov |>
+  mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
 
-The code below shows an example of loading the loan refusal data set (which you should delete at some point).
-
-```{r}
-library(tidyverse)
-print(getwd())
-data <- read_rds(here::here("dataset/loan_refusal_clean.rds"))
+pov_by_neighborhood <- pov_c |>
+  filter(GeoTypeDesc == "UHF 42") |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(Percent ~ poly(midpoint, 2), data = .x)),
+    newdata = list(tibble(midpoint = 2007:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
+  rename(
+    YEAR = midpoint,
+    `Neighborhood (U.H.F)` = Geography,
+    `Estimated Poverty Rate` = estimated_rate
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  )
 ```
 
-## Note on Attribution
+```{r echo=FALSE}
+race_total <- read_csv(here::here("dataset", "NYC EH Data Portal - Race and ethnicity (filtered) (1).csv"), show_col_types = FALSE)
 
-In general, you should try to provide links to relevant resources, especially those that helped you. You don't have to link to every StackOverflow post you used but if there are explainers on aspects of the data or specific models that you found helpful, try to link to those. Also, try to link to other sources that might support (or refute) your analysis. These can just be regular hyperlinks. You don't need a formal citation.
-
-If you are directly quoting from a source, please make that clear. You can show long quotes using `>` like this
-
-```         
-> To be or not to be.
+rt <- race_total |>
+  mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
 ```
 
-> To be or not to be.
+```{r echo=FALSE}
+asian_uhf <- rt |>
+  filter(GeoTypeDesc == "UHF 42") |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(`Asian alone (percent)` ~ poly(midpoint, 2), data = .x)),
+    newdata = list(tibble(midpoint = 2007:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, asian_prop = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
+  rename(
+    "Neighborhood (U.H.F)" = Geography,
+    YEAR = midpoint
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  )
 
-------------------------------------------------------------------------
+black_uhf <- rt |>
+  filter(GeoTypeDesc == "UHF 42") |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(`Black alone (percent)` ~ poly(midpoint, 2), data = .x)),
+    newdata = list(tibble(midpoint = 2007:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, black_prop = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
+  rename(
+    "Neighborhood (U.H.F)" = Geography,
+    YEAR = midpoint
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  )
 
-## Rubric: On this page
+hispanic_uhf <- rt |>
+  filter(GeoTypeDesc == "UHF 42") |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(`Hispanic alone (percent)` ~ poly(midpoint, 2), data = .x)),
+    newdata = list(tibble(midpoint = 2007:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, hispanic_prop = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
+  rename(
+    "Neighborhood (U.H.F)" = Geography,
+    YEAR = midpoint
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  )
 
-You will
+white_uhf <- rt |>
+  filter(GeoTypeDesc == "UHF 42") |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(`White alone (percent)` ~ poly(midpoint, 2), data = .x)),
+    newdata = list(tibble(midpoint = 2007:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, white_prop = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
+  rename(
+    "Neighborhood (U.H.F)" = Geography,
+    YEAR = midpoint
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  )
+```
 
--   Introduce what motivates your Data Analysis (DA)
-    -   Which variables and relationships are you most interested in?
-    -   What questions are you interested in answering?
-    -   Provide context for the rest of the page. This will include figures/tables that illustrate aspects of the data of your question.
--   Modeling and Inference
-    -   The page will include some kind of formal statistical model. This could be a linear regression, logistic regression, or another modeling framework.
-    -   Explain the ideas and techniques you used to choose the predictors for your model. (Think about including interaction terms and other transformations of your variables.)
-    -   Describe the results of your modelling and make sure to give a sense of the uncertainty in your estimates and conclusions.
--   Explain the flaws and limitations of your analysis
-    -   Are there some assumptions that you needed to make that might not hold? Is there other data that would help to answer your questions?
--   Clarity Figures
-    -   Are your figures/tables/results easy to read, informative, without problems like overplotting, hard-to-read labels, etc?
-    -   Each figure should provide a key insight. Too many figures or other data summaries can detract from this. (While not a hard limit, around 5 total figures is probably a good target.)
-    -   Default `lm` output and plots are typically not acceptable.
--   Clarity of Explanations
-    -   How well do you explain each figure/result?
-    -   Do you provide interpretations that suggest further analysis or explanations for observed phenomenon?
--   Organization and cleanliness.
-    -   Make sure to remove excessive warnings, hide all code, organize with sections or multiple pages, use bullets, etc.
-    -   This page should be self-contained, i.e. provide a description of the relevant data.
+```{r echo=FALSE}
+grad <- read_csv(here::here("dataset","NYC EH Data Portal - Graduated high school (filtered).csv"), show_col_types = FALSE)
+
+grad_f <- grad |>
+  mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
+
+grad_by_neighborhood <- grad_f |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(Percent ~ poly(midpoint, 2), data = .x)),
+    newdata = list(tibble(midpoint = 2007:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
+  rename(
+    YEAR = midpoint,
+    `Neighborhood (U.H.F)` = Geography,
+    `Estimated High School Graduation Rate` = estimated_rate
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  ) |>
+  mutate(`Estimated Non-High School Graduation Rate` = 100 - `Estimated High School Graduation Rate`) |>
+  select(-`Estimated High School Graduation Rate`)
+```
+
+```{r echo=FALSE}
+unemp <- read_csv(here::here("dataset", "NYC EH Data Portal - Unemployment (filtered).csv"), show_col_types = FALSE)
+
+unemp_f <- unemp |>
+  mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
+
+unemp_by_neighborhood <- unemp_f |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(Percent ~ poly(midpoint, 2), data = .x)),
+    newdata = list(tibble(midpoint = 2007:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
+  rename(
+    YEAR = midpoint,
+    `Neighborhood (U.H.F)` = Geography,
+    `Estimated Unemployment Rate` = estimated_rate
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  )
+```
+
+```{r echo=FALSE}
+rb <- read_csv(here::here("dataset", "NYC EH Data Portal - Rent-burdened households (filtered).csv"), show_col_types = FALSE)
+
+rb_f <- rb |>
+  mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
+
+rb_by_uhf <- rb_f |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(Percent ~ poly(midpoint, 2), data = .x)),
+    newdata = list(tibble(midpoint = 2007:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
+  rename(
+    YEAR = midpoint,
+    `Neighborhood (U.H.F)` = Geography,
+    `Estimated Rent-Burdened Household Rate` = estimated_rate
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  )
+```
+
+```{r echo=FALSE}
+ooh <- read_csv(here::here("dataset", "NYC EH Data Portal - Owner-occupied homes (filtered).csv"), show_col_types = FALSE)
+
+ooh_f <- ooh |>
+  mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
+
+ooh_by_uhf <- ooh_f |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(Percent ~ poly(midpoint, 2), data = .x)),
+    newdata = list(tibble(midpoint = 2007:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
+  rename(
+    YEAR = midpoint,
+    `Neighborhood (U.H.F)` = Geography,
+    `Estimated Owner-Occupied Home Rate` = estimated_rate
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  ) |>
+  mutate(`Estimated Non-Owner-Occupied Home Rate` = 100 - `Estimated Owner-Occupied Home Rate`) |>
+  select(-`Estimated Owner-Occupied Home Rate`)
+```
+
+```{r echo=FALSE}
+cpov <- read_csv(here::here("dataset", "NYC EH Data Portal - Child poverty (under age 5) (filtered).csv"), show_col_types = FALSE)
+
+cpov_f <- cpov |>
+  mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
+
+cpov_by_uhf <- cpov_f |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(Percent ~ poly(midpoint, 2), data = .x)),
+    newdata = list(tibble(midpoint = 2007:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
+  rename(
+    YEAR = midpoint,
+    `Neighborhood (U.H.F)` = Geography,
+    `Estimated Child Poverty Rate` = estimated_rate
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  )
+```
+
+```{r echo=FALSE}
+asth <- read_csv(here::here("dataset", "NYC EH Data Portal - Asthma hospitalizations (adults) (filtered).csv"), show_col_types = FALSE)
+
+asth_f <- asth |>
+  mutate(`Age-adjusted rate per 10,000` = as.numeric(gsub("\\*", "", `Age-adjusted rate per 10,000`))) |>
+  select(-`Estimated annual rate per 10,000`)
+
+asth_uhf <- asth_f |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(`Age-adjusted rate per 10,000` ~ poly(TimePeriod, 2), data = .x)),
+    newdata = list(tibble(TimePeriod = 2005:2022)),
+    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!TimePeriod %in% c(2005, 2006, 2007, 2008, 2009, 2014, 2015, 2022)) |>
+  rename(
+    YEAR = TimePeriod,
+    `Neighborhood (U.H.F)` = Geography,
+    `Estimated Asthma Hospitalization Rate` = estimated_rate
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  )
+```
+
+```{r echo=FALSE}
+hc <- read_csv(here::here("dataset", "NYC EH Data Portal - Household crowding (filtered) (1).csv"), show_col_types = FALSE)
+
+hc_f <- hc |>
+  mutate(midpoint = as.integer(str_extract(TimePeriod, "\\d{4}")) + 2)
+
+hc_uhf <- hc_f |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(Percent ~ poly(midpoint, 2), data = .x)),
+    newdata = list(tibble(midpoint = 2007:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!midpoint %in% c(2007, 2008, 2009, 2014, 2015)) |>
+  rename(
+    YEAR = midpoint,
+    `Neighborhood (U.H.F)` = Geography,
+    `Estimated Crowded Household Rate` = estimated_rate
+  ) |>
+  mutate(
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper East Side", "Upper Eastside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Upper West Side", "Upper Westside"),
+    `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Greenwich Village - SoHo", "Greenwich Village - Soho"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Crotona -Tremont", "Crotona - Tremont"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Rockaways", "Rockaway"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Fordham - Bronx Pk", "Fordham - Bronx Park"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Downtown - Heights - Slope", "Downtown - Heights - Park Slope"),
+  `Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Washington Heights", "Washington Heights - Inwood")
+  )
+```
+
+```{r echo=FALSE}
+hi <- read_csv(here::here("dataset", "NYC EH Data Portal - Health insurance (adults) (filtered)(1).csv"), show_col_types = FALSE)
+
+map_uhf <- read_csv(here::here("dataset", "UHF34_to_UHF42 .csv"), show_col_types = FALSE) |>
+  mutate(`Neighborhood (U.H.F)` = str_replace_all(`Neighborhood (U.H.F)`, "Staple - St. George", "Stapleton - St. George"))
+
+hi_f <- hi |>
+  filter(GeoTypeDesc == "UHF 34") |>
+  rename(YEAR = TimePeriod) |>
+  select(YEAR, GeoTypeDesc, Geography, Percent) |>
+  mutate(
+    Percent = str_remove_all(Percent, "\\*|\\s*\\(.*\\)"),
+    Percent = as.numeric(Percent)
+  ) |>
+  group_by(Geography) |>
+  nest() |>
+  mutate(
+    model = map(data, ~ lm(`Percent` ~ poly(YEAR, 2), data = .x)),
+    newdata = list(tibble(YEAR = 2010:2021)),
+    predicted = map2(model, newdata, ~ mutate(.y, estimated_rate = predict(.x, newdata = .y)))
+  ) |>
+  select(Geography, predicted) |>
+  unnest(predicted) |>
+  filter(!YEAR %in% c(2014, 2015)) |>
+  mutate(`Estimated Non-Health Insurance Rate` = 100 - `estimated_rate`) |>
+  select(-`estimated_rate`)
+
+suppressWarnings({
+hi_uhf <- hi_f |>
+  left_join(map_uhf, by = "Geography") |>
+  ungroup() |>
+  select(-Geography)
+})
+```
+
+```{r echo=FALSE}
+hiv_filt <- hiv_clean |>
+  filter(`Neighborhood (U.H.F)` != "All", `RACE/ETHNICITY` == "All", SEX == "All")
+
+join1 <- hiv_filt |>
+  left_join(pov_by_neighborhood, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join2 <- join1 |>
+  left_join(asian_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join3 <- join2 |>
+  left_join(black_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join4 <- join3 |>
+  left_join(hispanic_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join5 <- join4 |>
+  left_join(white_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join6 <- join5 |>
+  left_join(grad_by_neighborhood, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join7 <- join6 |>
+  left_join(unemp_by_neighborhood, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join8 <- join7 |>
+  left_join(rb_by_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join9 <- join8 |>
+  left_join(ooh_by_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join10 <- join9 |>
+  left_join(cpov_by_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join11 <- join10 |>
+  left_join(asth_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join12 <- join11 |>
+  left_join(hc_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+
+join13 <- join12 |>
+  left_join(hi_uhf, by = c("YEAR", "Neighborhood (U.H.F)"))
+```
+
+## Introduction 
+
+Ever since the first cases of HIV were detected in the late 1950s and early 1960s, it has been one of the deadliest diseases circulating. While modern medical advancements have turned it from a fatal diagnosis to a chronic condition, access to that medicine isn't available to everyone.
+
+New York City has long been a focal point in the fight against HIV/AIDS, but the burden of this disease is not shared equally. Our project investigates disparities in HIV and AIDS diagnoses across NYC neighborhoods and boroughs between 2010 to 2013 and 2016 to 2021. The data, originally compiled by New York City's Department of Health and Mental Hygiene, offers a rich foundation for analyzing trends and disparities in diagnosis rates.
+
+We focus on answering the following key questions:
+
+How do total HIV and AIDS diagnoses differ by race and neighborhood?
+Are certain demographic groups experiencing disproportionately high rates of infection?
+
+To start, it became evident that black people experienced disproportionately higher levels of HIV/AIDS. The following plot displays the number of HIV/AIDS cases compared to the proportion of black residents in an area.
+
+```{r echo=FALSE}
+join13 |>
+  group_by(`Neighborhood (U.H.F)`) |>
+  summarize(
+    total_cases = sum(`TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES`),
+    black_prop = mean(black_prop, na.rm = TRUE)
+  ) |>
+  ggplot(aes(x = black_prop, y = total_cases)) +
+  geom_point() +
+  geom_smooth(method = "loess", se = FALSE, color = "blue") +
+  labs(
+    title = "HIV/AIDS Diagnoses vs. Proportion of Black Residents by Neighborhood",
+    x = "Percentage of Black Residents",
+    y = "Total HIV/AIDS Diagnoses (2010–2013, 2016–2021)"
+  )
+```
+The graph displays a clear relationship between the proportion of black residents in an area and the number of HIV/AIDS cases. The areas with the lowest proportions of residents generally have the fewest number of cases, although there's one obvious outlier. This number of cases increases rapidly up to a certain percentage of black residents, when the number of cases doesn't increase much, but then when the percentage of black residents reaches around 50%, the number of cases begins to rapidly increase again.
+
+When analyzing the data, it became apparent some areas consistently had more HIV/AIDS cases than others. This lead to wanting to analyze what the cause of this trend was. Below is a plot demonstrating this trend.
+
+```{r echo=FALSE}
+join13 |>
+  group_by(`Neighborhood (U.H.F)`) |>
+  summarize(
+    total_cases = sum(`TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES`),
+    black_prop = mean(black_prop)
+  ) |>
+  ungroup() |>
+  mutate(neighborhood = fct_reorder(`Neighborhood (U.H.F)`, total_cases)) |>
+  ggplot(aes(x = neighborhood, y = total_cases, fill = black_prop)) +
+  geom_col() +
+  scale_fill_viridis_c(name = "Percentage Black") +
+  labs(
+    title = "Total HIV/AIDS Diagnoses by Neighborhood",
+    x = "Neighborhood (UHF)",
+    y = "Total HIV/AIDS Diagnoses"
+  ) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+As displayed above, some areas had significantly more cases than others. Noting how earlier it was noticed that areas with higher proportions of black residents had more HIV/AIDS cases, this plot was colored according to each neigborhood's proportion of black residents. This pattern still emerged, as the areas with the most cases generally have the highest number of cases, although West Queens is an obvious outlier.
+
+With the areas typically having the most cases also typically having the highest proportion of black resident, this begs the ultimate question of:
+
+Do these areas have the most cases because they have the most black people, or do black people have the most cases because they live in these areas?
+
+## Modeling
+
+# Model One
+
+To answer these questions, two statistical models were created.
+
+The first model used was a Poisson model, with just black_prop as the main predictor and all secondary predictors, except the other race proportions and the neighborhoods. Using this formula answers the question of, “Does the proportion of black residents in a neighborhood predict the total number of HIV cases, when controlling for socioeconomic conditions?”.
+
+Predictors were chosen based on the data New York City’s Environmental Health Data Portal had available, as they collect and store data in the same format as our original dataset, which is according to New York City’s UHF42 neighborhoods. This decision was made because it allowed for 42 unique values to our statistical model to be added, instead of five, with one being for each borough.
+
+Below is a table of coefficients for the model’s predictors.
+
+```{r echo=FALSE, results='hide'}
+mod_formula <- `TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES` ~ `YEAR` + `Estimated Poverty Rate` + `Estimated Non-High School Graduation Rate` + `Estimated Unemployment Rate` + `Estimated Rent-Burdened Household Rate` + `Estimated Non-Owner-Occupied Home Rate` + `Estimated Child Poverty Rate` + `Estimated Asthma Hospitalization Rate` + `Estimated Crowded Household Rate` + `Estimated Non-Health Insurance Rate` + `black_prop`
+
+mod2_formula <- `TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES` ~ `YEAR` + `Neighborhood (U.H.F)` + `Estimated Poverty Rate` + `Estimated Non-High School Graduation Rate` + `Estimated Unemployment Rate` + `Estimated Rent-Burdened Household Rate` + `Estimated Non-Owner-Occupied Home Rate` + `Estimated Child Poverty Rate` + `Estimated Asthma Hospitalization Rate` + `Estimated Crowded Household Rate` + `Estimated Non-Health Insurance Rate` + `black_prop`
+
+mod1 <- glm(mod_formula, family = poisson, data = join13)
+
+join13$`Neighborhood (U.H.F)` <- relevel(
+  factor(join13$`Neighborhood (U.H.F)`),
+  ref = "Stapleton - St. George"
+)
+
+mod2 <- glm(mod2_formula, family = poisson, data = join13)
+
+summary(mod1)
+null_deviance <- summary(mod1)$null.deviance
+deviance_value <- deviance(mod1)
+AIC(mod1)
+BIC(mod1)
+logLik(mod1)
+pearson_resid <- sum(residuals(mod1, type = "pearson")^2)
+pearson_resid
+```
+
+```{r echo=FALSE}
+library(broom)
+library(gt)
+
+tidy(mod1) |>
+  mutate(
+    estimate = exp(estimate),
+    estimate = round(estimate, 3),
+    std.error = round(std.error, 3),
+    p.value = round(p.value, 4)
+  ) |>
+  select(term, estimate, std.error, p.value) |>
+  rename(
+    Predictor = term,
+    `Rate Ratio` = estimate,
+    `Std. Error` = std.error,
+    `P-Value` = p.value
+  ) |>
+  gt() |>
+  tab_header(
+    title = "Exponentiated Coefficients from the First Poisson Regression Model"
+  ) |>
+  sub_missing(
+    columns = everything(),
+    missing_text = "-"
+  )
+```
+
+In a base Poisson model, the estimate is given as the log of the expected count of the outcome variable, assuming the rest of the predictors are held constant. This means each coefficient represents the change in the log count of the outcome variable associated with a one-unit change in the predictor. 
+
+To ease interpretation, in the above table, every coefficient was exponentiated, using the formula e^estimate. This turns each coefficient into a rate ratio which reflects the multiplicative effect the predictor has on the expected number of occurrences of the outcome variable.
+
+For the purpose of this analysis, where the outcome is the total number of HIV/AIDS cases, this means the following:
+
+The coefficient for black_prop is approximately 1.02. This means that for a one-unit increase in black proportion, the expected number of total HIV/AIDS cases increases by approximately 2%, according to our model. A one-unit increase in this context would represent a 100% increase in the proportion of black residents. A 100% increase in the proportion of residents over any portion of time is unrealistic, so it makes more sense to interpret this in the sense of a 10% increase. In this case, a 10% increase in the proportion of black residents results in an approximately .2% increase in the expected number of total HIV/AIDS cases.
+
+Variables which have a noticeable positive association with the outcome are the percent of rent-burdened households and the percent of non-owner-occupied households, which have coefficients of approximately 1.062 and 1.04 respectively. So a 10% increase in the number of rent-burdened households results in a 0.62% increase in the expected number of HIV/AIDS cases, and a 10% increase in non-owner-occupied home rates results in a 0.4% increase in the expected number of HIV/AIDS cases. 
+
+On the other hand, predictors like poverty rate and unemployment rate, perhaps surprisingly, have a noticeable negative association with the outcome, which have coefficients of 0.935 and 0.937 respectively. So a 10% increase in poverty rate will result in a 0.65% decrease in the expected number of total HIV/AIDS cases and a 10% increase in unemployment rate will result in a 0.63% decrease in the expected number of total HIV/AIDS cases.
+
+Child poverty is the only predictor which had a p-value greater than 0.05, and it was much greater, being at 0.9315, suggesting it was not statistically significant in predicting the total number of HIV/AIDS cases. All other variables had a p-value less than 0.05, suggesting they’re all statistically significant, even black_prop, despite the low magnitude of its effect on the case number.
+
+While the proportion of black residents only has a modest effect on the predicted number of total HIV/AIDS cases, it is statistically significant, even after adjusting for auxiliary socioeconomic factors. This suggests racial disparities in HIV/AIDS cases are not fully explained by socioeconomic factors and may reflect broader systemic inequalities. Analysis of the model occurs below, in order to assess how valid this finding is.
+
+Below is a table of the model’s fit statistics.
+
+
+```{r echo=FALSE}
+fit_stats <- data.frame(
+  Statistic = c("Deviance", "Null Deviance", "AIC", "BIC", "Log-Likelihood", "Pearson Chi-Square"),
+  Value = c(deviance_value, null_deviance, AIC(mod1), BIC(mod1), logLik(mod1), pearson_resid)
+)
+
+fit_stats |>
+  gt() |>
+  tab_header(
+    title = "Fit Statistics of the First Poisson Regression Model"
+  ) |>
+  fmt_number(
+    columns = c(Value),
+    decimals = 2
+  )
+```
+
+For a Poisson model, the rough equivalent of an r-squared value for a linear regression model is the deviance r-squared value. This is calculated as 1 - (Residual Deviance/Null Deviance) = 1 - (1324.25/3398.56) ≈ 0.61. This means the model captures around 61% of the deviance in total HIV/AIDS cases. This suggests the model is a solid fit for the data.
+
+The model’s BIC is higher than it’s AIC, suggesting the model is more on the complex side, but not excessively so. The gap between the two suggests that a simpler model could be worth considering. The log-likelihood value is also on the larger side, but given the higher deviance r-squared value, the model continues to be a solid fit.
+
+A Pearson Chi-Square value of 1342.66 also suggests the model is a good fit, as the value is close to the residual deviance value of 1324.25. The closeness signifies the model is not suffering from overdispersion, meaning the main assumption of a Poisson model, that the mean ≈ the variance, holds, at least well enough, for this model.
+
+Below are some plots for further analysis of the model.
+
+```{r echo=FALSE}
+plot(fitted(mod1), residuals(mod1, type = "deviance"),
+     xlab = "Fitted values",
+     ylab = "Deviance residuals",
+     main = "Residuals vs Fitted (Poisson Model 1)",
+     pch = 20, col = "black")
+abline(h = 0, lty = 2, col = "gray")
+
+qqnorm(residuals(mod1, type = "deviance"),
+       main = "Q-Q Plot of Deviance Residuals - Model 1",
+       pch = 20, col = "black")
+qqline(residuals(mod1, type = "deviance"), col = "gray")
+```
+
+The residuals display no clear pattern and are randomly dispersed around 0, further demonstrating the model’s adequacy, as it fits well for most observations. As the fitted values increase, there appear to be some outliers, but they don't appear to disrupt the overall fit. This is typical for count data, where the variance increases with the mean.
+
+The normal q-q plot suggests the model adequately captures the data’s trends, as most of the plots are right along the diagonal reference line; however, there is significant deviance from the reference line towards the tails, suggesting there are outliers that don’t follow the data’s structure perfectly. These outliers could potentially be inhibiting the model’s performance and affecting its assumptions, so further testing or alternative approaches could be worthwhile.
+
+# Model 2
+
+While the first model demonstrated that the proportion of black residents remains a statistically significant predictor of the total number of HIV/AIDS cases after accounting for various socioeconomic factors, it did not account for possible geographic variation across neighborhoods. Differences in healthcare access, community-level infrastructure, or localized social conditions may influence HIV rates independently of measured covariates. To account for these differences, this second model incorporates neighborhood as a categorical predictor. Using this formula answers the question of, “Does the proportion of black residents in a neighborhood predict the total number of HIV cases, when accounting for both socioeconomic conditions and neighborhood-level factors?".
+
+The UHF neighborhood Stapleton - St. George on Staten Island was used as a reference because it had a median HIV/AIDS contraction rate and was racially diverse.
+
+Below is a table of coefficients for the model’s predictors. 
+
+```{r echo=FALSE, results='hide'}
+summary(mod2)
+null_deviance2 <- summary(mod2)$null.deviance
+deviance_value2 <- deviance(mod2)
+AIC(mod2)
+BIC(mod2)
+logLik(mod2)
+pearson_resid2 <- sum(residuals(mod2, type = "pearson")^2)
+pearson_resid2
+```
+
+```{r echo=FALSE}
+tidy(mod2) |>
+  mutate(
+    estimate = exp(estimate),
+    estimate = round(estimate, 3),
+    std.error = round(std.error, 3),
+    p.value = round(p.value, 4)
+  ) |>
+  select(term, estimate, std.error, p.value) |>
+  rename(
+    Predictor = term,
+    `Rate Ratio` = estimate,
+    `Std. Error` = std.error,
+    `P-Value` = p.value
+  ) |>
+  gt() |>
+  tab_header(
+    title = "Exponentiated Coefficients from the Second Poisson Regression Model"
+  ) |>
+  sub_missing(
+    columns = everything(),
+    missing_text = "-"
+  )
+```
+
+The coefficient for black_prop is approximately 0.997. This means that for a one-unit increase in black proportion, the expected number of total HIV/AIDS cases decreases by approximately 0.003%, according to the model. Again, a one-unit, or 100% increase, is unrealistic, so adjusting for that, this means a 10% increase in the proportion of black residents results in an approximately 0.0003% in the expected number of total HIV/AIDS cases, which is negligible.
+
+Compared to the first model, the coefficients of some predictors changed. For example, in the first model, unemployment rate had a negative association with the total number of HIV/AIDS cases, but in this model, it has a positive association. The same goes for the rent-burdened household rate. This suggests that variation between neighborhoods was confounding the relationship, meaning neighborhoods with high rates of rent-burdened households and unemployment might also have other unmeasured characteristics that masked the true positive effect of these predictors on HIV rates. 
+
+For black_prop, the same concept applies. The shift from a positive association to negative association when neighborhood was added as a predictor suggests the disproportionate amount of HIV/AIDS cases experienced by black people are not due to race itself, but rather due to socioeconomic factors and neighborhood-level conditions, which disproportionately affect black people.
+
+On the other hand, the crowded household rate is the only predictor which went from a positive to negative household rate. This suggests the true effect of crowded households on HIV/AIDS cases was benign confounded by neighborhood-level factors which weren’t controlled for in the first model and once they were, the true effect of crowded household rates on HIV/AIDS contraction became more apparent.
+
+Compared to the first model, many predictors had a p-value greater than 0.05. This is likely due to the increased model complexity. With so many more predictors, with the new one being a geographic location, which will overlap with some of the socioeconomic conditions already controlled for, the exact significance of each predictor becomes more difficult to ascertain.
+
+Analysis of this model follows. Below is a table of the model’s fit statistics.
+
+```{r echo=FALSE}
+fit_stats2 <- data.frame(
+  Statistic = c("Deviance", "Null Deviance", "AIC", "BIC", "Log-Likelihood", "Pearson Chi-Square"),
+  Value = c(deviance_value2, null_deviance2, AIC(mod2), BIC(mod2), logLik(mod2), pearson_resid2)
+)
+
+fit_stats2 |>
+  gt() |>
+  tab_header(
+    title = "Fit Statistics of the Second Poisson Regression Model"
+  ) |>
+  fmt_number(
+    columns = c(Value),
+    decimals = 2
+  )
+```
+This model’s deviance r-squared value is 1 - (618.08/3398.56) ≈ 0.818, meaning this model explains around 81.8% of the deviance in total HIV/AIDS contraction cases. This makes this model stronger than the previous model and a strong fit overall.
+
+Like the first, the model’s BIC is higher than its AIC, which is expected considering the model became more complex due to adding many new predictors. The increased gap between the two suggests that a simpler model could still be worth considering. The log-likelihood value is also on the larger side, but given the higher deviance r-squared value, the model continues to be a strong fit.
+
+A Pearson Chi-Square value of 591.20 also suggests the model is a good fit, as the value is close to the residual deviance value of 618.08. Just like the first model, the closeness between the two values continues to suggest these models don’t suffer from overdispersion.
+
+Below are plots for further analysis of the model.
+
+```{r echo=FALSE}
+plot(fitted(mod2), residuals(mod2, type = "deviance"),
+     xlab = "Fitted values",
+     ylab = "Deviance residuals",
+     main = "Residuals vs Fitted (Poisson Model 2)",
+     pch = 20, col = "black")
+abline(h = 0, lty = 2, col = "gray")
+
+qqnorm(residuals(mod1, type = "deviance"),
+       main = "Q-Q Plot of Deviance Residuals - Model 2",
+       pch = 20, col = "black")
+qqline(residuals(mod1, type = "deviance"), col = "gray")
+```
+The pattern displayed in this residual plot mimics the pattern of the first residual plot. The residuals display no clear pattern and are randomly dispersed around 0, further demonstrating the model’s adequacy, as it fits well for most observations. As the fitted values increase, there appear to be some outliers, but they don't appear to disrupt the overall fit. This is typical for count data, where the variance increases with the mean.
+
+Like the first normal q-q plot, this plot also suggests the model adequately captures the data’s trends, as most of the plots are right along the diagonal reference line; however, there is significant deviance from the reference line towards the tails, suggesting there are outliers that don’t follow the data’s structure perfectly. These outliers could potentially be inhibiting the model’s performance and affecting its assumptions, so further testing or alternative approaches could be worthwhile.
+
+After accounting for the neighborhood as a predictor, the model suggests race itself is not the determining factor in the total number of HIV/AIDS, but rather the structural and socioeconomic conditions people experience. The trend of black people having disproportionately higher HIV/AIDS contraction rates would likely be explained by black people being disproportionately affected by these structural and socioeconomic conditions, perhaps reflecting broader systemic issues within New York City’s infrastructure.
+
+## Limitations
+
+Both models have many of the same limitations. A factor that could be considered a limitation is what made the dataset so easy to work with in the beginning, which is that the data was stored according to New York City’s UHF42 neighborhoods. While this allowed for easy storage and data manipulation, it made finding other datasets to join and other variables to add as a predictor rather difficult, as the data had to be stored in a similar format, in order to not compromise the integrity of our model by including fewer data points than neighborhoods they would be applied to. This meant some predictors which may be statistically significant, like drug usage, age and sex demographics, and proportion of LGBTQ residents, couldn’t be added because if this data was available, it wasn’t available at the UHF 42 level. The only time data was added that didn’t have data stored according to UHF42 neighborhoods was for the health insurance rate predictor. This data was stored in UHF34 neighborhoods. The reasons it was still added to the dataset are 34 values was enough for a variable we thought would be very helpful for our model and many of the UHF34 and UHF42 neighborhoods are the exact same; the UHF34 neighborhoods that are different are formed by combining several UHF42 neighborhoods, so some UHF42 neighborhoods had their exact health insurance rates.
+
+The next limitation our models have is many of the rates in the dataset are predicted rates generated using a polynomial model. The reason this had to be done is the majority of data stored according to UHF42 neighborhoods was also stored in five-year periods, such as 2017-2021 inclusive, then 2016-2020, 2015-2019, and so on, and giving the average value over that time period. The original HIV dataset was stored year-by-year, not according to these five-year periods, so to get values for our predictors, the middle year of each five year time period was taken and the average value over the corresponding five-year period was assigned to that middle year. This supplied data for every year in the original dataset, except 2020 and 2021, so a polynomial model was used to predict the values for those two years. This process was used for every predictor variable stored according to this format.
+
+The final major limitation of these models is the main assumption of every Poisson model, which is that the mean equals the variance. It makes this assumption due to the form of the distribution. If the data being modeled doesn’t fit this distribution well, even if it’s a count variable, then using a Poisson model will result in overdispersion, although this didn’t seem to be a glaring issue in this particular analysis. 
