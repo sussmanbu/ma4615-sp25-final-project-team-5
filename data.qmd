@@ -21,6 +21,7 @@ Our primary dataset is [HIV/AIDS Diagnoses by Neighborhood, Sex, and Race/Ethnic
 ```{r echo=FALSE}
 suppressPackageStartupMessages(library(tidyverse))
 library(gt)
+suppressPackageStartupMessages(library(htmltools))
 
 hiv_clean <- readRDS(here::here("dataset", "hiv_clean.rds"))
 
@@ -77,7 +78,7 @@ The histogram displays a clear right-skewed distribution. Most of the values see
 
 The other datasets we used came from the same source, which is nyc.gov's Environment and Health Data Portal. This website is run by New York City's Department of Health and Mental Hygiene and is where their employees store data they accumulate about New York City's public health, in order for decision makers and regular citizens to observe trends within the city. [This link](https://a816-dohbesp.nyc.gov/IndicatorPublic/data-explorer/social-conditions/?id=2325#display=summary) is to a dataset calculating the proportion of each race in each borough and UHF neighborhood, although that is only one of the many social conditions they monitor. Other conditions monitored include: high school graduation rates, unemployment rates, incarceration rates, and health insurance rates. Each of these datasets is on one specific topic which you select, and for that topic, it will display the proportion of that borough which meets the criteria, for every year they calculated the data. For the race dataset, for each year, it will list the proportion of each major race in each borough, and then each UHF neighborhood within that borough. Because the website is run by the same people who collected our primary dataset, they use the same storage system with race and sex within each borough and UHF neighborhood, making joining datasets easier. Additionally, each dataset, when downloaded, although not visible on the website, comes with each neighborhood's GEOID, allowing it to be combined with census shapefiles for visualization. Below is a list of all variables added to the main dataset to be used as predictors.
 
-```{r}
+```{r echo=FALSE}
 variables_secondary <- tibble(
   Variable = c("Estimated Poverty Rate", "asian_prop", "black_prop", "hispanic_prop", "white_prop", "Estimated Non-High School Graduation Rate", "Estimated Unemployment Rate", "Estimated Rent-Burdened Household Rate", "Estimated Non-Owner-Occupied Home Rate", "Estimated Child Poverty Rate", "Estimated Asthma Hospitalization Rate", "Estimated Crowded Household Rate", "Estimated Non-Health Insurance Rate"),
   Data_Type = c("number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number", "number"),
