@@ -8,9 +8,6 @@ editor:
     wrap: sentence
 ---
 
-<<<<<<< HEAD
-![](images/data-import-cheatsheet-thumbs.png)
-=======
 ![](images/Image.png)
 >>>>>>> origin/main
 
