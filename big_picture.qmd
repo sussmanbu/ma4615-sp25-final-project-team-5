@@ -34,7 +34,7 @@ df_clean2 <- df_clean |>
   ungroup()
 
 # Improve axis labels for AIDS Diagnoses
-ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`AIDS DIAGNOSES PER 100,000 POPULATION`), 
+df_clean |> filter((Borough=="All") & (`Neighborhood (U.H.F)`=="All") & (SEX=="All") & (`RACE/ETHNICITY`!="All")) |> ggplot(aes(x = reorder(`RACE/ETHNICITY`, -`AIDS DIAGNOSES PER 100,000 POPULATION`), 
                      y = `AIDS DIAGNOSES PER 100,000 POPULATION`, fill = `RACE/ETHNICITY`)) +
   geom_bar(stat = "identity") +
   labs(title = "AIDS Diagnoses per 100,000 by Race/Ethnicity",
@@ -48,7 +48,7 @@ ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`AIDS DIAGNOSES PER 100,000 
     plot.title = element_text(size = 15, face = "bold"),
     legend.position = "none"
   )
-ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`HIV DIAGNOSES PER 100,000 POPULATION`), 
+df_clean |> filter((Borough=="All") & (`Neighborhood (U.H.F)`=="All") & (SEX=="All") & (`RACE/ETHNICITY`!="All")) |> ggplot(aes(x = reorder(`RACE/ETHNICITY`, -`HIV DIAGNOSES PER 100,000 POPULATION`), 
                y = `HIV DIAGNOSES PER 100,000 POPULATION`, fill = `RACE/ETHNICITY`)) +
   geom_bar(stat = "identity") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
@@ -66,12 +66,12 @@ ggplot(df_clean, aes(x = reorder(`RACE/ETHNICITY`, -`HIV DIAGNOSES PER 100,000 P
 
 ```
 ### Gender-Based Disparities
-Across all racial groups, males consistently showed higher diagnosis rates than females—especially pronounced among Asian/Pacific Islanders.This chart highlights a striking gender disparity in the average rate of AIDS diagnoses per 100,000 people in New York City. The data shows that males are diagnosed with AIDS at more than double the rate of females, with an average well above 25 per 100,000 compared to less than 10 for females. This pattern holds across multiple racial and geographic groups and has persisted over time. The reasons behind this disparity are complex and may include differences in risk behaviors, testing frequency, social stigma, or access to early HIV treatment, which can prevent the progression to AIDS. This gap underscores the need for gender-specific public health interventions, especially outreach, education, and prevention programs targeted at high-risk male populations. 
+Across all racial groups, males consistently showed higher diagnosis rates than females—especially pronounced among Asian/Pacific Islanders.This chart highlights a striking gender disparity in the average rate of AIDS diagnoses per 100,000 people in New York City. The data shows that males are diagnosed with AIDS at more than double the rate of females, with an average of about 25 per 100,000 compared to less than 10 for females. This pattern holds across multiple racial and geographic groups and has persisted over time. The reasons behind this disparity are complex and may include differences in risk behaviors, testing frequency, social stigma, or access to early HIV treatment, which can prevent the progression to AIDS. This gap underscores the need for gender-specific public health interventions, especially outreach, education, and prevention programs targeted at high-risk male populations. 
 ```{r echo=FALSE}
 df <- read_rds("dataset/hiv_clean.rds")
-df_aids_rate <- df %>%
-  filter(SEX %in% c("Male", "Female")) %>%
-  group_by(SEX) %>%
+df_aids_rate <- df |>
+  filter(SEX %in% c("Male", "Female") & (Borough=="All") & (`Neighborhood (U.H.F)`=="All") & (SEX!="All") & (`RACE/ETHNICITY`=="All")) |>
+  group_by(SEX) |>
   summarise(avg_aids_rate = mean(`AIDS DIAGNOSES PER 100,000 POPULATION`, na.rm = TRUE))
 
 # Plot the aggregated average rates using geom_col
@@ -81,9 +81,9 @@ ggplot(df_aids_rate, aes(x = SEX, y = avg_aids_rate, fill = SEX)) +
        x = "Sex", 
        y = "AIDS Diagnoses per 100,000 Population") +
   theme_minimal()
-df_hiv_rate_sex <- df %>%
-  filter(SEX %in% c("Male", "Female")) %>%
-  group_by(SEX) %>%
+df_hiv_rate_sex <- df |>
+  filter(SEX %in% c("Male", "Female") & (Borough=="All") & (`Neighborhood (U.H.F)`=="All") & (SEX!="All") & (`RACE/ETHNICITY`=="All")) |>
+  group_by(SEX) |>
   summarise(avg_rate = mean(`HIV DIAGNOSES PER 100,000 POPULATION`, na.rm = TRUE))
 ggplot(df_hiv_rate_sex, aes(x = SEX, y = avg_rate, fill = SEX)) +
   geom_col(width = 0.6, show.legend = FALSE) +
@@ -98,10 +98,23 @@ While overall diagnosis rates declined across most groups, one outlier stood out
 This pattern challenges assumptions that HIV/AIDS is primarily a concern within traditionally high-risk populations. While this group has historically had lower rates, the rising trend suggests they may now be facing growing risk.
 
 ```{r echo=FALSE}
+# df <- read_rds(here::here("dataset", "hiv_clean.rds"))
+# df_clean <- df |>
+#   filter(is.finite(`TOTAL NUMBER OF HIV DIAGNOSES`))
+# ggplot(df_clean, aes(x = YEAR, y = `HIV DIAGNOSES PER 100,000 POPULATION`)) +
+#   geom_smooth(se = FALSE, method = "lm", linewidth = 1, color = "steelblue") +
+#   facet_wrap(~ `RACE/ETHNICITY`, scales = "free_y") +
+#   labs(
+#     title = "HIV Diagnoses per 100,000 Over Time by Race (Linear Fit)",
+#     x = "Year", y = "HIV Diagnoses per 100,000"
+#   ) +
+#   theme_minimal()
+
 df <- read_rds(here::here("dataset", "hiv_clean.rds"))
-df_clean <- df |>
-  filter(is.finite(`TOTAL NUMBER OF HIV DIAGNOSES`))
+df_clean <- df |> 
+  filter(is.finite(`TOTAL NUMBER OF HIV DIAGNOSES`) & (Borough=="All") & (`Neighborhood (U.H.F)`=="All") & (SEX=="All"))
 ggplot(df_clean, aes(x = YEAR, y = `HIV DIAGNOSES PER 100,000 POPULATION`)) +
+  geom_point(size = 2, alpha = 0.7) + 
   geom_smooth(se = FALSE, method = "lm", linewidth = 1, color = "steelblue") +
   facet_wrap(~ `RACE/ETHNICITY`, scales = "free_y") +
   labs(
@@ -116,7 +129,7 @@ The geographic distribution of HIV diagnoses in New York City reveals stark disp
 
 ```{r echo=FALSE}
 borough_summary <- df %>%
-  filter(!is.na(Borough) & Borough != "All") %>%
+  filter(!is.na(Borough) & Borough != "All" & (`Neighborhood (U.H.F)`=="All") & (SEX=="All") & (`RACE/ETHNICITY`=="All")) |>
   group_by(Borough) %>%
   summarise(Total_HIV = sum(`TOTAL NUMBER OF HIV DIAGNOSES`, na.rm = TRUE)) %>%
   arrange(desc(Total_HIV)) %>%
