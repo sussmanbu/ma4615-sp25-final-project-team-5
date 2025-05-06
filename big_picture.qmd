@@ -172,7 +172,7 @@ ggplot(hiv_n, aes(x = reorder(`Neighborhood (U.H.F)`, -total_aids_count), y = to
 
 As expected, the neighborhoods at the top are mostly in Brooklyn, the Bronx, and Manhattan, although West Queens is an outlier. As already discovered, Black and Hispanic people had the highest totals and rates of HIV. Now that we see which neighborhoods have the most cases, does it hold that those neighborhoods generally have the highest proportions of Black and Hispanic residents? Below are two maps of New York City, broken up into its UHF42 neighborhoods. The first plot colors each neighborhood by its Black proportion and the second colors each by its Hispanic proportion.
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE}
 library(sf)
 library(readr)
 library(here)
