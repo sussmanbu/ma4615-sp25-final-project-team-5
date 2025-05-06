@@ -10,63 +10,195 @@ filters:
 ![](images/Big_Picture.png)
 
 # Overview
-In New York City, HIV and AIDS have been public health concerns for decades. But not all New Yorkers face the same level of risk. Our analysis reveals a troubling reality: your race, gender, and where you live can dramatically affect your likelihood of being diagnosed with HIV or AIDS. Specifically, black residents experience a disproportionately high burden of HIV and AIDS, compared to their counterparts. Through accessible visuals and an interactive map, we show how these disparities play out across the five boroughs — and why it matters.
+
+In New York City, HIV and AIDS have been public health concerns for decades. But not all New Yorkers face the same level of risk. Our analysis reveals a troubling reality: your race, gender, and where you live can dramatically affect your likelihood of being diagnosed with HIV or AIDS. Specifically, Black residents experience a disproportionately high burden of HIV and AIDS, compared to their counterparts. Through accessible visuals and an interactive map, we show how these disparities play out across the five boroughs — and why it matters.
 
 # Visualizing Disparities
 
 ### Disparity by Race and Sex
-We began by plotting total HIV and AIDS diagnoses by race and sex. Two consistent patterns emerged:
-Race-Based Disparities: Black and Hispanic individuals had significantly higher total diagnoses and diagnosis rates per 100,000 population compared to White and Asian/Pacific Islander populations. This disparity highlights how systemic barriers — including unequal access to healthcare, HIV testing, early treatment, and education — contribute to the progression from HIV to AIDS in marginalized communities. While advances in medicine have made AIDS largely preventable with timely care, these benefits are not reaching all groups equally.
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-library(tidyverse)
+The first thing someone might expect to read about when analyzing HIV and AIDS cases is how many cases there are. To start, we plotted the total number of HIV and AIDS cases per borough.
+
+```{r echo=FALSE}
+suppressPackageStartupMessages(library(tidyverse))
+
+hiv_clean = read_rds(here::here("dataset", "hiv_clean.rds"))
+
+borough_summary <- hiv_clean |>
+  filter(!is.na(Borough) & Borough != "All" & (`Neighborhood (U.H.F)`=="All") & (SEX=="All") & (`RACE/ETHNICITY`=="All")) |>
+  group_by(Borough) |>
+  summarise(
+    Total_HIV = sum(`TOTAL NUMBER OF HIV DIAGNOSES`, na.rm = TRUE),
+    Total_AIDS = sum(`TOTAL NUMBER OF AIDS DIAGNOSES`)) |>
+  arrange(desc(Total_HIV)) |>
+  slice(1:10)
+
+ggplot(borough_summary, aes(x = reorder(Borough, -Total_HIV), y = Total_HIV, fill = Borough)) +
+  geom_col(width = 0.7, show.legend = FALSE) +
+  labs(title = "Boroughs by Total HIV Diagnoses",
+       x = "Borough",
+       y = "Total HIV Diagnoses") +
+  theme_minimal()
+
+ggplot(borough_summary, aes(x = reorder(Borough, -Total_AIDS), y = Total_AIDS, fill = Borough)) +
+  geom_col(width = 0.7, show.legend = FALSE) +
+  labs(title = "Boroughs by Total AIDS Diagnoses",
+       x = "Borough",
+       y = "Total AIDS Diagnoses") +
+  theme_minimal()
+```
+
+We also plotted these totals for each race.
+
+```{r echo=FALSE}
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(readr))
+suppressPackageStartupMessages(library(here))
+
+hiv_clean <- readRDS(here::here("dataset", "hiv_clean.rds"))
+
+hiv_race <- hiv_clean |>
+  filter(!`RACE/ETHNICITY` %in% c("All", "Unknown", "Other/Unknown")) |>
+  group_by(`RACE/ETHNICITY`) |>
+  filter(`Neighborhood (U.H.F)` != "All", Borough != "All", SEX == "All") |>
+  summarize(
+    total_hiv_count = sum(`TOTAL NUMBER OF HIV DIAGNOSES`),
+    total_aids_count = sum(`TOTAL NUMBER OF AIDS DIAGNOSES`))
+
+ggplot(hiv_race, aes(x = `RACE/ETHNICITY`, y = total_hiv_count, fill = `RACE/ETHNICITY`)) +
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Total Number of HIV Cases per Simple Race",
+    x = "Race",
+    y = "Total Number of HIV Cases")
+
+ggplot(hiv_race, aes(x = `RACE/ETHNICITY`, y = total_aids_count, fill = `RACE/ETHNICITY`)) +
+  geom_bar(stat = "identity") + 
+  labs(
+    title = "Total Number of AIDS Cases per Simple Race",
+    x = "Race",
+    y = "Total Number of AIDS Cases")
+```
+
+In these plots, two aspects stand out. In both total HIV and AIDS cases, the Bronx and Brooklyn are at the top for boroughs and Black and Hispanic are at the top for races. But since these are total counts, they don't factor in population differences. It's possible these boroughs and races are only at the top because they have the largest populations. In order to account for this, we plotted the average number of HIV cases per 100,000 people per borough and race. Plotting by per 100,000 people rates normalizes the population to be 100,000 people for each area, so areas with higher populations aren't punished.
+
+```{r echo=FALSE}
+hiv_100 <- hiv_clean |>
+  filter(!Borough %in% "All") |>
+  group_by(Borough) |>
+  filter(`Neighborhood (U.H.F)` != "All", `RACE/ETHNICITY` == "All", SEX == "All") |>
+  summarize(
+    avg_h = mean(`HIV DIAGNOSES PER 100,000 POPULATION`),
+    avg_a = mean(`AIDS DIAGNOSES PER 100,000 POPULATION`)
+  )
+
+ggplot(hiv_100, aes(x = Borough, y = avg_h, fill = Borough)) +
+  geom_col() +
+  labs(
+    title = "Average Number of HIV Diagnoses per 100,000 per Borough",
+    x = "Borough",
+    y = "Average Number of HIV Diagnoses per 100,000"
+  )
+
+ggplot(hiv_100, aes(x = Borough, y = avg_a, fill = Borough)) +
+  geom_col() +
+  labs(
+    title = "Average Number of AIDS Diagnoses per 100,000 per Borough",
+    x = "Borough",
+    y = "Average Number of AIDS Diagnoses per 100,000"
+  )
+
+hiv_prop <- hiv_clean |>
+  filter(!`RACE/ETHNICITY` %in% c("All", "Unknown", "Other/Unknown")) |>
+  group_by(`RACE/ETHNICITY`) |>
+  filter(Borough != "All", `Neighborhood (U.H.F)` != "All", SEX == "All") |>
+  summarize(
+    avg_h = mean(`HIV DIAGNOSES PER 100,000 POPULATION`),
+    avg_a = mean(`AIDS DIAGNOSES PER 100,000 POPULATION`)
+  )
+
+ggplot(hiv_prop, aes(x = `RACE/ETHNICITY`, y = avg_h, fill = `RACE/ETHNICITY`)) +
+  geom_col() +
+  labs(
+    title = "Average Number of HIV Cases per 100,000 per Simple Race",
+    x = "Simple Race",
+    y = "Average Number of HIV Cases per 100,000"
+  )
+
+ggplot(hiv_prop, aes(x = `RACE/ETHNICITY`, y = avg_a, fill = `RACE/ETHNICITY`)) +
+  geom_col() +
+  labs(
+    title = "Average Number of AIDS Cases per 100,000 per Simple Race",
+    x = "Simple Race",
+    y = " Average Number of AIDS Cases per 100,000"
+  )
+```
+
+As seen above, population did factor into the higher totals for the boroughs. Brooklyn had the most total HIV diagnoses and the second most total AIDS cases, but is third in both categories when normalizing for population, suggesting Brooklyn's larger population contributed to its higher rankings. Manhattan went from third in total HIV and AIDS cases to second in terms of rates per 100,000, suggesting its lower total is due to it having a smaller population, which potentially masked socioeconomic inequities causing its increased contraction rates.
+
+Population didn't have a significant impact on the races, however. Black people had the most total cases for both HIV and AIDS, and had the largest rate of cases per 100,000 too, suggesting their higher rates aren't just due to population, but other factors. Hispanic people were also second in totals for both and remained second in per 100,000 rates, suggesting their placement wasn't solely due to population either.
+
+Each borough in New York City is split into several different neighborhoods by New York City's DOHMH, totaling to 42 different neighborhoods, called the UHF42 neighborhoods. Below we plotted the HIV and AIDS totals for each neighborhood, to see which neighborhoods were contributing the most cases to their respective borough's total.
+
+```{r echo=FALSE}
+hiv_n <- hiv_clean |>
+  filter(!Borough %in% "All") |>
+  group_by(Borough, `Neighborhood (U.H.F)`) |>
+  filter(`Neighborhood (U.H.F)` != "All", SEX == "All", `RACE/ETHNICITY` == "All") |>
+  summarize(
+    total_hiv_count = sum(`TOTAL NUMBER OF HIV DIAGNOSES`),
+    total_aids_count = sum(`TOTAL NUMBER OF AIDS DIAGNOSES`),
+     .groups = "drop"
+    )
+
+ggplot(hiv_n, aes(x = reorder(`Neighborhood (U.H.F)`, -total_hiv_count), y = total_hiv_count, fill = Borough)) +
+  geom_col() +
+  labs(
+    title = "Total Number of HIV Cases per UHF42 Neighborhood",
+    x = "UHF42 Neighborhood",
+    y = "Total Number of HIV Cases"
+  ) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+ggplot(hiv_n, aes(x = reorder(`Neighborhood (U.H.F)`, -total_aids_count), y = total_aids_count, fill = Borough)) +
+  geom_col() +
+  labs(
+    title = "Total Number of AIDS Cases per UHF42 Neighborhood",
+    x = "UHF42 Neighborhood",
+    y = "Total Number of AIDS Cases"
+  ) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+As expected, the neighborhoods at the top are mostly in Brooklyn, the Bronx, and Manhattan, although West Queens is an outlier. As already discovered, Black and Hispanic people had the highest totals and rates of HIV. Now that we see which neighborhoods have the most cases, does it hold that those neighborhoods generally have the highest proportions of Black and Hispanic residents? Below are two maps of New York City, broken up into its UHF42 neighborhoods. The first plot colors each neighborhood by its Black proportion and the second colors each by its Hispanic proportion.
+
+```{r echo=FALSE}
+library(sf)
 library(readr)
 library(here)
 
-df <- read_rds(here::here("dataset", "hiv_clean.rds"))
+shape <- st_read(here::here("dataset", "NYC_geography-master", "NYC_geography-master", "uhf42_shapefiles", "UHF42.shp"), quiet = TRUE)
 
-df_clean <- df |>
-  filter(is.finite(`TOTAL NUMBER OF HIV DIAGNOSES`))
+race <- read_csv(here::here("dataset", "NYC EH Data Portal - Race and ethnicity (filtered).csv"),
+                 col_types = cols(GeoID = col_character()))
 
-df_clean$Group <- paste(df_clean$`RACE/ETHNICITY`, df_clean$SEX, sep = "_")
+race <- race |>
+  rename("id" = "GeoID") |>
+  select(id, `Black alone (percent)`, `Hispanic alone (percent)`)
 
-df_clean2 <- df_clean |> 
-  group_by(YEAR, `RACE/ETHNICITY`, SEX) |> 
-  mutate(count = n()) |> 
-  ungroup()
+joined <- shape |>
+  left_join(race, by = "id")
 
-# Improve axis labels for AIDS Diagnoses
-df_clean |> filter((Borough=="All") & (`Neighborhood (U.H.F)`=="All") & (SEX=="All") & (`RACE/ETHNICITY`!="All")) |> ggplot(aes(x = reorder(`RACE/ETHNICITY`, -`AIDS DIAGNOSES PER 100,000 POPULATION`), 
-                     y = `AIDS DIAGNOSES PER 100,000 POPULATION`, fill = `RACE/ETHNICITY`)) +
-  geom_bar(stat = "identity") +
-  labs(title = "AIDS Diagnoses per 100,000 by Race/Ethnicity",
-       x = "Race/Ethnicity",
-       y = "AIDS Diagnoses per 100,000 Population") +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 40, hjust = 1, size = 12),
-    axis.title.x = element_text(size = 13),
-    axis.title.y = element_text(size = 13),
-    plot.title = element_text(size = 15, face = "bold"),
-    legend.position = "none"
-  )
-df_clean |> filter((Borough=="All") & (`Neighborhood (U.H.F)`=="All") & (SEX=="All") & (`RACE/ETHNICITY`!="All")) |> ggplot(aes(x = reorder(`RACE/ETHNICITY`, -`HIV DIAGNOSES PER 100,000 POPULATION`), 
-               y = `HIV DIAGNOSES PER 100,000 POPULATION`, fill = `RACE/ETHNICITY`)) +
-  geom_bar(stat = "identity") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  labs(title = "TOTAL NUMBER OF HIV DIAGNOSES/100K by Race/Ethnicity",
-       x = "Race/Ethnicity",
-       y = "Total Number of HIV Diagnoses PER 100K") +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 40, hjust = 1, size = 12),
-    axis.title.x = element_text(size = 13),
-    axis.title.y = element_text(size = 13),
-    plot.title = element_text(size = 15, face = "bold"),
-    legend.position = "none"
-  )
+ggplot() +
+  geom_sf(data = joined, aes(fill = `Black alone (percent)`), alpha = 0.8) +
+  scale_fill_viridis_c(option = "D")
 
+ggplot() +
+  geom_sf(data = joined, aes(fill = `Hispanic alone (percent)`), alpha = 0.8) +
+  scale_fill_viridis_c(option = "D")
 ```
+
+As seen in the above plots, the assumption that the neighborhoods with the highest totals and rates of HIV and AIDS also have the highest proportion of Black and Hispanic residents checks out. Manhattan (the most northwestern area), the Bronx (the most northeastern area), and Brooklyn (the most southeastern area of the mainland) have the most Black and Hispanic residents. Queens and Staten Island have the least Black and Hispanic residents, matching their lower totals and rates. Although, the West Queens outlier from before does have a relatively high proportion of Hispanic people, which could explain why they had so many cases. 
 
 ### Gender-Based Disparities
 Across all racial groups, males consistently showed higher diagnosis rates than females—especially pronounced among Asian/Pacific Islanders.This chart highlights a striking gender disparity in the average rate of AIDS diagnoses per 100,000 people in New York City. The data shows that males are diagnosed with AIDS at more than double the rate of females, with an average of about 25 per 100,000 compared to less than 10 for females. This pattern holds across multiple racial and geographic groups and has persisted over time. The reasons behind this disparity are complex and may include differences in risk behaviors, testing frequency, social stigma, or access to early HIV treatment, which can prevent the progression to AIDS. This gap underscores the need for gender-specific public health interventions, especially outreach, education, and prevention programs targeted at high-risk male populations. 
@@ -95,59 +227,6 @@ ggplot(df_hiv_rate_sex, aes(x = SEX, y = avg_rate, fill = SEX)) +
        x = "Sex", 
        y = "HIV Diagnoses per 100,000 Population") +
   theme_minimal()
-```
-
-### Trends Over Time
-Next, we explored changes in diagnosis rates over the five-year span.
-While overall diagnosis rates declined across most groups, one outlier stood out: Asian/Pacific Islander males, whose rates did not follow the downward trend and in some years increased.
-This pattern challenges assumptions that HIV/AIDS is primarily a concern within traditionally high-risk populations. While this group has historically had lower rates, the rising trend suggests they may now be facing growing risk.
-
-```{r echo=FALSE}
-# df <- read_rds(here::here("dataset", "hiv_clean.rds"))
-# df_clean <- df |>
-#   filter(is.finite(`TOTAL NUMBER OF HIV DIAGNOSES`))
-# ggplot(df_clean, aes(x = YEAR, y = `HIV DIAGNOSES PER 100,000 POPULATION`)) +
-#   geom_smooth(se = FALSE, method = "lm", linewidth = 1, color = "steelblue") +
-#   facet_wrap(~ `RACE/ETHNICITY`, scales = "free_y") +
-#   labs(
-#     title = "HIV Diagnoses per 100,000 Over Time by Race (Linear Fit)",
-#     x = "Year", y = "HIV Diagnoses per 100,000"
-#   ) +
-#   theme_minimal()
-
-df <- read_rds(here::here("dataset", "hiv_clean.rds"))
-df_clean <- df |> 
-  filter(is.finite(`TOTAL NUMBER OF HIV DIAGNOSES`) & (Borough=="All") & (`Neighborhood (U.H.F)`=="All") & (SEX=="All"))
-ggplot(df_clean, aes(x = YEAR, y = `HIV DIAGNOSES PER 100,000 POPULATION`)) +
-  geom_point(size = 2, alpha = 0.7) + 
-  geom_smooth(se = FALSE, method = "lm", linewidth = 1, color = "steelblue") +
-  facet_wrap(~ `RACE/ETHNICITY`, scales = "free_y") +
-  labs(
-    title = "HIV Diagnoses per 100,000 Over Time by Race (Linear Fit)",
-    x = "Year", y = "HIV Diagnoses per 100,000"
-  ) +
-  theme_minimal()
-```
-
-### Disparities in Boroughs
-The geographic distribution of HIV diagnoses in New York City reveals stark disparities between boroughs. As shown in the bar chart above, Brooklyn has the highest total number of diagnoses, followed closely by the Bronx and Manhattan. Queens trails behind with moderately fewer cases, while Staten Island stands out with dramatically lower numbers. These differences are not simply a reflection of population size — they also highlight broader structural inequities. Boroughs like Brooklyn and the Bronx, which are home to larger Black and Hispanic populations and have higher poverty rates, also bear the greatest burden of HIV. These findings suggest that social and economic conditions, not just individual behavior, play a critical role in HIV transmission. Meanwhile, the low case count in Staten Island may reflect better access to health care, lower population density, or even underreporting. Overall, this chart emphasizes that where a person lives in NYC can have a significant impact on their exposure to health risks, reinforcing the need for place-based public health interventions.
-
-```{r echo=FALSE}
-borough_summary <- df %>%
-  filter(!is.na(Borough) & Borough != "All" & (`Neighborhood (U.H.F)`=="All") & (SEX=="All") & (`RACE/ETHNICITY`=="All")) |>
-  group_by(Borough) %>%
-  summarise(Total_HIV = sum(`TOTAL NUMBER OF HIV DIAGNOSES`, na.rm = TRUE)) %>%
-  arrange(desc(Total_HIV)) %>%
-  slice(1:10)
-
-# Create a bar chart for the top 10 boroughs by total HIV diagnoses
-ggplot(borough_summary, aes(x = reorder(Borough, -Total_HIV), y = Total_HIV, fill = Borough)) +
-  geom_col(width = 0.7, show.legend = FALSE) +
-  labs(title = "Top 10 Boroughs by Total HIV Diagnoses",
-       x = "Borough",
-       y = "Total HIV Diagnoses") +
-  theme_minimal()
-
 ```
 
 # Interactive
