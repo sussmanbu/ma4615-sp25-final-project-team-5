@@ -10,12 +10,14 @@ filters:
 ![](images/Big_Picture.png)
 
 # Overview
-In New York City, HIV and AIDS have been public health concerns for decades. But not all New Yorkers face the same level of risk. Our analysis reveals a troubling reality: your race, gender, and where you live can dramatically affect your likelihood of being diagnosed with HIV or AIDS. Through accessible visuals and an interactive map, we show how these disparities play out across the five boroughs — and why it matters.
+In New York City, HIV and AIDS have been public health concerns for decades. But not all New Yorkers face the same level of risk. Our analysis reveals a troubling reality: your race, gender, and where you live can dramatically affect your likelihood of being diagnosed with HIV or AIDS. Specifically, black residents experience a disproportionately high burden of HIV and AIDS, compared to their counterparts. Through accessible visuals and an interactive map, we show how these disparities play out across the five boroughs — and why it matters.
 
 # Visualizing Disparities
+
 ### Disparity by Race and Sex
 We began by plotting total HIV and AIDS diagnoses by race and sex. Two consistent patterns emerged:
-Race-Based Disparities: Black and Hispanic individuals had significantly higher total diagnoses and diagnosis rates per 100,000 population compared to White and Asian/Pacific Islander populations.This disparity highlights how systemic barriers — including unequal access to healthcare, HIV testing, early treatment, and education — contribute to the progression from HIV to AIDS in marginalized communities. While advances in medicine have made AIDS largely preventable with timely care, these benefits are not reaching all groups equally.
+Race-Based Disparities: Black and Hispanic individuals had significantly higher total diagnoses and diagnosis rates per 100,000 population compared to White and Asian/Pacific Islander populations. This disparity highlights how systemic barriers — including unequal access to healthcare, HIV testing, early treatment, and education — contribute to the progression from HIV to AIDS in marginalized communities. While advances in medicine have made AIDS largely preventable with timely care, these benefits are not reaching all groups equally.
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(readr)
@@ -65,8 +67,10 @@ df_clean |> filter((Borough=="All") & (`Neighborhood (U.H.F)`=="All") & (SEX=="A
   )
 
 ```
+
 ### Gender-Based Disparities
 Across all racial groups, males consistently showed higher diagnosis rates than females—especially pronounced among Asian/Pacific Islanders.This chart highlights a striking gender disparity in the average rate of AIDS diagnoses per 100,000 people in New York City. The data shows that males are diagnosed with AIDS at more than double the rate of females, with an average of about 25 per 100,000 compared to less than 10 for females. This pattern holds across multiple racial and geographic groups and has persisted over time. The reasons behind this disparity are complex and may include differences in risk behaviors, testing frequency, social stigma, or access to early HIV treatment, which can prevent the progression to AIDS. This gap underscores the need for gender-specific public health interventions, especially outreach, education, and prevention programs targeted at high-risk male populations. 
+
 ```{r echo=FALSE}
 df <- read_rds("dataset/hiv_clean.rds")
 df_aids_rate <- df |>
@@ -92,6 +96,7 @@ ggplot(df_hiv_rate_sex, aes(x = SEX, y = avg_rate, fill = SEX)) +
        y = "HIV Diagnoses per 100,000 Population") +
   theme_minimal()
 ```
+
 ### Trends Over Time
 Next, we explored changes in diagnosis rates over the five-year span.
 While overall diagnosis rates declined across most groups, one outlier stood out: Asian/Pacific Islander males, whose rates did not follow the downward trend and in some years increased.
@@ -122,8 +127,8 @@ ggplot(df_clean, aes(x = YEAR, y = `HIV DIAGNOSES PER 100,000 POPULATION`)) +
     x = "Year", y = "HIV Diagnoses per 100,000"
   ) +
   theme_minimal()
-
 ```
+
 ### Disparities in Boroughs
 The geographic distribution of HIV diagnoses in New York City reveals stark disparities between boroughs. As shown in the bar chart above, Brooklyn has the highest total number of diagnoses, followed closely by the Bronx and Manhattan. Queens trails behind with moderately fewer cases, while Staten Island stands out with dramatically lower numbers. These differences are not simply a reflection of population size — they also highlight broader structural inequities. Boroughs like Brooklyn and the Bronx, which are home to larger Black and Hispanic populations and have higher poverty rates, also bear the greatest burden of HIV. These findings suggest that social and economic conditions, not just individual behavior, play a critical role in HIV transmission. Meanwhile, the low case count in Staten Island may reflect better access to health care, lower population density, or even underreporting. Overall, this chart emphasizes that where a person lives in NYC can have a significant impact on their exposure to health risks, reinforcing the need for place-based public health interventions.
 
