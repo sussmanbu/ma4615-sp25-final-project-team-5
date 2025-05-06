@@ -502,7 +502,7 @@ Are certain demographic groups experiencing disproportionately high rates of inf
 
 To start, it became evident that black people experienced disproportionately higher levels of HIV/AIDS. The following plot displays the number of HIV/AIDS cases compared to the proportion of black residents in an area.
 
-```{r echo=FALSE}
+```{r echo=FALSE, message=FALSE}
 join13 |>
   group_by(`Neighborhood (U.H.F)`) |>
   summarize(
