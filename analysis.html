@@ -21,40 +21,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -129,7 +95,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./big_picture.html"> 
-<span class="menu-text">Big Picture</span></a>
+<span class="menu-text">An Unequal Epidemic: How HIV Hits NYC Communities Differently</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./analysis.html" aria-current="page"> 
@@ -155,9 +121,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#example-of-loading-data" id="toc-example-of-loading-data" class="nav-link active" data-scroll-target="#example-of-loading-data">Example of loading data</a></li>
-  <li><a href="#note-on-attribution" id="toc-note-on-attribution" class="nav-link" data-scroll-target="#note-on-attribution">Note on Attribution</a></li>
-  <li><a href="#rubric-on-this-page" id="toc-rubric-on-this-page" class="nav-link" data-scroll-target="#rubric-on-this-page">Rubric: On this page</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#modeling" id="toc-modeling" class="nav-link" data-scroll-target="#modeling">Modeling</a></li>
+  <li><a href="#model-one" id="toc-model-one" class="nav-link" data-scroll-target="#model-one">Model One</a></li>
+  <li><a href="#model-2" id="toc-model-2" class="nav-link" data-scroll-target="#model-2">Model 2</a>
+  <ul class="collapse">
+  <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations">Limitations</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -188,85 +158,2443 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Pebbleswithquarzite.jpg" class="img-fluid"></p>
+<p><img src="images/HIV-virus.jpeg" class="img-fluid"></p>
 <p>This comes from the file <code>analysis.qmd</code>.</p>
-<p>We describe here our detailed data analysis. This page will provide an overview of what questions you addressed, illustrations of relevant aspects of the data with tables and figures, and a statistical model that attempts to answer part of the question. You’ll also reflect on next steps and further analysis.</p>
-<p>The audience for this page is someone like your class mates, so you can expect that they have some level of statistical and quantitative sophistication and understand ideas like linear and logistic regression, coefficients, confidence intervals, overfitting, etc.</p>
-<p>While the exact number of figures and tables will vary and depend on your analysis, you should target around 5 to 6. An overly long analysis could lead to losing points. If you want you can link back to your blog posts or create separate pages with more details.</p>
-<p>The style of this paper should aim to be that of an academic paper. I don’t expect this to be of publication quality but you should keep that aim in mind. Avoid using “we” too frequently, for example “We also found that …”. Describe your methodology and your findings but don’t describe your whole process.</p>
-<section id="example-of-loading-data" class="level3">
-<h3 class="anchored" data-anchor-id="example-of-loading-data">Example of loading data</h3>
-<p>The code below shows an example of loading the loan refusal data set (which you should delete at some point).</p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Ever since the first cases of HIV were detected in the late 1950s and early 1960s, it has been one of the deadliest diseases circulating. While modern medical advancements have turned it from a fatal diagnosis to a chronic condition, access to that medicine isn’t available to everyone.</p>
+<p>New York City has long been a focal point in the fight against HIV/AIDS, but the burden of this disease is not shared equally. Our project investigates disparities in HIV and AIDS diagnoses across NYC neighborhoods and boroughs between 2010 to 2013 and 2016 to 2021. The data, originally compiled by New York City’s Department of Health and Mental Hygiene, offers a rich foundation for analyzing trends and disparities in diagnosis rates.</p>
+<p>We focus on answering the following key questions:</p>
+<p>How do total HIV and AIDS diagnoses differ by race and neighborhood? Are certain demographic groups experiencing disproportionately high rates of infection?</p>
+<p>To start, it became evident that black people experienced disproportionately higher levels of HIV/AIDS. The following plot displays the number of HIV/AIDS cases compared to the proportion of black residents in an area.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.1     ✔ tibble    3.2.1
-✔ lubridate 1.9.4     ✔ tidyr     1.3.1
-✔ purrr     1.0.2     
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">getwd</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "/home/tvlaz/MA415/ma4615-sp25-final-project-team-5"</code></pre>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset/loan_refusal_clean.rds"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</div>
+<p>The graph displays a clear relationship between the proportion of black residents in an area and the number of HIV/AIDS cases. The areas with the lowest proportions of residents generally have the fewest number of cases, although there’s one obvious outlier. This number of cases increases rapidly up to a certain percentage of black residents, when the number of cases doesn’t increase much, but then when the percentage of black residents reaches around 50%, the number of cases begins to rapidly increase again.</p>
+<p>When analyzing the data, it became apparent some areas consistently had more HIV/AIDS cases than others. This lead to wanting to analyze what the cause of this trend was. Below is a plot demonstrating this trend.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As displayed above, some areas had significantly more cases than others. Noting how earlier it was noticed that areas with higher proportions of black residents had more HIV/AIDS cases, this plot was colored according to each neigborhood’s proportion of black residents. This pattern still emerged, as the areas with the most cases generally have the highest number of cases, although West Queens is an obvious outlier.</p>
+<p>With the areas typically having the most cases also typically having the highest proportion of black resident, this begs the ultimate question of:</p>
+<p>Do these areas have the most cases because they have the most black people, or do black people have the most cases because they live in these areas?</p>
 </section>
-<section id="note-on-attribution" class="level2">
-<h2 class="anchored" data-anchor-id="note-on-attribution">Note on Attribution</h2>
-<p>In general, you should try to provide links to relevant resources, especially those that helped you. You don’t have to link to every StackOverflow post you used but if there are explainers on aspects of the data or specific models that you found helpful, try to link to those. Also, try to link to other sources that might support (or refute) your analysis. These can just be regular hyperlinks. You don’t need a formal citation.</p>
-<p>If you are directly quoting from a source, please make that clear. You can show long quotes using <code>&gt;</code> like this</p>
-<pre><code>&gt; To be or not to be.</code></pre>
-<blockquote class="blockquote">
-<p>To be or not to be.</p>
-</blockquote>
-<hr>
+<section id="modeling" class="level2">
+<h2 class="anchored" data-anchor-id="modeling">Modeling</h2>
 </section>
-<section id="rubric-on-this-page" class="level2">
-<h2 class="anchored" data-anchor-id="rubric-on-this-page">Rubric: On this page</h2>
-<p>You will</p>
-<ul>
-<li>Introduce what motivates your Data Analysis (DA)
-<ul>
-<li>Which variables and relationships are you most interested in?</li>
-<li>What questions are you interested in answering?</li>
-<li>Provide context for the rest of the page. This will include figures/tables that illustrate aspects of the data of your question.</li>
-</ul></li>
-<li>Modeling and Inference
-<ul>
-<li>The page will include some kind of formal statistical model. This could be a linear regression, logistic regression, or another modeling framework.</li>
-<li>Explain the ideas and techniques you used to choose the predictors for your model. (Think about including interaction terms and other transformations of your variables.)</li>
-<li>Describe the results of your modelling and make sure to give a sense of the uncertainty in your estimates and conclusions.</li>
-</ul></li>
-<li>Explain the flaws and limitations of your analysis
-<ul>
-<li>Are there some assumptions that you needed to make that might not hold? Is there other data that would help to answer your questions?</li>
-</ul></li>
-<li>Clarity Figures
-<ul>
-<li>Are your figures/tables/results easy to read, informative, without problems like overplotting, hard-to-read labels, etc?</li>
-<li>Each figure should provide a key insight. Too many figures or other data summaries can detract from this. (While not a hard limit, around 5 total figures is probably a good target.)</li>
-<li>Default <code>lm</code> output and plots are typically not acceptable.</li>
-</ul></li>
-<li>Clarity of Explanations
-<ul>
-<li>How well do you explain each figure/result?</li>
-<li>Do you provide interpretations that suggest further analysis or explanations for observed phenomenon?</li>
-</ul></li>
-<li>Organization and cleanliness.
-<ul>
-<li>Make sure to remove excessive warnings, hide all code, organize with sections or multiple pages, use bullets, etc.</li>
-<li>This page should be self-contained, i.e.&nbsp;provide a description of the relevant data.</li>
-</ul></li>
-</ul>
+<section id="model-one" class="level1">
+<h1>Model One</h1>
+<p>To answer these questions, two statistical models were created.</p>
+<p>The first model used was a Poisson model, with just black_prop as the main predictor and all secondary predictors, except the other race proportions and the neighborhoods. Using this formula answers the question of, “Does the proportion of black residents in a neighborhood predict the total number of HIV cases, when controlling for socioeconomic conditions?”.</p>
+<p>Predictors were chosen based on the data New York City’s Environmental Health Data Portal had available, as they collect and store data in the same format as our original dataset, which is according to New York City’s UHF42 neighborhoods. This decision was made because it allowed for 42 unique values to our statistical model to be added, instead of five, with one being for each borough.</p>
+<p>Below is a table of coefficients for the model’s predictors.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="iaospbwmai" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#iaospbwmai table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#iaospbwmai thead, #iaospbwmai tbody, #iaospbwmai tfoot, #iaospbwmai tr, #iaospbwmai td, #iaospbwmai th {
+  border-style: none;
+}
+
+#iaospbwmai p {
+  margin: 0;
+  padding: 0;
+}
+
+#iaospbwmai .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#iaospbwmai .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#iaospbwmai .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#iaospbwmai .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#iaospbwmai .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#iaospbwmai .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#iaospbwmai .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#iaospbwmai .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#iaospbwmai .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#iaospbwmai .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#iaospbwmai .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#iaospbwmai .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#iaospbwmai .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#iaospbwmai .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#iaospbwmai .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#iaospbwmai .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#iaospbwmai .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#iaospbwmai .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#iaospbwmai .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#iaospbwmai .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#iaospbwmai .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#iaospbwmai .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#iaospbwmai .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#iaospbwmai .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#iaospbwmai .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#iaospbwmai .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#iaospbwmai .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#iaospbwmai .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#iaospbwmai .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#iaospbwmai .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#iaospbwmai .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#iaospbwmai .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#iaospbwmai .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#iaospbwmai .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#iaospbwmai .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#iaospbwmai .gt_left {
+  text-align: left;
+}
+
+#iaospbwmai .gt_center {
+  text-align: center;
+}
+
+#iaospbwmai .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#iaospbwmai .gt_font_normal {
+  font-weight: normal;
+}
+
+#iaospbwmai .gt_font_bold {
+  font-weight: bold;
+}
+
+#iaospbwmai .gt_font_italic {
+  font-style: italic;
+}
+
+#iaospbwmai .gt_super {
+  font-size: 65%;
+}
+
+#iaospbwmai .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#iaospbwmai .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#iaospbwmai .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#iaospbwmai .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#iaospbwmai .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#iaospbwmai .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#iaospbwmai .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#iaospbwmai .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#iaospbwmai div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="4" class="gt_heading gt_title gt_font_normal gt_bottom_border">Exponentiated Coefficients from the First Poisson Regression Model</th>
+</tr>
+<tr class="odd gt_col_headings">
+<th id="Predictor" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Predictor</th>
+<th id="Rate-Ratio" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Rate Ratio</th>
+<th id="Std.-Error" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Std. Error</th>
+<th id="P-Value" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">P-Value</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">(Intercept)</td>
+<td class="gt_row gt_right" headers="Rate Ratio">3.830355e+31</td>
+<td class="gt_row gt_right" headers="Std. Error">14.631</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">YEAR</td>
+<td class="gt_row gt_right" headers="Rate Ratio">9.630000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.007</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Poverty Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">9.350000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.009</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Non-High School Graduation Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.011000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.005</td>
+<td class="gt_row gt_right" headers="P-Value">0.0419</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Unemployment Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">9.370000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.011</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Rent-Burdened Household Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.062000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.006</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Non-Owner-Occupied Home Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.040000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.002</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Child Poverty Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.000000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.004</td>
+<td class="gt_row gt_right" headers="P-Value">0.9315</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Asthma Hospitalization Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.011000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.002</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Crowded Household Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">9.790000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.008</td>
+<td class="gt_row gt_right" headers="P-Value">0.0050</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Non-Health Insurance Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.026000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.003</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">black_prop</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.019000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.001</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>In a base Poisson model, the estimate is given as the log of the expected count of the outcome variable, assuming the rest of the predictors are held constant. This means each coefficient represents the change in the log count of the outcome variable associated with a one-unit change in the predictor.</p>
+<p>To ease interpretation, in the above table, every coefficient was exponentiated, using the formula e^estimate. This turns each coefficient into a rate ratio which reflects the multiplicative effect the predictor has on the expected number of occurrences of the outcome variable.</p>
+<p>For the purpose of this analysis, where the outcome is the total number of HIV/AIDS cases, this means the following:</p>
+<p>The coefficient for black_prop is approximately 1.02. This means that for a one-unit increase in black proportion, the expected number of total HIV/AIDS cases increases by approximately 2%, according to our model. A one-unit increase in this context would represent a 100% increase in the proportion of black residents. A 100% increase in the proportion of residents over any portion of time is unrealistic, so it makes more sense to interpret this in the sense of a 10% increase. In this case, a 10% increase in the proportion of black residents results in an approximately .2% increase in the expected number of total HIV/AIDS cases.</p>
+<p>Variables which have a noticeable positive association with the outcome are the percent of rent-burdened households and the percent of non-owner-occupied households, which have coefficients of approximately 1.062 and 1.04 respectively. So a 10% increase in the number of rent-burdened households results in a 0.62% increase in the expected number of HIV/AIDS cases, and a 10% increase in non-owner-occupied home rates results in a 0.4% increase in the expected number of HIV/AIDS cases.</p>
+<p>On the other hand, predictors like poverty rate and unemployment rate, perhaps surprisingly, have a noticeable negative association with the outcome, which have coefficients of 0.935 and 0.937 respectively. So a 10% increase in poverty rate will result in a 0.65% decrease in the expected number of total HIV/AIDS cases and a 10% increase in unemployment rate will result in a 0.63% decrease in the expected number of total HIV/AIDS cases.</p>
+<p>Child poverty is the only predictor which had a p-value greater than 0.05, and it was much greater, being at 0.9315, suggesting it was not statistically significant in predicting the total number of HIV/AIDS cases. All other variables had a p-value less than 0.05, suggesting they’re all statistically significant, even black_prop, despite the low magnitude of its effect on the case number.</p>
+<p>While the proportion of black residents only has a modest effect on the predicted number of total HIV/AIDS cases, it is statistically significant, even after adjusting for auxiliary socioeconomic factors. This suggests racial disparities in HIV/AIDS cases are not fully explained by socioeconomic factors and may reflect broader systemic inequalities. Analysis of the model occurs below, in order to assess how valid this finding is.</p>
+<p>Below is a table of the model’s fit statistics.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="rpjyvnpeeh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#rpjyvnpeeh table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#rpjyvnpeeh thead, #rpjyvnpeeh tbody, #rpjyvnpeeh tfoot, #rpjyvnpeeh tr, #rpjyvnpeeh td, #rpjyvnpeeh th {
+  border-style: none;
+}
+
+#rpjyvnpeeh p {
+  margin: 0;
+  padding: 0;
+}
+
+#rpjyvnpeeh .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#rpjyvnpeeh .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#rpjyvnpeeh .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#rpjyvnpeeh .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#rpjyvnpeeh .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#rpjyvnpeeh .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rpjyvnpeeh .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#rpjyvnpeeh .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#rpjyvnpeeh .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#rpjyvnpeeh .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#rpjyvnpeeh .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#rpjyvnpeeh .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#rpjyvnpeeh .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#rpjyvnpeeh .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#rpjyvnpeeh .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#rpjyvnpeeh .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#rpjyvnpeeh .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#rpjyvnpeeh .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#rpjyvnpeeh .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rpjyvnpeeh .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#rpjyvnpeeh .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#rpjyvnpeeh .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#rpjyvnpeeh .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rpjyvnpeeh .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#rpjyvnpeeh .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#rpjyvnpeeh .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rpjyvnpeeh .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rpjyvnpeeh .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#rpjyvnpeeh .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rpjyvnpeeh .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#rpjyvnpeeh .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rpjyvnpeeh .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#rpjyvnpeeh .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rpjyvnpeeh .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#rpjyvnpeeh .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rpjyvnpeeh .gt_left {
+  text-align: left;
+}
+
+#rpjyvnpeeh .gt_center {
+  text-align: center;
+}
+
+#rpjyvnpeeh .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#rpjyvnpeeh .gt_font_normal {
+  font-weight: normal;
+}
+
+#rpjyvnpeeh .gt_font_bold {
+  font-weight: bold;
+}
+
+#rpjyvnpeeh .gt_font_italic {
+  font-style: italic;
+}
+
+#rpjyvnpeeh .gt_super {
+  font-size: 65%;
+}
+
+#rpjyvnpeeh .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#rpjyvnpeeh .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#rpjyvnpeeh .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#rpjyvnpeeh .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#rpjyvnpeeh .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#rpjyvnpeeh .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#rpjyvnpeeh .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#rpjyvnpeeh .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#rpjyvnpeeh div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="2" class="gt_heading gt_title gt_font_normal gt_bottom_border">Fit Statistics of the First Poisson Regression Model</th>
+</tr>
+<tr class="odd gt_col_headings">
+<th id="Statistic" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Statistic</th>
+<th id="Value" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Value</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Statistic">Deviance</td>
+<td class="gt_row gt_right" headers="Value">1,324.25</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Statistic">Null Deviance</td>
+<td class="gt_row gt_right" headers="Value">3,398.56</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Statistic">AIC</td>
+<td class="gt_row gt_right" headers="Value">2,871.11</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Statistic">BIC</td>
+<td class="gt_row gt_right" headers="Value">2,919.54</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Statistic">Log-Likelihood</td>
+<td class="gt_row gt_right" headers="Value">−1,423.55</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Statistic">Pearson Chi-Square</td>
+<td class="gt_row gt_right" headers="Value">1,342.66</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>For a Poisson model, the rough equivalent of an r-squared value for a linear regression model is the deviance r-squared value. This is calculated as 1 - (Residual Deviance/Null Deviance) = 1 - (1324.25/3398.56) ≈ 0.61. This means the model captures around 61% of the deviance in total HIV/AIDS cases. This suggests the model is a solid fit for the data.</p>
+<p>The model’s BIC is higher than it’s AIC, suggesting the model is more on the complex side, but not excessively so. The gap between the two suggests that a simpler model could be worth considering. The log-likelihood value is also on the larger side, but given the higher deviance r-squared value, the model continues to be a solid fit.</p>
+<p>A Pearson Chi-Square value of 1342.66 also suggests the model is a good fit, as the value is close to the residual deviance value of 1324.25. The closeness signifies the model is not suffering from overdispersion, meaning the main assumption of a Poisson model, that the mean ≈ the variance, holds, at least well enough, for this model.</p>
+<p>Below are some plots for further analysis of the model.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/unnamed-chunk-18-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The residuals display no clear pattern and are randomly dispersed around 0, further demonstrating the model’s adequacy, as it fits well for most observations. As the fitted values increase, there appear to be some outliers, but they don’t appear to disrupt the overall fit. This is typical for count data, where the variance increases with the mean.</p>
+<p>The normal q-q plot suggests the model adequately captures the data’s trends, as most of the plots are right along the diagonal reference line; however, there is significant deviance from the reference line towards the tails, suggesting there are outliers that don’t follow the data’s structure perfectly. These outliers could potentially be inhibiting the model’s performance and affecting its assumptions, so further testing or alternative approaches could be worthwhile.</p>
+</section>
+<section id="model-2" class="level1">
+<h1>Model 2</h1>
+<p>While the first model demonstrated that the proportion of black residents remains a statistically significant predictor of the total number of HIV/AIDS cases after accounting for various socioeconomic factors, it did not account for possible geographic variation across neighborhoods. Differences in healthcare access, community-level infrastructure, or localized social conditions may influence HIV rates independently of measured covariates. To account for these differences, this second model incorporates neighborhood as a categorical predictor. Using this formula answers the question of, “Does the proportion of black residents in a neighborhood predict the total number of HIV cases, when accounting for both socioeconomic conditions and neighborhood-level factors?”.</p>
+<p>The UHF neighborhood Stapleton - St.&nbsp;George on Staten Island was used as a reference because it had a median HIV/AIDS contraction rate and was racially diverse.</p>
+<p>Below is a table of coefficients for the model’s predictors.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="hqtbzqynnu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#hqtbzqynnu table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#hqtbzqynnu thead, #hqtbzqynnu tbody, #hqtbzqynnu tfoot, #hqtbzqynnu tr, #hqtbzqynnu td, #hqtbzqynnu th {
+  border-style: none;
+}
+
+#hqtbzqynnu p {
+  margin: 0;
+  padding: 0;
+}
+
+#hqtbzqynnu .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#hqtbzqynnu .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#hqtbzqynnu .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#hqtbzqynnu .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#hqtbzqynnu .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#hqtbzqynnu .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#hqtbzqynnu .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#hqtbzqynnu .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#hqtbzqynnu .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#hqtbzqynnu .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#hqtbzqynnu .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#hqtbzqynnu .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#hqtbzqynnu .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#hqtbzqynnu .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#hqtbzqynnu .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#hqtbzqynnu .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#hqtbzqynnu .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#hqtbzqynnu .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#hqtbzqynnu .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hqtbzqynnu .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#hqtbzqynnu .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#hqtbzqynnu .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#hqtbzqynnu .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hqtbzqynnu .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#hqtbzqynnu .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#hqtbzqynnu .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#hqtbzqynnu .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hqtbzqynnu .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#hqtbzqynnu .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#hqtbzqynnu .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#hqtbzqynnu .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#hqtbzqynnu .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#hqtbzqynnu .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hqtbzqynnu .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#hqtbzqynnu .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hqtbzqynnu .gt_left {
+  text-align: left;
+}
+
+#hqtbzqynnu .gt_center {
+  text-align: center;
+}
+
+#hqtbzqynnu .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#hqtbzqynnu .gt_font_normal {
+  font-weight: normal;
+}
+
+#hqtbzqynnu .gt_font_bold {
+  font-weight: bold;
+}
+
+#hqtbzqynnu .gt_font_italic {
+  font-style: italic;
+}
+
+#hqtbzqynnu .gt_super {
+  font-size: 65%;
+}
+
+#hqtbzqynnu .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#hqtbzqynnu .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#hqtbzqynnu .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#hqtbzqynnu .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#hqtbzqynnu .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#hqtbzqynnu .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#hqtbzqynnu .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#hqtbzqynnu .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#hqtbzqynnu div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="4" class="gt_heading gt_title gt_font_normal gt_bottom_border">Exponentiated Coefficients from the Second Poisson Regression Model</th>
+</tr>
+<tr class="odd gt_col_headings">
+<th id="Predictor" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Predictor</th>
+<th id="Rate-Ratio" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Rate Ratio</th>
+<th id="Std.-Error" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Std. Error</th>
+<th id="P-Value" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">P-Value</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">(Intercept)</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.541994e+80</td>
+<td class="gt_row gt_right" headers="Std. Error">32.967</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">YEAR</td>
+<td class="gt_row gt_right" headers="Rate Ratio">9.130000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.016</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Bayside - Little Neck</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.230000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.626</td>
+<td class="gt_row gt_right" headers="P-Value">0.0008</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Bedford Stuyvesant - Crown Heights</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.135800e+01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.946</td>
+<td class="gt_row gt_right" headers="P-Value">0.0102</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Bensonhurst - Bay Ridge</td>
+<td class="gt_row gt_right" headers="Rate Ratio">4.750000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.469</td>
+<td class="gt_row gt_right" headers="P-Value">0.1127</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Borough Park</td>
+<td class="gt_row gt_right" headers="Rate Ratio">7.100000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.664</td>
+<td class="gt_row gt_right" headers="P-Value">0.6053</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Canarsie - Flatlands</td>
+<td class="gt_row gt_right" headers="Rate Ratio">2.810000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.487</td>
+<td class="gt_row gt_right" headers="P-Value">0.0337</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Central Harlem - Morningside Heights</td>
+<td class="gt_row gt_right" headers="Rate Ratio">6.167000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">1.074</td>
+<td class="gt_row gt_right" headers="P-Value">0.0902</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Chelsea - Clinton</td>
+<td class="gt_row gt_right" headers="Rate Ratio">2.831000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.823</td>
+<td class="gt_row gt_right" headers="P-Value">0.2063</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Coney Island - Sheepshead Bay</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.522000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.449</td>
+<td class="gt_row gt_right" headers="P-Value">0.3497</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Crotona - Tremont</td>
+<td class="gt_row gt_right" headers="Rate Ratio">4.553000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">1.221</td>
+<td class="gt_row gt_right" headers="P-Value">0.2144</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Downtown - Heights - Park Slope</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.717000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.606</td>
+<td class="gt_row gt_right" headers="P-Value">0.3721</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`East Flatbush - Flatbush</td>
+<td class="gt_row gt_right" headers="Rate Ratio">5.725000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.867</td>
+<td class="gt_row gt_right" headers="P-Value">0.0441</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`East Harlem</td>
+<td class="gt_row gt_right" headers="Rate Ratio">2.800000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">1.198</td>
+<td class="gt_row gt_right" headers="P-Value">0.3900</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`East New York</td>
+<td class="gt_row gt_right" headers="Rate Ratio">3.684000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.792</td>
+<td class="gt_row gt_right" headers="P-Value">0.0995</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Flushing - Clearview</td>
+<td class="gt_row gt_right" headers="Rate Ratio">9.290000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.300</td>
+<td class="gt_row gt_right" headers="P-Value">0.8050</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Fordham - Bronx Park</td>
+<td class="gt_row gt_right" headers="Rate Ratio">4.029000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">1.180</td>
+<td class="gt_row gt_right" headers="P-Value">0.2377</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Fresh Meadows</td>
+<td class="gt_row gt_right" headers="Rate Ratio">2.800000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.351</td>
+<td class="gt_row gt_right" headers="P-Value">0.0003</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Gramercy Park - Murray Hill</td>
+<td class="gt_row gt_right" headers="Rate Ratio">9.370000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.606</td>
+<td class="gt_row gt_right" headers="P-Value">0.9138</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Greenpoint</td>
+<td class="gt_row gt_right" headers="Rate Ratio">5.380000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">1.002</td>
+<td class="gt_row gt_right" headers="P-Value">0.5364</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Greenwich Village - Soho</td>
+<td class="gt_row gt_right" headers="Rate Ratio">5.540000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.802</td>
+<td class="gt_row gt_right" headers="P-Value">0.4619</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`High Bridge - Morrisania</td>
+<td class="gt_row gt_right" headers="Rate Ratio">5.470000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">1.215</td>
+<td class="gt_row gt_right" headers="P-Value">0.1620</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Hunts Point - Mott Haven</td>
+<td class="gt_row gt_right" headers="Rate Ratio">3.119000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">1.163</td>
+<td class="gt_row gt_right" headers="P-Value">0.3279</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Jamaica</td>
+<td class="gt_row gt_right" headers="Rate Ratio">3.118000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.387</td>
+<td class="gt_row gt_right" headers="P-Value">0.0033</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Kingsbridge - Riverdale</td>
+<td class="gt_row gt_right" headers="Rate Ratio">5.780000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.534</td>
+<td class="gt_row gt_right" headers="P-Value">0.3049</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Long Island City - Astoria</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.759000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.957</td>
+<td class="gt_row gt_right" headers="P-Value">0.5554</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Lower Manhattan</td>
+<td class="gt_row gt_right" headers="Rate Ratio">2.560000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.892</td>
+<td class="gt_row gt_right" headers="P-Value">0.1266</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Northeast Bronx</td>
+<td class="gt_row gt_right" headers="Rate Ratio">2.893000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.503</td>
+<td class="gt_row gt_right" headers="P-Value">0.0346</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Pelham - Throgs Neck</td>
+<td class="gt_row gt_right" headers="Rate Ratio">3.563000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.651</td>
+<td class="gt_row gt_right" headers="P-Value">0.0510</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Port Richmond</td>
+<td class="gt_row gt_right" headers="Rate Ratio">6.220000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.301</td>
+<td class="gt_row gt_right" headers="P-Value">0.1154</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Ridgewood - Forest Hills</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.083000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.392</td>
+<td class="gt_row gt_right" headers="P-Value">0.8389</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Rockaway</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.313000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.491</td>
+<td class="gt_row gt_right" headers="P-Value">0.5795</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`South Beach - Tottenville</td>
+<td class="gt_row gt_right" headers="Rate Ratio">4.600000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.691</td>
+<td class="gt_row gt_right" headers="P-Value">0.2614</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Southeast Queens</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.261000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.651</td>
+<td class="gt_row gt_right" headers="P-Value">0.7214</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Southwest Queens</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.747000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.226</td>
+<td class="gt_row gt_right" headers="P-Value">0.0133</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Sunset Park</td>
+<td class="gt_row gt_right" headers="Rate Ratio">3.770000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.852</td>
+<td class="gt_row gt_right" headers="P-Value">0.2521</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Union Square - Lower East Side</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.930000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.929</td>
+<td class="gt_row gt_right" headers="P-Value">0.4793</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Upper Eastside</td>
+<td class="gt_row gt_right" headers="Rate Ratio">7.350000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.598</td>
+<td class="gt_row gt_right" headers="P-Value">0.6066</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Upper Westside</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.623000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.602</td>
+<td class="gt_row gt_right" headers="P-Value">0.4212</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Washington Heights - Inwood</td>
+<td class="gt_row gt_right" headers="Rate Ratio">2.843000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">1.124</td>
+<td class="gt_row gt_right" headers="P-Value">0.3525</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`West Queens</td>
+<td class="gt_row gt_right" headers="Rate Ratio">2.685000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.652</td>
+<td class="gt_row gt_right" headers="P-Value">0.1298</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Williamsburg - Bushwick</td>
+<td class="gt_row gt_right" headers="Rate Ratio">4.045000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">1.007</td>
+<td class="gt_row gt_right" headers="P-Value">0.1653</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Neighborhood (U.H.F)`Willowbrook</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.040000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.703</td>
+<td class="gt_row gt_right" headers="P-Value">0.0013</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Poverty Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">9.590000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.018</td>
+<td class="gt_row gt_right" headers="P-Value">0.0216</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Non-High School Graduation Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.014000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.015</td>
+<td class="gt_row gt_right" headers="P-Value">0.3597</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Unemployment Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">9.430000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.019</td>
+<td class="gt_row gt_right" headers="P-Value">0.0022</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Rent-Burdened Household Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">9.900000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.013</td>
+<td class="gt_row gt_right" headers="P-Value">0.4455</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Non-Owner-Occupied Home Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.004000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.025</td>
+<td class="gt_row gt_right" headers="P-Value">0.8736</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Child Poverty Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.009000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.008</td>
+<td class="gt_row gt_right" headers="P-Value">0.2414</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Asthma Hospitalization Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.002000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.004</td>
+<td class="gt_row gt_right" headers="P-Value">0.6827</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Crowded Household Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.052000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.025</td>
+<td class="gt_row gt_right" headers="P-Value">0.0460</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Non-Health Insurance Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.004000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.004</td>
+<td class="gt_row gt_right" headers="P-Value">0.3397</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">black_prop</td>
+<td class="gt_row gt_right" headers="Rate Ratio">9.970000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.010</td>
+<td class="gt_row gt_right" headers="P-Value">0.7915</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The coefficient for black_prop is approximately 0.997. This means that for a one-unit increase in black proportion, the expected number of total HIV/AIDS cases decreases by approximately 0.003%, according to the model. Again, a one-unit, or 100% increase, is unrealistic, so adjusting for that, this means a 10% increase in the proportion of black residents results in an approximately 0.0003% in the expected number of total HIV/AIDS cases, which is negligible.</p>
+<p>Compared to the first model, the coefficients of some predictors changed. For example, in the first model, unemployment rate had a negative association with the total number of HIV/AIDS cases, but in this model, it has a positive association. The same goes for the rent-burdened household rate. This suggests that variation between neighborhoods was confounding the relationship, meaning neighborhoods with high rates of rent-burdened households and unemployment might also have other unmeasured characteristics that masked the true positive effect of these predictors on HIV rates.</p>
+<p>For black_prop, the same concept applies. The shift from a positive association to negative association when neighborhood was added as a predictor suggests the disproportionate amount of HIV/AIDS cases experienced by black people are not due to race itself, but rather due to socioeconomic factors and neighborhood-level conditions, which disproportionately affect black people.</p>
+<p>On the other hand, the crowded household rate is the only predictor which went from a positive to negative household rate. This suggests the true effect of crowded households on HIV/AIDS cases was benign confounded by neighborhood-level factors which weren’t controlled for in the first model and once they were, the true effect of crowded household rates on HIV/AIDS contraction became more apparent.</p>
+<p>Compared to the first model, many predictors had a p-value greater than 0.05. This is likely due to the increased model complexity. With so many more predictors, with the new one being a geographic location, which will overlap with some of the socioeconomic conditions already controlled for, the exact significance of each predictor becomes more difficult to ascertain.</p>
+<p>Analysis of this model follows. Below is a table of the model’s fit statistics.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="djoeyvgnwn" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#djoeyvgnwn table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#djoeyvgnwn thead, #djoeyvgnwn tbody, #djoeyvgnwn tfoot, #djoeyvgnwn tr, #djoeyvgnwn td, #djoeyvgnwn th {
+  border-style: none;
+}
+
+#djoeyvgnwn p {
+  margin: 0;
+  padding: 0;
+}
+
+#djoeyvgnwn .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#djoeyvgnwn .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#djoeyvgnwn .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#djoeyvgnwn .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#djoeyvgnwn .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#djoeyvgnwn .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#djoeyvgnwn .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#djoeyvgnwn .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#djoeyvgnwn .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#djoeyvgnwn .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#djoeyvgnwn .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#djoeyvgnwn .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#djoeyvgnwn .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#djoeyvgnwn .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#djoeyvgnwn .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#djoeyvgnwn .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#djoeyvgnwn .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#djoeyvgnwn .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#djoeyvgnwn .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#djoeyvgnwn .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#djoeyvgnwn .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#djoeyvgnwn .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#djoeyvgnwn .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#djoeyvgnwn .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#djoeyvgnwn .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#djoeyvgnwn .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#djoeyvgnwn .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#djoeyvgnwn .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#djoeyvgnwn .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#djoeyvgnwn .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#djoeyvgnwn .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#djoeyvgnwn .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#djoeyvgnwn .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#djoeyvgnwn .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#djoeyvgnwn .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#djoeyvgnwn .gt_left {
+  text-align: left;
+}
+
+#djoeyvgnwn .gt_center {
+  text-align: center;
+}
+
+#djoeyvgnwn .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#djoeyvgnwn .gt_font_normal {
+  font-weight: normal;
+}
+
+#djoeyvgnwn .gt_font_bold {
+  font-weight: bold;
+}
+
+#djoeyvgnwn .gt_font_italic {
+  font-style: italic;
+}
+
+#djoeyvgnwn .gt_super {
+  font-size: 65%;
+}
+
+#djoeyvgnwn .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#djoeyvgnwn .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#djoeyvgnwn .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#djoeyvgnwn .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#djoeyvgnwn .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#djoeyvgnwn .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#djoeyvgnwn .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#djoeyvgnwn .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#djoeyvgnwn div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="2" class="gt_heading gt_title gt_font_normal gt_bottom_border">Fit Statistics of the Second Poisson Regression Model</th>
+</tr>
+<tr class="odd gt_col_headings">
+<th id="Statistic" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Statistic</th>
+<th id="Value" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Value</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Statistic">Deviance</td>
+<td class="gt_row gt_right" headers="Value">618.08</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Statistic">Null Deviance</td>
+<td class="gt_row gt_right" headers="Value">3,398.56</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Statistic">AIC</td>
+<td class="gt_row gt_right" headers="Value">2,246.94</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Statistic">BIC</td>
+<td class="gt_row gt_right" headers="Value">2,460.82</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Statistic">Log-Likelihood</td>
+<td class="gt_row gt_right" headers="Value">−1,070.47</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Statistic">Pearson Chi-Square</td>
+<td class="gt_row gt_right" headers="Value">591.20</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>This model’s deviance r-squared value is 1 - (618.08/3398.56) ≈ 0.818, meaning this model explains around 81.8% of the deviance in total HIV/AIDS contraction cases. This makes this model stronger than the previous model and a strong fit overall.</p>
+<p>Like the first, the model’s BIC is higher than its AIC, which is expected considering the model became more complex due to adding many new predictors. The increased gap between the two suggests that a simpler model could still be worth considering. The log-likelihood value is also on the larger side, but given the higher deviance r-squared value, the model continues to be a strong fit.</p>
+<p>A Pearson Chi-Square value of 591.20 also suggests the model is a good fit, as the value is close to the residual deviance value of 618.08. Just like the first model, the closeness between the two values continues to suggest these models don’t suffer from overdispersion.</p>
+<p>Below are plots for further analysis of the model.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="analysis_files/figure-html/unnamed-chunk-22-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The pattern displayed in this residual plot mimics the pattern of the first residual plot. The residuals display no clear pattern and are randomly dispersed around 0, further demonstrating the model’s adequacy, as it fits well for most observations. As the fitted values increase, there appear to be some outliers, but they don’t appear to disrupt the overall fit. This is typical for count data, where the variance increases with the mean.</p>
+<p>Like the first normal q-q plot, this plot also suggests the model adequately captures the data’s trends, as most of the plots are right along the diagonal reference line; however, there is significant deviance from the reference line towards the tails, suggesting there are outliers that don’t follow the data’s structure perfectly. These outliers could potentially be inhibiting the model’s performance and affecting its assumptions, so further testing or alternative approaches could be worthwhile.</p>
+<p>After accounting for the neighborhood as a predictor, the model suggests race itself is not the determining factor in the total number of HIV/AIDS, but rather the structural and socioeconomic conditions people experience. The trend of black people having disproportionately higher HIV/AIDS contraction rates would likely be explained by black people being disproportionately affected by these structural and socioeconomic conditions, perhaps reflecting broader systemic issues within New York City’s infrastructure.</p>
+<section id="limitations" class="level2">
+<h2 class="anchored" data-anchor-id="limitations">Limitations</h2>
+<p>Both models have many of the same limitations. A factor that could be considered a limitation is what made the dataset so easy to work with in the beginning, which is that the data was stored according to New York City’s UHF42 neighborhoods. While this allowed for easy storage and data manipulation, it made finding other datasets to join and other variables to add as a predictor rather difficult, as the data had to be stored in a similar format, in order to not compromise the integrity of our model by including fewer data points than neighborhoods they would be applied to. This meant some predictors which may be statistically significant, like drug usage, age and sex demographics, and proportion of LGBTQ residents, couldn’t be added because if this data was available, it wasn’t available at the UHF 42 level. The only time data was added that didn’t have data stored according to UHF42 neighborhoods was for the health insurance rate predictor. This data was stored in UHF34 neighborhoods. The reasons it was still added to the dataset are 34 values was enough for a variable we thought would be very helpful for our model and many of the UHF34 and UHF42 neighborhoods are the exact same; the UHF34 neighborhoods that are different are formed by combining several UHF42 neighborhoods, so some UHF42 neighborhoods had their exact health insurance rates.</p>
+<p>The next limitation our models have is many of the rates in the dataset are predicted rates generated using a polynomial model. The reason this had to be done is the majority of data stored according to UHF42 neighborhoods was also stored in five-year periods, such as 2017-2021 inclusive, then 2016-2020, 2015-2019, and so on, and giving the average value over that time period. The original HIV dataset was stored year-by-year, not according to these five-year periods, so to get values for our predictors, the middle year of each five year time period was taken and the average value over the corresponding five-year period was assigned to that middle year. This supplied data for every year in the original dataset, except 2020 and 2021, so a polynomial model was used to predict the values for those two years. This process was used for every predictor variable stored according to this format.</p>
+<p>The final major limitation of these models is the main assumption of every Poisson model, which is that the mean equals the variance. It makes this assumption due to the form of the distribution. If the data being modeled doesn’t fit this distribution well, even if it’s a count variable, then using a Poisson model will result in overdispersion, although this didn’t seem to be a glaring issue in this particular analysis.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

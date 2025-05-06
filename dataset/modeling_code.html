@@ -129,7 +129,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../big_picture.html"> 
-<span class="menu-text">Big Picture</span></a>
+<span class="menu-text">An Unequal Epidemic: How HIV Hits NYC Communities Differently</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../analysis.html"> 
@@ -193,8 +193,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>hiv_clean <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"https://sussmanbu.github.io/ma4615-sp25-final-project-team-5/dataset_for_shiny/hiv_clean.rds"</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>pov <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>,<span class="st">"NYC EH Data Portal - Neighborhood poverty (filtered) (1).csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pov <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>,<span class="st">"NYC EH Data Portal - Neighborhood poverty (filtered) (1).csv"</span>), <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>hiv_clean <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"https://sussmanbu.github.io/ma4615-sp25-final-project-team-5/dataset_for_shiny/hiv_clean.rds"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>pov <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>,<span class="st">"NYC EH Data Portal - Neighborhood poverty (filtered) (1).csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 517 Columns: 10
 ── Column specification ────────────────────────────────────────────────────────
@@ -209,7 +212,7 @@ num (1): Number
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>pov_c <span class="ot">&lt;-</span> pov <span class="sc">|&gt;</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">midpoint =</span> <span class="fu">as.integer</span>(<span class="fu">str_extract</span>(TimePeriod, <span class="st">"</span><span class="sc">\\</span><span class="st">d{4}"</span>)) <span class="sc">+</span> <span class="dv">2</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>models_by_neighborhood <span class="ot">&lt;-</span> pov_c <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>pov_by_neighborhood <span class="ot">&lt;-</span> pov_c <span class="sc">|&gt;</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(GeoTypeDesc <span class="sc">==</span> <span class="st">"UHF 42"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Geography) <span class="sc">|&gt;</span></span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
@@ -225,7 +228,17 @@ num (1): Number
 <span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">YEAR =</span> midpoint,</span>
 <span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> Geography,</span>
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Estimated Poverty Rate</span><span class="st">`</span> <span class="ot">=</span> estimated_rate</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper East Side"</span>, <span class="st">"Upper Eastside"</span>),</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper West Side"</span>, <span class="st">"Upper Westside"</span>),</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Greenwich Village - SoHo"</span>, <span class="st">"Greenwich Village - Soho"</span>),</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Crotona -Tremont"</span>, <span class="st">"Crotona - Tremont"</span>),</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Rockaways"</span>, <span class="st">"Rockaway"</span>),</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Fordham - Bronx Pk"</span>, <span class="st">"Fordham - Bronx Park"</span>),</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Downtown - Heights - Slope"</span>, <span class="st">"Downtown - Heights - Park Slope"</span>),</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Washington Heights"</span>, <span class="st">"Washington Heights - Inwood"</span>)</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>race_total <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>, <span class="st">"NYC EH Data Portal - Race and ethnicity (filtered) (1).csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -259,58 +272,1652 @@ num (1): Total population
 <span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
 <span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Neighborhood (U.H.F)"</span> <span class="ot">=</span> Geography,</span>
 <span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">YEAR =</span> midpoint</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>black_uhf <span class="ot">&lt;-</span> rt <span class="sc">|&gt;</span></span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(GeoTypeDesc <span class="sc">==</span> <span class="st">"UHF 42"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Geography) <span class="sc">|&gt;</span></span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(<span class="st">`</span><span class="at">Black alone (percent)</span><span class="st">`</span> <span class="sc">~</span> <span class="fu">poly</span>(midpoint, <span class="dv">2</span>), <span class="at">data =</span> .x)),</span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> <span class="fu">list</span>(<span class="fu">tibble</span>(<span class="at">midpoint =</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2021</span>)),</span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted =</span> <span class="fu">map2</span>(model, newdata, <span class="sc">~</span> <span class="fu">mutate</span>(.y, <span class="at">black_prop =</span> <span class="fu">predict</span>(.x, <span class="at">newdata =</span> .y)))</span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Geography, predicted) <span class="sc">|&gt;</span></span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(predicted) <span class="sc">|&gt;</span></span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>midpoint <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2007</span>, <span class="dv">2008</span>, <span class="dv">2009</span>, <span class="dv">2014</span>, <span class="dv">2015</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Neighborhood (U.H.F)"</span> <span class="ot">=</span> Geography,</span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">YEAR =</span> midpoint</span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>hispanic_uhf <span class="ot">&lt;-</span> rt <span class="sc">|&gt;</span></span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(GeoTypeDesc <span class="sc">==</span> <span class="st">"UHF 42"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Geography) <span class="sc">|&gt;</span></span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
-<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(<span class="st">`</span><span class="at">Hispanic alone (percent)</span><span class="st">`</span> <span class="sc">~</span> <span class="fu">poly</span>(midpoint, <span class="dv">2</span>), <span class="at">data =</span> .x)),</span>
-<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> <span class="fu">list</span>(<span class="fu">tibble</span>(<span class="at">midpoint =</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2021</span>)),</span>
-<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted =</span> <span class="fu">map2</span>(model, newdata, <span class="sc">~</span> <span class="fu">mutate</span>(.y, <span class="at">hispanic_prop =</span> <span class="fu">predict</span>(.x, <span class="at">newdata =</span> .y)))</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper East Side"</span>, <span class="st">"Upper Eastside"</span>),</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper West Side"</span>, <span class="st">"Upper Westside"</span>),</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Greenwich Village - SoHo"</span>, <span class="st">"Greenwich Village - Soho"</span>),</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Crotona -Tremont"</span>, <span class="st">"Crotona - Tremont"</span>),</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Rockaways"</span>, <span class="st">"Rockaway"</span>),</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Fordham - Bronx Pk"</span>, <span class="st">"Fordham - Bronx Park"</span>),</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Downtown - Heights - Slope"</span>, <span class="st">"Downtown - Heights - Park Slope"</span>),</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Washington Heights"</span>, <span class="st">"Washington Heights - Inwood"</span>)</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>black_uhf <span class="ot">&lt;-</span> rt <span class="sc">|&gt;</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(GeoTypeDesc <span class="sc">==</span> <span class="st">"UHF 42"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Geography) <span class="sc">|&gt;</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(<span class="st">`</span><span class="at">Black alone (percent)</span><span class="st">`</span> <span class="sc">~</span> <span class="fu">poly</span>(midpoint, <span class="dv">2</span>), <span class="at">data =</span> .x)),</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> <span class="fu">list</span>(<span class="fu">tibble</span>(<span class="at">midpoint =</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2021</span>)),</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted =</span> <span class="fu">map2</span>(model, newdata, <span class="sc">~</span> <span class="fu">mutate</span>(.y, <span class="at">black_prop =</span> <span class="fu">predict</span>(.x, <span class="at">newdata =</span> .y)))</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Geography, predicted) <span class="sc">|&gt;</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(predicted) <span class="sc">|&gt;</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>midpoint <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2007</span>, <span class="dv">2008</span>, <span class="dv">2009</span>, <span class="dv">2014</span>, <span class="dv">2015</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Neighborhood (U.H.F)"</span> <span class="ot">=</span> Geography,</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">YEAR =</span> midpoint</span>
 <span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Geography, predicted) <span class="sc">|&gt;</span></span>
-<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(predicted) <span class="sc">|&gt;</span></span>
-<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>midpoint <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2007</span>, <span class="dv">2008</span>, <span class="dv">2009</span>, <span class="dv">2014</span>, <span class="dv">2015</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Neighborhood (U.H.F)"</span> <span class="ot">=</span> Geography,</span>
-<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">YEAR =</span> midpoint</span>
-<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>white_uhf <span class="ot">&lt;-</span> rt <span class="sc">|&gt;</span></span>
-<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(GeoTypeDesc <span class="sc">==</span> <span class="st">"UHF 42"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Geography) <span class="sc">|&gt;</span></span>
-<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
-<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(<span class="st">`</span><span class="at">White alone (percent)</span><span class="st">`</span> <span class="sc">~</span> <span class="fu">poly</span>(midpoint, <span class="dv">2</span>), <span class="at">data =</span> .x)),</span>
-<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> <span class="fu">list</span>(<span class="fu">tibble</span>(<span class="at">midpoint =</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2021</span>)),</span>
-<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted =</span> <span class="fu">map2</span>(model, newdata, <span class="sc">~</span> <span class="fu">mutate</span>(.y, <span class="at">white_prop =</span> <span class="fu">predict</span>(.x, <span class="at">newdata =</span> .y)))</span>
-<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Geography, predicted) <span class="sc">|&gt;</span></span>
-<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(predicted) <span class="sc">|&gt;</span></span>
-<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>midpoint <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2007</span>, <span class="dv">2008</span>, <span class="dv">2009</span>, <span class="dv">2014</span>, <span class="dv">2015</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Neighborhood (U.H.F)"</span> <span class="ot">=</span> Geography,</span>
-<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">YEAR =</span> midpoint</span>
-<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper East Side"</span>, <span class="st">"Upper Eastside"</span>),</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper West Side"</span>, <span class="st">"Upper Westside"</span>),</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Greenwich Village - SoHo"</span>, <span class="st">"Greenwich Village - Soho"</span>),</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Crotona -Tremont"</span>, <span class="st">"Crotona - Tremont"</span>),</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Rockaways"</span>, <span class="st">"Rockaway"</span>),</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Fordham - Bronx Pk"</span>, <span class="st">"Fordham - Bronx Park"</span>),</span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Downtown - Heights - Slope"</span>, <span class="st">"Downtown - Heights - Park Slope"</span>),</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Washington Heights"</span>, <span class="st">"Washington Heights - Inwood"</span>)</span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>hispanic_uhf <span class="ot">&lt;-</span> rt <span class="sc">|&gt;</span></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(GeoTypeDesc <span class="sc">==</span> <span class="st">"UHF 42"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Geography) <span class="sc">|&gt;</span></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(<span class="st">`</span><span class="at">Hispanic alone (percent)</span><span class="st">`</span> <span class="sc">~</span> <span class="fu">poly</span>(midpoint, <span class="dv">2</span>), <span class="at">data =</span> .x)),</span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> <span class="fu">list</span>(<span class="fu">tibble</span>(<span class="at">midpoint =</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2021</span>)),</span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted =</span> <span class="fu">map2</span>(model, newdata, <span class="sc">~</span> <span class="fu">mutate</span>(.y, <span class="at">hispanic_prop =</span> <span class="fu">predict</span>(.x, <span class="at">newdata =</span> .y)))</span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Geography, predicted) <span class="sc">|&gt;</span></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(predicted) <span class="sc">|&gt;</span></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>midpoint <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2007</span>, <span class="dv">2008</span>, <span class="dv">2009</span>, <span class="dv">2014</span>, <span class="dv">2015</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Neighborhood (U.H.F)"</span> <span class="ot">=</span> Geography,</span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>    <span class="at">YEAR =</span> midpoint</span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper East Side"</span>, <span class="st">"Upper Eastside"</span>),</span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper West Side"</span>, <span class="st">"Upper Westside"</span>),</span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Greenwich Village - SoHo"</span>, <span class="st">"Greenwich Village - Soho"</span>),</span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Crotona -Tremont"</span>, <span class="st">"Crotona - Tremont"</span>),</span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Rockaways"</span>, <span class="st">"Rockaway"</span>),</span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Fordham - Bronx Pk"</span>, <span class="st">"Fordham - Bronx Park"</span>),</span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Downtown - Heights - Slope"</span>, <span class="st">"Downtown - Heights - Park Slope"</span>),</span>
+<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Washington Heights"</span>, <span class="st">"Washington Heights - Inwood"</span>)</span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a>white_uhf <span class="ot">&lt;-</span> rt <span class="sc">|&gt;</span></span>
+<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(GeoTypeDesc <span class="sc">==</span> <span class="st">"UHF 42"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Geography) <span class="sc">|&gt;</span></span>
+<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(<span class="st">`</span><span class="at">White alone (percent)</span><span class="st">`</span> <span class="sc">~</span> <span class="fu">poly</span>(midpoint, <span class="dv">2</span>), <span class="at">data =</span> .x)),</span>
+<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> <span class="fu">list</span>(<span class="fu">tibble</span>(<span class="at">midpoint =</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2021</span>)),</span>
+<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted =</span> <span class="fu">map2</span>(model, newdata, <span class="sc">~</span> <span class="fu">mutate</span>(.y, <span class="at">white_prop =</span> <span class="fu">predict</span>(.x, <span class="at">newdata =</span> .y)))</span>
+<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Geography, predicted) <span class="sc">|&gt;</span></span>
+<span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(predicted) <span class="sc">|&gt;</span></span>
+<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>midpoint <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2007</span>, <span class="dv">2008</span>, <span class="dv">2009</span>, <span class="dv">2014</span>, <span class="dv">2015</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb9-94"><a href="#cb9-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb9-95"><a href="#cb9-95" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Neighborhood (U.H.F)"</span> <span class="ot">=</span> Geography,</span>
+<span id="cb9-96"><a href="#cb9-96" aria-hidden="true" tabindex="-1"></a>    <span class="at">YEAR =</span> midpoint</span>
+<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb9-98"><a href="#cb9-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper East Side"</span>, <span class="st">"Upper Eastside"</span>),</span>
+<span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper West Side"</span>, <span class="st">"Upper Westside"</span>),</span>
+<span id="cb9-101"><a href="#cb9-101" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Greenwich Village - SoHo"</span>, <span class="st">"Greenwich Village - Soho"</span>),</span>
+<span id="cb9-102"><a href="#cb9-102" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Crotona -Tremont"</span>, <span class="st">"Crotona - Tremont"</span>),</span>
+<span id="cb9-103"><a href="#cb9-103" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Rockaways"</span>, <span class="st">"Rockaway"</span>),</span>
+<span id="cb9-104"><a href="#cb9-104" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Fordham - Bronx Pk"</span>, <span class="st">"Fordham - Bronx Park"</span>),</span>
+<span id="cb9-105"><a href="#cb9-105" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Downtown - Heights - Slope"</span>, <span class="st">"Downtown - Heights - Park Slope"</span>),</span>
+<span id="cb9-106"><a href="#cb9-106" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Washington Heights"</span>, <span class="st">"Washington Heights - Inwood"</span>)</span>
+<span id="cb9-107"><a href="#cb9-107" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>grad <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>,<span class="st">"NYC EH Data Portal - Graduated high school (filtered).csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 462 Columns: 10
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (5): TimePeriod, GeoTypeDesc, Borough, Geography, Area
+dbl (4): GeoID, GeoRank, BoroID, Percent
+num (1): Number
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>grad_f <span class="ot">&lt;-</span> grad <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">midpoint =</span> <span class="fu">as.integer</span>(<span class="fu">str_extract</span>(TimePeriod, <span class="st">"</span><span class="sc">\\</span><span class="st">d{4}"</span>)) <span class="sc">+</span> <span class="dv">2</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>grad_by_neighborhood <span class="ot">&lt;-</span> grad_f <span class="sc">|&gt;</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Geography) <span class="sc">|&gt;</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(Percent <span class="sc">~</span> <span class="fu">poly</span>(midpoint, <span class="dv">2</span>), <span class="at">data =</span> .x)),</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> <span class="fu">list</span>(<span class="fu">tibble</span>(<span class="at">midpoint =</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2021</span>)),</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted =</span> <span class="fu">map2</span>(model, newdata, <span class="sc">~</span> <span class="fu">mutate</span>(.y, <span class="at">estimated_rate =</span> <span class="fu">predict</span>(.x, <span class="at">newdata =</span> .y)))</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Geography, predicted) <span class="sc">|&gt;</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(predicted) <span class="sc">|&gt;</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>midpoint <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2007</span>, <span class="dv">2008</span>, <span class="dv">2009</span>, <span class="dv">2014</span>, <span class="dv">2015</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">YEAR =</span> midpoint,</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> Geography,</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Estimated High School Graduation Rate</span><span class="st">`</span> <span class="ot">=</span> estimated_rate</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper East Side"</span>, <span class="st">"Upper Eastside"</span>),</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper West Side"</span>, <span class="st">"Upper Westside"</span>),</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Greenwich Village - SoHo"</span>, <span class="st">"Greenwich Village - Soho"</span>),</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Crotona -Tremont"</span>, <span class="st">"Crotona - Tremont"</span>),</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Rockaways"</span>, <span class="st">"Rockaway"</span>),</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Fordham - Bronx Pk"</span>, <span class="st">"Fordham - Bronx Park"</span>),</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Downtown - Heights - Slope"</span>, <span class="st">"Downtown - Heights - Park Slope"</span>),</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Washington Heights"</span>, <span class="st">"Washington Heights - Inwood"</span>)</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Estimated Non-High School Graduation Rate</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">100</span> <span class="sc">-</span> <span class="st">`</span><span class="at">Estimated High School Graduation Rate</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="st">`</span><span class="at">Estimated High School Graduation Rate</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>unemp <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>, <span class="st">"NYC EH Data Portal - Unemployment (filtered).csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 462 Columns: 10
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (5): TimePeriod, GeoTypeDesc, Borough, Geography, Area
+dbl (4): GeoID, GeoRank, BoroID, Percent
+num (1): Number
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>unemp_f <span class="ot">&lt;-</span> unemp <span class="sc">|&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">midpoint =</span> <span class="fu">as.integer</span>(<span class="fu">str_extract</span>(TimePeriod, <span class="st">"</span><span class="sc">\\</span><span class="st">d{4}"</span>)) <span class="sc">+</span> <span class="dv">2</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>unemp_by_neighborhood <span class="ot">&lt;-</span> unemp_f <span class="sc">|&gt;</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Geography) <span class="sc">|&gt;</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(Percent <span class="sc">~</span> <span class="fu">poly</span>(midpoint, <span class="dv">2</span>), <span class="at">data =</span> .x)),</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> <span class="fu">list</span>(<span class="fu">tibble</span>(<span class="at">midpoint =</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2021</span>)),</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted =</span> <span class="fu">map2</span>(model, newdata, <span class="sc">~</span> <span class="fu">mutate</span>(.y, <span class="at">estimated_rate =</span> <span class="fu">predict</span>(.x, <span class="at">newdata =</span> .y)))</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Geography, predicted) <span class="sc">|&gt;</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(predicted) <span class="sc">|&gt;</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>midpoint <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2007</span>, <span class="dv">2008</span>, <span class="dv">2009</span>, <span class="dv">2014</span>, <span class="dv">2015</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">YEAR =</span> midpoint,</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> Geography,</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Estimated Unemployment Rate</span><span class="st">`</span> <span class="ot">=</span> estimated_rate</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper East Side"</span>, <span class="st">"Upper Eastside"</span>),</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper West Side"</span>, <span class="st">"Upper Westside"</span>),</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Greenwich Village - SoHo"</span>, <span class="st">"Greenwich Village - Soho"</span>),</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Crotona -Tremont"</span>, <span class="st">"Crotona - Tremont"</span>),</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Rockaways"</span>, <span class="st">"Rockaway"</span>),</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Fordham - Bronx Pk"</span>, <span class="st">"Fordham - Bronx Park"</span>),</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Downtown - Heights - Slope"</span>, <span class="st">"Downtown - Heights - Park Slope"</span>),</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Washington Heights"</span>, <span class="st">"Washington Heights - Inwood"</span>)</span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>rb <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>, <span class="st">"NYC EH Data Portal - Rent-burdened households (filtered).csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 462 Columns: 10
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (5): TimePeriod, GeoTypeDesc, Borough, Geography, Area
+dbl (4): GeoID, GeoRank, BoroID, Percent
+num (1): Number
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>rb_f <span class="ot">&lt;-</span> rb <span class="sc">|&gt;</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">midpoint =</span> <span class="fu">as.integer</span>(<span class="fu">str_extract</span>(TimePeriod, <span class="st">"</span><span class="sc">\\</span><span class="st">d{4}"</span>)) <span class="sc">+</span> <span class="dv">2</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>rb_by_uhf <span class="ot">&lt;-</span> rb_f <span class="sc">|&gt;</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Geography) <span class="sc">|&gt;</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(Percent <span class="sc">~</span> <span class="fu">poly</span>(midpoint, <span class="dv">2</span>), <span class="at">data =</span> .x)),</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> <span class="fu">list</span>(<span class="fu">tibble</span>(<span class="at">midpoint =</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2021</span>)),</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted =</span> <span class="fu">map2</span>(model, newdata, <span class="sc">~</span> <span class="fu">mutate</span>(.y, <span class="at">estimated_rate =</span> <span class="fu">predict</span>(.x, <span class="at">newdata =</span> .y)))</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Geography, predicted) <span class="sc">|&gt;</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(predicted) <span class="sc">|&gt;</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>midpoint <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2007</span>, <span class="dv">2008</span>, <span class="dv">2009</span>, <span class="dv">2014</span>, <span class="dv">2015</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">YEAR =</span> midpoint,</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> Geography,</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Estimated Rent-Burdened Household Rate</span><span class="st">`</span> <span class="ot">=</span> estimated_rate</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper East Side"</span>, <span class="st">"Upper Eastside"</span>),</span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper West Side"</span>, <span class="st">"Upper Westside"</span>),</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Greenwich Village - SoHo"</span>, <span class="st">"Greenwich Village - Soho"</span>),</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Crotona -Tremont"</span>, <span class="st">"Crotona - Tremont"</span>),</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Rockaways"</span>, <span class="st">"Rockaway"</span>),</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Fordham - Bronx Pk"</span>, <span class="st">"Fordham - Bronx Park"</span>),</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Downtown - Heights - Slope"</span>, <span class="st">"Downtown - Heights - Park Slope"</span>),</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Washington Heights"</span>, <span class="st">"Washington Heights - Inwood"</span>)</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>ooh <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>, <span class="st">"NYC EH Data Portal - Owner-occupied homes (filtered).csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 462 Columns: 10
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (5): TimePeriod, GeoTypeDesc, Borough, Geography, Area
+dbl (4): GeoID, GeoRank, BoroID, Percent
+num (1): Number
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>ooh_f <span class="ot">&lt;-</span> ooh <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">midpoint =</span> <span class="fu">as.integer</span>(<span class="fu">str_extract</span>(TimePeriod, <span class="st">"</span><span class="sc">\\</span><span class="st">d{4}"</span>)) <span class="sc">+</span> <span class="dv">2</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>ooh_by_uhf <span class="ot">&lt;-</span> ooh_f <span class="sc">|&gt;</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Geography) <span class="sc">|&gt;</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(Percent <span class="sc">~</span> <span class="fu">poly</span>(midpoint, <span class="dv">2</span>), <span class="at">data =</span> .x)),</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> <span class="fu">list</span>(<span class="fu">tibble</span>(<span class="at">midpoint =</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2021</span>)),</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted =</span> <span class="fu">map2</span>(model, newdata, <span class="sc">~</span> <span class="fu">mutate</span>(.y, <span class="at">estimated_rate =</span> <span class="fu">predict</span>(.x, <span class="at">newdata =</span> .y)))</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Geography, predicted) <span class="sc">|&gt;</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(predicted) <span class="sc">|&gt;</span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>midpoint <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2007</span>, <span class="dv">2008</span>, <span class="dv">2009</span>, <span class="dv">2014</span>, <span class="dv">2015</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">YEAR =</span> midpoint,</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> Geography,</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Estimated Owner-Occupied Home Rate</span><span class="st">`</span> <span class="ot">=</span> estimated_rate</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper East Side"</span>, <span class="st">"Upper Eastside"</span>),</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper West Side"</span>, <span class="st">"Upper Westside"</span>),</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Greenwich Village - SoHo"</span>, <span class="st">"Greenwich Village - Soho"</span>),</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Crotona -Tremont"</span>, <span class="st">"Crotona - Tremont"</span>),</span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Rockaways"</span>, <span class="st">"Rockaway"</span>),</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Fordham - Bronx Pk"</span>, <span class="st">"Fordham - Bronx Park"</span>),</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Downtown - Heights - Slope"</span>, <span class="st">"Downtown - Heights - Park Slope"</span>),</span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Washington Heights"</span>, <span class="st">"Washington Heights - Inwood"</span>)</span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Estimated Non-Owner-Occupied Home Rate</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">100</span> <span class="sc">-</span> <span class="st">`</span><span class="at">Estimated Owner-Occupied Home Rate</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="st">`</span><span class="at">Estimated Owner-Occupied Home Rate</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>cpov <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>, <span class="st">"NYC EH Data Portal - Child poverty (under age 5) (filtered).csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 462 Columns: 10
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (5): TimePeriod, GeoTypeDesc, Borough, Geography, Area
+dbl (4): GeoID, GeoRank, BoroID, Percent
+num (1): Number
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>cpov_f <span class="ot">&lt;-</span> cpov <span class="sc">|&gt;</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">midpoint =</span> <span class="fu">as.integer</span>(<span class="fu">str_extract</span>(TimePeriod, <span class="st">"</span><span class="sc">\\</span><span class="st">d{4}"</span>)) <span class="sc">+</span> <span class="dv">2</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>cpov_by_uhf <span class="ot">&lt;-</span> cpov_f <span class="sc">|&gt;</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Geography) <span class="sc">|&gt;</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(Percent <span class="sc">~</span> <span class="fu">poly</span>(midpoint, <span class="dv">2</span>), <span class="at">data =</span> .x)),</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> <span class="fu">list</span>(<span class="fu">tibble</span>(<span class="at">midpoint =</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2021</span>)),</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted =</span> <span class="fu">map2</span>(model, newdata, <span class="sc">~</span> <span class="fu">mutate</span>(.y, <span class="at">estimated_rate =</span> <span class="fu">predict</span>(.x, <span class="at">newdata =</span> .y)))</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Geography, predicted) <span class="sc">|&gt;</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(predicted) <span class="sc">|&gt;</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>midpoint <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2007</span>, <span class="dv">2008</span>, <span class="dv">2009</span>, <span class="dv">2014</span>, <span class="dv">2015</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">YEAR =</span> midpoint,</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> Geography,</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Estimated Child Poverty Rate</span><span class="st">`</span> <span class="ot">=</span> estimated_rate</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper East Side"</span>, <span class="st">"Upper Eastside"</span>),</span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper West Side"</span>, <span class="st">"Upper Westside"</span>),</span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Greenwich Village - SoHo"</span>, <span class="st">"Greenwich Village - Soho"</span>),</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Crotona -Tremont"</span>, <span class="st">"Crotona - Tremont"</span>),</span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Rockaways"</span>, <span class="st">"Rockaway"</span>),</span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Fordham - Bronx Pk"</span>, <span class="st">"Fordham - Bronx Park"</span>),</span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Downtown - Heights - Slope"</span>, <span class="st">"Downtown - Heights - Park Slope"</span>),</span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Washington Heights"</span>, <span class="st">"Washington Heights - Inwood"</span>)</span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>asth <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>, <span class="st">"NYC EH Data Portal - Asthma hospitalizations (adults) (filtered).csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 672 Columns: 11
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (7): GeoTypeDesc, Borough, Geography, Area, Number, Estimated annual rat...
+dbl (4): TimePeriod, GeoID, GeoRank, BoroID
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>asth_f <span class="ot">&lt;-</span> asth <span class="sc">|&gt;</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Age-adjusted rate per 10,000</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">as.numeric</span>(<span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">*"</span>, <span class="st">""</span>, <span class="st">`</span><span class="at">Age-adjusted rate per 10,000</span><span class="st">`</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="st">`</span><span class="at">Estimated annual rate per 10,000</span><span class="st">`</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>asth_uhf <span class="ot">&lt;-</span> asth_f <span class="sc">|&gt;</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Geography) <span class="sc">|&gt;</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(<span class="st">`</span><span class="at">Age-adjusted rate per 10,000</span><span class="st">`</span> <span class="sc">~</span> <span class="fu">poly</span>(TimePeriod, <span class="dv">2</span>), <span class="at">data =</span> .x)),</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> <span class="fu">list</span>(<span class="fu">tibble</span>(<span class="at">TimePeriod =</span> <span class="dv">2005</span><span class="sc">:</span><span class="dv">2022</span>)),</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted =</span> <span class="fu">map2</span>(model, newdata, <span class="sc">~</span> <span class="fu">mutate</span>(.y, <span class="at">estimated_rate =</span> <span class="fu">predict</span>(.x, <span class="at">newdata =</span> .y)))</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Geography, predicted) <span class="sc">|&gt;</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(predicted) <span class="sc">|&gt;</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>TimePeriod <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2005</span>, <span class="dv">2006</span>, <span class="dv">2007</span>, <span class="dv">2008</span>, <span class="dv">2009</span>, <span class="dv">2014</span>, <span class="dv">2015</span>, <span class="dv">2022</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">YEAR =</span> TimePeriod,</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> Geography,</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Estimated Asthma Hospitalization Rate</span><span class="st">`</span> <span class="ot">=</span> estimated_rate</span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper East Side"</span>, <span class="st">"Upper Eastside"</span>),</span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper West Side"</span>, <span class="st">"Upper Westside"</span>),</span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Greenwich Village - SoHo"</span>, <span class="st">"Greenwich Village - Soho"</span>),</span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Crotona -Tremont"</span>, <span class="st">"Crotona - Tremont"</span>),</span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Rockaways"</span>, <span class="st">"Rockaway"</span>),</span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Fordham - Bronx Pk"</span>, <span class="st">"Fordham - Bronx Park"</span>),</span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Downtown - Heights - Slope"</span>, <span class="st">"Downtown - Heights - Park Slope"</span>),</span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Washington Heights"</span>, <span class="st">"Washington Heights - Inwood"</span>)</span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>hc <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>, <span class="st">"NYC EH Data Portal - Household crowding (filtered) (1).csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 462 Columns: 10
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (5): TimePeriod, GeoTypeDesc, Borough, Geography, Area
+dbl (4): GeoID, GeoRank, BoroID, Percent
+num (1): Number
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>hc_f <span class="ot">&lt;-</span> hc <span class="sc">|&gt;</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">midpoint =</span> <span class="fu">as.integer</span>(<span class="fu">str_extract</span>(TimePeriod, <span class="st">"</span><span class="sc">\\</span><span class="st">d{4}"</span>)) <span class="sc">+</span> <span class="dv">2</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>hc_uhf <span class="ot">&lt;-</span> hc_f <span class="sc">|&gt;</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Geography) <span class="sc">|&gt;</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(Percent <span class="sc">~</span> <span class="fu">poly</span>(midpoint, <span class="dv">2</span>), <span class="at">data =</span> .x)),</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> <span class="fu">list</span>(<span class="fu">tibble</span>(<span class="at">midpoint =</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2021</span>)),</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted =</span> <span class="fu">map2</span>(model, newdata, <span class="sc">~</span> <span class="fu">mutate</span>(.y, <span class="at">estimated_rate =</span> <span class="fu">predict</span>(.x, <span class="at">newdata =</span> .y)))</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Geography, predicted) <span class="sc">|&gt;</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(predicted) <span class="sc">|&gt;</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>midpoint <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2007</span>, <span class="dv">2008</span>, <span class="dv">2009</span>, <span class="dv">2014</span>, <span class="dv">2015</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">YEAR =</span> midpoint,</span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> Geography,</span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Estimated Crowded Household Rate</span><span class="st">`</span> <span class="ot">=</span> estimated_rate</span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper East Side"</span>, <span class="st">"Upper Eastside"</span>),</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Upper West Side"</span>, <span class="st">"Upper Westside"</span>),</span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Greenwich Village - SoHo"</span>, <span class="st">"Greenwich Village - Soho"</span>),</span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Crotona -Tremont"</span>, <span class="st">"Crotona - Tremont"</span>),</span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Rockaways"</span>, <span class="st">"Rockaway"</span>),</span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Fordham - Bronx Pk"</span>, <span class="st">"Fordham - Bronx Park"</span>),</span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Downtown - Heights - Slope"</span>, <span class="st">"Downtown - Heights - Park Slope"</span>),</span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Washington Heights"</span>, <span class="st">"Washington Heights - Inwood"</span>)</span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>hi <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>, <span class="st">"NYC EH Data Portal - Health insurance (adults) (filtered)(1).csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 320 Columns: 10
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (7): GeoTypeDesc, BoroID, Borough, Geography, Area, Number, Percent
+dbl (3): TimePeriod, GeoID, GeoRank
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>map_uhf <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>, <span class="st">"UHF34_to_UHF42 .csv"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, <span class="st">"Staple - St. George"</span>, <span class="st">"Stapleton - St. George"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 42 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (2): Geography, Neighborhood (U.H.F)
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>hi_f <span class="ot">&lt;-</span> hi <span class="sc">|&gt;</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(GeoTypeDesc <span class="sc">==</span> <span class="st">"UHF 34"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">YEAR =</span> TimePeriod) <span class="sc">|&gt;</span></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(YEAR, GeoTypeDesc, Geography, Percent) <span class="sc">|&gt;</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Percent =</span> <span class="fu">str_remove_all</span>(Percent, <span class="st">"</span><span class="sc">\\</span><span class="st">*|</span><span class="sc">\\</span><span class="st">s*</span><span class="sc">\\</span><span class="st">(.*</span><span class="sc">\\</span><span class="st">)"</span>),</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">Percent =</span> <span class="fu">as.numeric</span>(Percent)</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Geography) <span class="sc">|&gt;</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(<span class="st">`</span><span class="at">Percent</span><span class="st">`</span> <span class="sc">~</span> <span class="fu">poly</span>(YEAR, <span class="dv">2</span>), <span class="at">data =</span> .x)),</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> <span class="fu">list</span>(<span class="fu">tibble</span>(<span class="at">YEAR =</span> <span class="dv">2010</span><span class="sc">:</span><span class="dv">2021</span>)),</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted =</span> <span class="fu">map2</span>(model, newdata, <span class="sc">~</span> <span class="fu">mutate</span>(.y, <span class="at">estimated_rate =</span> <span class="fu">predict</span>(.x, <span class="at">newdata =</span> .y)))</span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Geography, predicted) <span class="sc">|&gt;</span></span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(predicted) <span class="sc">|&gt;</span></span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>YEAR <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2014</span>, <span class="dv">2015</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Estimated Non-Health Insurance Rate</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">100</span> <span class="sc">-</span> <span class="st">`</span><span class="at">estimated_rate</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="st">`</span><span class="at">estimated_rate</span><span class="st">`</span>)</span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a>hi_uhf <span class="ot">&lt;-</span> hi_f <span class="sc">|&gt;</span></span>
+<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(map_uhf, <span class="at">by =</span> <span class="st">"Geography"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>Geography)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in left_join(hi_f, map_uhf, by = "Geography"): Detected an unexpected many-to-many relationship between `x` and `y`.
+ℹ Row 41 of `x` matches multiple rows in `y`.
+ℹ Row 1 of `y` matches multiple rows in `x`.
+ℹ If a many-to-many relationship is expected, set `relationship =
+  "many-to-many"` to silence this warning.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>hiv_filt <span class="ot">&lt;-</span> hiv_clean <span class="sc">|&gt;</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="sc">!=</span> <span class="st">"All"</span>, <span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span> <span class="sc">==</span> <span class="st">"All"</span>, SEX <span class="sc">==</span> <span class="st">"All"</span>)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>join1 <span class="ot">&lt;-</span> hiv_filt <span class="sc">|&gt;</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(pov_by_neighborhood, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"YEAR"</span>, <span class="st">"Neighborhood (U.H.F)"</span>))</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>join2 <span class="ot">&lt;-</span> join1 <span class="sc">|&gt;</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(asian_uhf, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"YEAR"</span>, <span class="st">"Neighborhood (U.H.F)"</span>))</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>join3 <span class="ot">&lt;-</span> join2 <span class="sc">|&gt;</span></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(black_uhf, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"YEAR"</span>, <span class="st">"Neighborhood (U.H.F)"</span>))</span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>join4 <span class="ot">&lt;-</span> join3 <span class="sc">|&gt;</span></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(hispanic_uhf, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"YEAR"</span>, <span class="st">"Neighborhood (U.H.F)"</span>))</span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>join5 <span class="ot">&lt;-</span> join4 <span class="sc">|&gt;</span></span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(white_uhf, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"YEAR"</span>, <span class="st">"Neighborhood (U.H.F)"</span>))</span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>join6 <span class="ot">&lt;-</span> join5 <span class="sc">|&gt;</span></span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(grad_by_neighborhood, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"YEAR"</span>, <span class="st">"Neighborhood (U.H.F)"</span>))</span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a>join7 <span class="ot">&lt;-</span> join6 <span class="sc">|&gt;</span></span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(unemp_by_neighborhood, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"YEAR"</span>, <span class="st">"Neighborhood (U.H.F)"</span>))</span>
+<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a>join8 <span class="ot">&lt;-</span> join7 <span class="sc">|&gt;</span></span>
+<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(rb_by_uhf, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"YEAR"</span>, <span class="st">"Neighborhood (U.H.F)"</span>))</span>
+<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a>join9 <span class="ot">&lt;-</span> join8 <span class="sc">|&gt;</span></span>
+<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(ooh_by_uhf, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"YEAR"</span>, <span class="st">"Neighborhood (U.H.F)"</span>))</span>
+<span id="cb37-30"><a href="#cb37-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-31"><a href="#cb37-31" aria-hidden="true" tabindex="-1"></a>join10 <span class="ot">&lt;-</span> join9 <span class="sc">|&gt;</span></span>
+<span id="cb37-32"><a href="#cb37-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(cpov_by_uhf, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"YEAR"</span>, <span class="st">"Neighborhood (U.H.F)"</span>))</span>
+<span id="cb37-33"><a href="#cb37-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-34"><a href="#cb37-34" aria-hidden="true" tabindex="-1"></a>join11 <span class="ot">&lt;-</span> join10 <span class="sc">|&gt;</span></span>
+<span id="cb37-35"><a href="#cb37-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(asth_uhf, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"YEAR"</span>, <span class="st">"Neighborhood (U.H.F)"</span>))</span>
+<span id="cb37-36"><a href="#cb37-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-37"><a href="#cb37-37" aria-hidden="true" tabindex="-1"></a>join12 <span class="ot">&lt;-</span> join11 <span class="sc">|&gt;</span></span>
+<span id="cb37-38"><a href="#cb37-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(hc_uhf, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"YEAR"</span>, <span class="st">"Neighborhood (U.H.F)"</span>))</span>
+<span id="cb37-39"><a href="#cb37-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-40"><a href="#cb37-40" aria-hidden="true" tabindex="-1"></a>join13 <span class="ot">&lt;-</span> join12 <span class="sc">|&gt;</span></span>
+<span id="cb37-41"><a href="#cb37-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(hi_uhf, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"YEAR"</span>, <span class="st">"Neighborhood (U.H.F)"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>mod_formula <span class="ot">&lt;-</span> <span class="st">`</span><span class="at">TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES</span><span class="st">`</span> <span class="sc">~</span> <span class="st">`</span><span class="at">YEAR</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Estimated Poverty Rate</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Estimated Non-High School Graduation Rate</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Estimated Unemployment Rate</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Estimated Rent-Burdened Household Rate</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Estimated Non-Owner-Occupied Home Rate</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Estimated Child Poverty Rate</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Estimated Asthma Hospitalization Rate</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Estimated Crowded Household Rate</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Estimated Non-Health Insurance Rate</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">black_prop</span><span class="st">`</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>mod2_formula <span class="ot">&lt;-</span> <span class="st">`</span><span class="at">TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES</span><span class="st">`</span> <span class="sc">~</span> <span class="st">`</span><span class="at">YEAR</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Estimated Poverty Rate</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Estimated Non-High School Graduation Rate</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Estimated Unemployment Rate</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Estimated Rent-Burdened Household Rate</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Estimated Non-Owner-Occupied Home Rate</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Estimated Child Poverty Rate</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Estimated Asthma Hospitalization Rate</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Estimated Crowded Household Rate</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">Estimated Non-Health Insurance Rate</span><span class="st">`</span> <span class="sc">+</span> <span class="st">`</span><span class="at">black_prop</span><span class="st">`</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>mod1 <span class="ot">&lt;-</span> <span class="fu">glm</span>(mod_formula, <span class="at">family =</span> poisson, <span class="at">data =</span> join13)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(mod2_formula, <span class="at">family =</span> poisson, <span class="at">data =</span> join13)</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = mod_formula, family = poisson, data = join13)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-4.8669  -1.4967  -0.3489   0.8271   5.8842  
+
+Coefficients:
+                                              Estimate Std. Error z value
+(Intercept)                                 72.7230955 14.6311501   4.970
+YEAR                                        -0.0374327  0.0072747  -5.146
+`Estimated Poverty Rate`                    -0.0670164  0.0094439  -7.096
+`Estimated Non-High School Graduation Rate`  0.0105715  0.0051958   2.035
+`Estimated Unemployment Rate`               -0.0655507  0.0109724  -5.974
+`Estimated Rent-Burdened Household Rate`     0.0599263  0.0058008  10.331
+`Estimated Non-Owner-Occupied Home Rate`     0.0396097  0.0019551  20.260
+`Estimated Child Poverty Rate`               0.0003831  0.0044550   0.086
+`Estimated Asthma Hospitalization Rate`      0.0105366  0.0023596   4.465
+`Estimated Crowded Household Rate`          -0.0215757  0.0076886  -2.806
+`Estimated Non-Health Insurance Rate`        0.0252673  0.0030549   8.271
+black_prop                                   0.0188863  0.0009193  20.544
+                                            Pr(&gt;|z|)    
+(Intercept)                                 6.68e-07 ***
+YEAR                                        2.67e-07 ***
+`Estimated Poverty Rate`                    1.28e-12 ***
+`Estimated Non-High School Graduation Rate`  0.04189 *  
+`Estimated Unemployment Rate`               2.31e-09 ***
+`Estimated Rent-Burdened Household Rate`     &lt; 2e-16 ***
+`Estimated Non-Owner-Occupied Home Rate`     &lt; 2e-16 ***
+`Estimated Child Poverty Rate`               0.93147    
+`Estimated Asthma Hospitalization Rate`     7.99e-06 ***
+`Estimated Crowded Household Rate`           0.00501 ** 
+`Estimated Non-Health Insurance Rate`        &lt; 2e-16 ***
+black_prop                                   &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 3398.6  on 417  degrees of freedom
+Residual deviance: 1324.2  on 406  degrees of freedom
+AIC: 2871.1
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(mod1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2871.11</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">BIC</span>(mod1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2919.535</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">logLik</span>(mod1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'log Lik.' -1423.555 (df=12)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>pearson_resid <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">residuals</span>(mod1, <span class="at">type =</span> <span class="st">"pearson"</span>)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>pearson_resid</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1342.655</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(mod1) <span class="sc">|&gt;</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimate =</span> <span class="fu">exp</span>(estimate),</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimate =</span> <span class="fu">round</span>(estimate, <span class="dv">3</span>),</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">std.error =</span> <span class="fu">round</span>(std.error, <span class="dv">3</span>),</span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">p.value =</span> <span class="fu">round</span>(p.value, <span class="dv">4</span>)</span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(term, estimate, std.error, p.value) <span class="sc">|&gt;</span></span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">Predictor =</span> term,</span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Rate Ratio</span><span class="st">`</span> <span class="ot">=</span> estimate,</span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Std. Error</span><span class="st">`</span> <span class="ot">=</span> std.error,</span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">P-Value</span><span class="st">`</span> <span class="ot">=</span> p.value</span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb48-20"><a href="#cb48-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Exponentiated Coefficients from Poisson Regression Model"</span></span>
+<span id="cb48-21"><a href="#cb48-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb48-22"><a href="#cb48-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sub_missing</span>(</span>
+<span id="cb48-23"><a href="#cb48-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">everything</span>(),</span>
+<span id="cb48-24"><a href="#cb48-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">missing_text =</span> <span class="st">"-"</span></span>
+<span id="cb48-25"><a href="#cb48-25" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="jskwhuveiq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#jskwhuveiq table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#jskwhuveiq thead, #jskwhuveiq tbody, #jskwhuveiq tfoot, #jskwhuveiq tr, #jskwhuveiq td, #jskwhuveiq th {
+  border-style: none;
+}
+
+#jskwhuveiq p {
+  margin: 0;
+  padding: 0;
+}
+
+#jskwhuveiq .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#jskwhuveiq .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#jskwhuveiq .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#jskwhuveiq .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#jskwhuveiq .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#jskwhuveiq .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jskwhuveiq .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#jskwhuveiq .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#jskwhuveiq .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#jskwhuveiq .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#jskwhuveiq .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#jskwhuveiq .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#jskwhuveiq .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#jskwhuveiq .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#jskwhuveiq .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#jskwhuveiq .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#jskwhuveiq .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#jskwhuveiq .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#jskwhuveiq .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jskwhuveiq .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#jskwhuveiq .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#jskwhuveiq .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#jskwhuveiq .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jskwhuveiq .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#jskwhuveiq .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#jskwhuveiq .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jskwhuveiq .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jskwhuveiq .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#jskwhuveiq .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jskwhuveiq .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#jskwhuveiq .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jskwhuveiq .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#jskwhuveiq .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jskwhuveiq .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#jskwhuveiq .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jskwhuveiq .gt_left {
+  text-align: left;
+}
+
+#jskwhuveiq .gt_center {
+  text-align: center;
+}
+
+#jskwhuveiq .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#jskwhuveiq .gt_font_normal {
+  font-weight: normal;
+}
+
+#jskwhuveiq .gt_font_bold {
+  font-weight: bold;
+}
+
+#jskwhuveiq .gt_font_italic {
+  font-style: italic;
+}
+
+#jskwhuveiq .gt_super {
+  font-size: 65%;
+}
+
+#jskwhuveiq .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#jskwhuveiq .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#jskwhuveiq .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#jskwhuveiq .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#jskwhuveiq .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#jskwhuveiq .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#jskwhuveiq .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#jskwhuveiq .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#jskwhuveiq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="4" class="gt_heading gt_title gt_font_normal gt_bottom_border">Exponentiated Coefficients from Poisson Regression Model</th>
+</tr>
+<tr class="odd gt_col_headings">
+<th id="Predictor" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Predictor</th>
+<th id="Rate-Ratio" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Rate Ratio</th>
+<th id="Std.-Error" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Std. Error</th>
+<th id="P-Value" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">P-Value</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">(Intercept)</td>
+<td class="gt_row gt_right" headers="Rate Ratio">3.830355e+31</td>
+<td class="gt_row gt_right" headers="Std. Error">14.631</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">YEAR</td>
+<td class="gt_row gt_right" headers="Rate Ratio">9.630000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.007</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Poverty Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">9.350000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.009</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Non-High School Graduation Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.011000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.005</td>
+<td class="gt_row gt_right" headers="P-Value">0.0419</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Unemployment Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">9.370000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.011</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Rent-Burdened Household Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.062000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.006</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Non-Owner-Occupied Home Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.040000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.002</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Child Poverty Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.000000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.004</td>
+<td class="gt_row gt_right" headers="P-Value">0.9315</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Asthma Hospitalization Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.011000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.002</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Crowded Household Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">9.790000e-01</td>
+<td class="gt_row gt_right" headers="Std. Error">0.008</td>
+<td class="gt_row gt_right" headers="P-Value">0.0050</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Predictor">`Estimated Non-Health Insurance Rate`</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.026000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.003</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Predictor">black_prop</td>
+<td class="gt_row gt_right" headers="Rate Ratio">1.019000e+00</td>
+<td class="gt_row gt_right" headers="Std. Error">0.001</td>
+<td class="gt_row gt_right" headers="P-Value">0.0000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>fit_stats <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Statistic =</span> <span class="fu">c</span>(<span class="st">"Deviance"</span>, <span class="st">"AIC"</span>, <span class="st">"BIC"</span>, <span class="st">"Log-Likelihood"</span>, <span class="st">"Pearson Chi-Square"</span>),</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Value =</span> <span class="fu">c</span>(<span class="fu">deviance</span>(mod1), <span class="fu">AIC</span>(mod1), <span class="fu">BIC</span>(mod1), <span class="fu">logLik</span>(mod1), pearson_resid)</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>fit_stats <span class="sc">|&gt;</span></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Fit Statistics of the Poisson Regression Model"</span></span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(</span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">vars</span>(Value),</span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">decimals =</span> <span class="dv">2</span></span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Since gt v0.3.0, `columns = vars(...)` has been deprecated.
+• Please use `columns = c(...)` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="vdhzmtcecs" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#vdhzmtcecs table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#vdhzmtcecs thead, #vdhzmtcecs tbody, #vdhzmtcecs tfoot, #vdhzmtcecs tr, #vdhzmtcecs td, #vdhzmtcecs th {
+  border-style: none;
+}
+
+#vdhzmtcecs p {
+  margin: 0;
+  padding: 0;
+}
+
+#vdhzmtcecs .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#vdhzmtcecs .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#vdhzmtcecs .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#vdhzmtcecs .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#vdhzmtcecs .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vdhzmtcecs .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vdhzmtcecs .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#vdhzmtcecs .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#vdhzmtcecs .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#vdhzmtcecs .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#vdhzmtcecs .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#vdhzmtcecs .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#vdhzmtcecs .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#vdhzmtcecs .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#vdhzmtcecs .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#vdhzmtcecs .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#vdhzmtcecs .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#vdhzmtcecs .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#vdhzmtcecs .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vdhzmtcecs .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#vdhzmtcecs .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#vdhzmtcecs .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#vdhzmtcecs .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vdhzmtcecs .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#vdhzmtcecs .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#vdhzmtcecs .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vdhzmtcecs .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vdhzmtcecs .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#vdhzmtcecs .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vdhzmtcecs .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#vdhzmtcecs .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#vdhzmtcecs .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vdhzmtcecs .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vdhzmtcecs .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#vdhzmtcecs .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#vdhzmtcecs .gt_left {
+  text-align: left;
+}
+
+#vdhzmtcecs .gt_center {
+  text-align: center;
+}
+
+#vdhzmtcecs .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#vdhzmtcecs .gt_font_normal {
+  font-weight: normal;
+}
+
+#vdhzmtcecs .gt_font_bold {
+  font-weight: bold;
+}
+
+#vdhzmtcecs .gt_font_italic {
+  font-style: italic;
+}
+
+#vdhzmtcecs .gt_super {
+  font-size: 65%;
+}
+
+#vdhzmtcecs .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#vdhzmtcecs .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#vdhzmtcecs .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#vdhzmtcecs .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#vdhzmtcecs .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#vdhzmtcecs .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#vdhzmtcecs .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#vdhzmtcecs .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#vdhzmtcecs div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="2" class="gt_heading gt_title gt_font_normal gt_bottom_border">Fit Statistics of the Poisson Regression Model</th>
+</tr>
+<tr class="odd gt_col_headings">
+<th id="Statistic" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Statistic</th>
+<th id="Value" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Value</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Statistic">Deviance</td>
+<td class="gt_row gt_right" headers="Value">1,324.25</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Statistic">AIC</td>
+<td class="gt_row gt_right" headers="Value">2,871.11</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Statistic">BIC</td>
+<td class="gt_row gt_right" headers="Value">2,919.54</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Statistic">Log-Likelihood</td>
+<td class="gt_row gt_right" headers="Value">−1,423.55</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Statistic">Pearson Chi-Square</td>
+<td class="gt_row gt_right" headers="Value">1,342.66</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
 </div>
 
 

@@ -129,7 +129,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./big_picture.html"> 
-<span class="menu-text">Big Picture</span></a>
+<span class="menu-text">An Unequal Epidemic: How HIV Hits NYC Communities Differently</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./analysis.html"> 
@@ -155,7 +155,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#head" id="toc-head" class="nav-link active" data-scroll-target="#head">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</a></li>
+  <li><a href="#data-overview" id="toc-data-overview" class="nav-link active" data-scroll-target="#data-overview">Data Overview</a>
+  <ul class="collapse">
+  <li><a href="#main-dataset" id="toc-main-dataset" class="nav-link" data-scroll-target="#main-dataset">Main Dataset</a></li>
+  <li><a href="#secondary-datasets" id="toc-secondary-datasets" class="nav-link" data-scroll-target="#secondary-datasets">Secondary Datasets</a></li>
+  </ul></li>
+  <li><a href="#cleaning-the-data" id="toc-cleaning-the-data" class="nav-link" data-scroll-target="#cleaning-the-data">Cleaning the Data</a></li>
   </ul>
 </nav>
     </div>
@@ -186,55 +191,546 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD <img src="images/data-import-cheatsheet-thumbs.png" class="img-fluid"> ======= <img src="images/Image.png" class="img-fluid"> &gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/main</p>
+<p><img src="images/Image.png" class="img-fluid"></p>
 <p>This comes from the file <code>data.qmd</code>.</p>
-<p><strong>Data Overview</strong></p>
-<p>Our dataset is <a href="https://data.cityofnewyork.us/Health/HIV-AIDS-Diagnoses-by-Neighborhood-Sex-and-Race-Et/ykvb-493p/about_data">HIV/AIDS Diagnoses by Neighborhood, Sex, and Race/Ethnicity</a>. The data was originally collected from the New York City Department of Health and Mental Hygiene (NYC DOHMH), which collected and compiled information on new HIV and AIDS diagnoses reported through March 31, 2021. Specifically, this dataset covers cases diagnosed from calendar years 2016 through 2020. The data were collected to monitor trends in HIV and AIDS diagnoses, enabling public health officials to track disease patterns, guide prevention and treatment strategies, and identify disparities across different neighborhoods and demographic groups within NYC. Cases are stratified by United Hospital Fund (UHF) neighborhoods, sex, and race/ethnicity, allowing for targeted public health responses. The original dataset can typically be obtained directly from the NYC DOHMH or accessed through official public health data portals maintained by New York City.</p>
-<p><strong>Cleaning the Data</strong></p>
-<p>The first step in cleaning the dataset was filling in missing borough values for data compiled from 2010-13. The original dataset always compiled the neighborhood, but didn’t start including the borough until 2016. Because of the data not being stored according to borough, but having neighborhoods from different boroughs stored in neighboring cells, the fill command couldn’t be used because it would take the last borough value and fill that in for all missing borough values, which would attribute that borough to incorrect neighborhoods. Instead, we made a copy of the original dataset and used a command within the spreadsheet to assign each neighborhood the proper borough and then pasted that command into each blank value and had the spreadsheet fill in the missing values.</p>
-<p>Next, we ensured all variables were stored the same way. In the original dataset, the authors sometimes compiled the same variable in different ways. One of the most common disparities was in how variables with a space in the name were stored. Sometimes, instead of using a space, the authors used a linebreak. When viewing these names in the .csv file or in an imported dataset in R, the difference was invisible, but when trying to perform analysis, R would consider these variables with the same name to be two different variables, due to the linebreak. In order to fix this, all linebreaks were replaced with spaces, which can be seen in our clean_data.R script.</p>
-<p>There were other ways a slightly different spelling made R consider a variable referring to the same place or people as two different variables. Sometimes, it was due to a lack of a space where there sometimes was a space, as in the neighborhood Upper East Side. In the original dataset, sometimes this was stored as “Upper Eastside.” We added a space to variables stored like this, in order for the variable names to coincide with the actual names of the neighborhoods. Another storage difference was with the Hispanic race variable. Sometimes it was stored as “Latino/Hispanic” and other times as just “Hispanic”; we stored every instance of it as “Hispanic” for simplicity. Finally, we used the complete.cases function to filter out all rows with NA values.</p>
-<p><strong>Visualization</strong></p>
-<p>(1) Bar plots and Box plots</p>
-<p>Purpose: Show total counts or rates across racial groups</p>
+<section id="data-overview" class="level2">
+<h2 class="anchored" data-anchor-id="data-overview">Data Overview</h2>
+<section id="main-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="main-dataset">Main Dataset</h3>
+<p>Our primary dataset is <a href="https://data.cityofnewyork.us/Health/HIV-AIDS-Diagnoses-by-Neighborhood-Sex-and-Race-Et/ykvb-493p/about_data">HIV/AIDS Diagnoses by Neighborhood, Sex, and Race/Ethnicity</a>. The data was originally collected from the New York City Department of Health and Mental Hygiene (NYC DOHMH), which collected and compiled information on new HIV and AIDS diagnoses reported through March 31, 2021. Specifically, this dataset covers cases diagnosed from calendar years 2010 through 2013, then 2016 through 2020. The data were collected to monitor trends in HIV and AIDS diagnoses, enabling public health officials to track disease patterns, guide prevention and treatment strategies, and identify disparities across different neighborhoods and demographic groups within NYC. Cases are stratified by borough, United Hospital Fund (UHF) neighborhoods, sex, and race/ethnicity, allowing for targeted public health responses. For each category, the dataset tracks the total number of HIV and AIDS cases and the case rate per 100,000 people. The original dataset can be obtained directly from the NYC DOHMH or accessed through official public health data portals maintained by New York City. Below is a list of the variables in the dataset.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(tidyverse))</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>here() starts at /home/tvlaz/MA415/ma4615-sp25-final-project-team-5</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>, <span class="st">"hiv_clean.rds"</span>))</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df_clean <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.finite</span>(<span class="st">`</span><span class="at">TOTAL NUMBER OF HIV DIAGNOSES</span><span class="st">`</span>))</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_clean, <span class="fu">aes</span>(<span class="at">x =</span> <span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>, <span class="at">y =</span> <span class="st">`</span><span class="at">TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES</span><span class="st">`</span>, <span class="at">fill =</span> <span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span>  </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribution of TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES"</span>,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Race/Ethnicity"</span>,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES"</span>) <span class="sc">+</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">100</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="data_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
+<div id="gvlrkqigly" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#gvlrkqigly table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#gvlrkqigly thead, #gvlrkqigly tbody, #gvlrkqigly tfoot, #gvlrkqigly tr, #gvlrkqigly td, #gvlrkqigly th {
+  border-style: none;
+}
+
+#gvlrkqigly p {
+  margin: 0;
+  padding: 0;
+}
+
+#gvlrkqigly .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#gvlrkqigly .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#gvlrkqigly .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#gvlrkqigly .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#gvlrkqigly .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#gvlrkqigly .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gvlrkqigly .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#gvlrkqigly .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#gvlrkqigly .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#gvlrkqigly .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#gvlrkqigly .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#gvlrkqigly .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#gvlrkqigly .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#gvlrkqigly .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#gvlrkqigly .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#gvlrkqigly .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#gvlrkqigly .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#gvlrkqigly .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#gvlrkqigly .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gvlrkqigly .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#gvlrkqigly .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#gvlrkqigly .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#gvlrkqigly .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gvlrkqigly .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#gvlrkqigly .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#gvlrkqigly .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gvlrkqigly .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gvlrkqigly .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#gvlrkqigly .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gvlrkqigly .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#gvlrkqigly .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#gvlrkqigly .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#gvlrkqigly .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gvlrkqigly .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#gvlrkqigly .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#gvlrkqigly .gt_left {
+  text-align: left;
+}
+
+#gvlrkqigly .gt_center {
+  text-align: center;
+}
+
+#gvlrkqigly .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#gvlrkqigly .gt_font_normal {
+  font-weight: normal;
+}
+
+#gvlrkqigly .gt_font_bold {
+  font-weight: bold;
+}
+
+#gvlrkqigly .gt_font_italic {
+  font-style: italic;
+}
+
+#gvlrkqigly .gt_super {
+  font-size: 65%;
+}
+
+#gvlrkqigly .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#gvlrkqigly .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#gvlrkqigly .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#gvlrkqigly .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#gvlrkqigly .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#gvlrkqigly .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#gvlrkqigly .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#gvlrkqigly .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#gvlrkqigly div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="3" class="gt_heading gt_title gt_font_normal gt_bottom_border">Variable Descriptions</th>
+</tr>
+<tr class="odd gt_col_headings">
+<th id="Variable" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Variable</th>
+<th id="Data_Types" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Data_Types</th>
+<th id="Description" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Description</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">YEAR</td>
+<td class="gt_row gt_left" headers="Data_Types">numeric</td>
+<td class="gt_row gt_left" headers="Description">The year</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Variable">Borough</td>
+<td class="gt_row gt_left" headers="Data_Types">character</td>
+<td class="gt_row gt_left" headers="Description">Which borough in New York City the data is from</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">Neighborhood (U.H.F)</td>
+<td class="gt_row gt_left" headers="Data_Types">character</td>
+<td class="gt_row gt_left" headers="Description">Which UHF42 neighborhood the data is from</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Variable">SEX</td>
+<td class="gt_row gt_left" headers="Data_Types">character</td>
+<td class="gt_row gt_left" headers="Description">Which sex is the data applies to</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">RACE/ETHNICITY</td>
+<td class="gt_row gt_left" headers="Data_Types">character</td>
+<td class="gt_row gt_left" headers="Description">Which race/ethnicity the data applies to</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Variable">TOTAL NUMBER OF HIV DIAGNOSES</td>
+<td class="gt_row gt_left" headers="Data_Types">numeric</td>
+<td class="gt_row gt_left" headers="Description">Number of people diagnosed with HIV in the given area, during that year</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">HIV DIAGNOSES PER 100,000 POPULATION</td>
+<td class="gt_row gt_left" headers="Data_Types">numeric</td>
+<td class="gt_row gt_left" headers="Description">The predicted number of HIV diagnoses in an area, in a given year, per 100,000 people</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Variable">TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES</td>
+<td class="gt_row gt_left" headers="Data_Types">numeric</td>
+<td class="gt_row gt_left" headers="Description">The number of people diagnosed with HIV and AIDS concurrently</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES</td>
+<td class="gt_row gt_left" headers="Data_Types">numeric</td>
+<td class="gt_row gt_left" headers="Description">What proportion of all new HIV diagnoses in an area, during that year, are concurrent HIV/AIDS diagnoses</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Variable">TOTAL NUMBER OF AIDS DIAGNOSES</td>
+<td class="gt_row gt_left" headers="Data_Types">numeric</td>
+<td class="gt_row gt_left" headers="Description">The number of people diagnosed with AIDS in an area, during that year</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">AIDS DIAGNOSES PER 100,000 POPULATION</td>
+<td class="gt_row gt_left" headers="Data_Types">numeric</td>
+<td class="gt_row gt_left" headers="Description">The predicted number of AIDS diagnoses in an area, in a given year, per 100,000 people</td>
+</tr>
+</tbody>
+</table>
+
 </div>
 </div>
 </div>
+<p>This analysis primarily focuses on the <code>TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES</code> column. The main reasons for this are:</p>
+<ol type="1">
+<li><p>Since HIV, when untreated, progresses to AIDS, it reflects a late diagnosis. Since this analysis investigates potentially inequality in testing to do a lack of resources or other structural barriers, these diagnoses are directly linked to that phenomenon.</p></li>
+<li><p>Concurrent diagnoses are more sensitive to neighborhood-level inequality because late testing is often influenced by: distrust in local healthcare, overburdened clinics, a lack of insurance, and stigma.</p></li>
+<li><p>These diagnoses are in the most urgent need of assistance.</p></li>
+</ol>
+<p>Below is a histogram displaying the values <code>TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES</code> tends to take when filtered by individual neighborhood and including all races and sexes.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_clean, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(<span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>, <span class="sc">-</span><span class="st">`</span><span class="at">TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES</span><span class="st">`</span>), </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">y =</span> <span class="st">`</span><span class="at">TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES</span><span class="st">`</span>, <span class="at">fill =</span> <span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES by Race/Ethnicity"</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Race/Ethnicity"</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Total Number of AIDS Diagnoses"</span>) <span class="sc">+</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -243,75 +739,548 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>(2) Line Charts: Trends Over Time</p>
-<p>Purpose: Show how diagnoses and proportions change over years by race</p>
+<p>The histogram displays a clear right-skewed distribution. Most of the values seems to be concentrated in the 0-5 case range, which makes sense, since being diagnosed with HIV and AIDS concurrently is rarer than just HIV or just AIDS. Although, there are still a significant number of cases in the 10-25 case range, demonstrating this is still an issue affecting a significant number of people. There are a few instances of the case numbers surpassing 40 and even 50, indicating some outlier neighborhoods which experience extreme burdens.</p>
+</section>
+<section id="secondary-datasets" class="level3">
+<h3 class="anchored" data-anchor-id="secondary-datasets">Secondary Datasets</h3>
+<p>The other datasets we used came from the same source, which is nyc.gov’s Environment and Health Data Portal. This website is run by New York City’s Department of Health and Mental Hygiene and is where their employees store data they accumulate about New York City’s public health, in order for decision makers and regular citizens to observe trends within the city. <a href="https://a816-dohbesp.nyc.gov/IndicatorPublic/data-explorer/social-conditions/?id=2325#display=summary">This link</a> is to a dataset calculating the proportion of each race in each borough and UHF neighborhood, although that is only one of the many social conditions they monitor. Other conditions monitored include: high school graduation rates, unemployment rates, incarceration rates, and health insurance rates. Each of these datasets is on one specific topic which you select, and for that topic, it will display the proportion of that borough which meets the criteria, for every year they calculated the data. For the race dataset, for each year, it will list the proportion of each major race in each borough, and then each UHF neighborhood within that borough. Because the website is run by the same people who collected our primary dataset, they use the same storage system with race and sex within each borough and UHF neighborhood, making joining datasets easier. Additionally, each dataset, when downloaded, although not visible on the website, comes with each neighborhood’s GEOID, allowing it to be combined with census shapefiles for visualization. Below is a list of all variables added to the main dataset to be used as predictors.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_clean, <span class="fu">aes</span>(<span class="at">x =</span> YEAR, <span class="at">y =</span> <span class="st">`</span><span class="at">HIV DIAGNOSES PER 100,000 POPULATION</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> <span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"HIV Diagnoses per 100,000 Over Time by Race (Linear Fit)"</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Year"</span>, <span class="at">y =</span> <span class="st">"HIV Diagnoses per 100,000"</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
-</div>
 <div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="data_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
+<div id="qrjuutmcrd" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#qrjuutmcrd table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#qrjuutmcrd thead, #qrjuutmcrd tbody, #qrjuutmcrd tfoot, #qrjuutmcrd tr, #qrjuutmcrd td, #qrjuutmcrd th {
+  border-style: none;
+}
+
+#qrjuutmcrd p {
+  margin: 0;
+  padding: 0;
+}
+
+#qrjuutmcrd .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#qrjuutmcrd .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#qrjuutmcrd .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#qrjuutmcrd .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#qrjuutmcrd .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#qrjuutmcrd .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#qrjuutmcrd .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#qrjuutmcrd .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#qrjuutmcrd .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#qrjuutmcrd .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#qrjuutmcrd .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#qrjuutmcrd .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#qrjuutmcrd .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#qrjuutmcrd .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#qrjuutmcrd .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#qrjuutmcrd .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#qrjuutmcrd .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#qrjuutmcrd .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#qrjuutmcrd .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qrjuutmcrd .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#qrjuutmcrd .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#qrjuutmcrd .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#qrjuutmcrd .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qrjuutmcrd .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#qrjuutmcrd .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#qrjuutmcrd .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#qrjuutmcrd .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qrjuutmcrd .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#qrjuutmcrd .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#qrjuutmcrd .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#qrjuutmcrd .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#qrjuutmcrd .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#qrjuutmcrd .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qrjuutmcrd .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#qrjuutmcrd .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#qrjuutmcrd .gt_left {
+  text-align: left;
+}
+
+#qrjuutmcrd .gt_center {
+  text-align: center;
+}
+
+#qrjuutmcrd .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#qrjuutmcrd .gt_font_normal {
+  font-weight: normal;
+}
+
+#qrjuutmcrd .gt_font_bold {
+  font-weight: bold;
+}
+
+#qrjuutmcrd .gt_font_italic {
+  font-style: italic;
+}
+
+#qrjuutmcrd .gt_super {
+  font-size: 65%;
+}
+
+#qrjuutmcrd .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#qrjuutmcrd .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#qrjuutmcrd .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#qrjuutmcrd .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#qrjuutmcrd .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#qrjuutmcrd .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#qrjuutmcrd .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#qrjuutmcrd .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#qrjuutmcrd div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<thead>
+<tr class="header gt_heading">
+<th colspan="3" class="gt_heading gt_title gt_font_normal gt_bottom_border">Variable Descriptions</th>
+</tr>
+<tr class="odd gt_col_headings">
+<th id="Variable" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Variable</th>
+<th id="Data_Type" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Data_Type</th>
+<th id="Description" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Description</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">Estimated Poverty Rate</td>
+<td class="gt_row gt_left" headers="Data_Type">number</td>
+<td class="gt_row gt_left" headers="Description">Percentage of people in that neighborhood, in that year, which live below the poverty line</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Variable">asian_prop</td>
+<td class="gt_row gt_left" headers="Data_Type">number</td>
+<td class="gt_row gt_left" headers="Description">Proportion of Asian residents in that neighborhood, in that year</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">black_prop</td>
+<td class="gt_row gt_left" headers="Data_Type">number</td>
+<td class="gt_row gt_left" headers="Description">Proportion of black residents in that neighborhood, in that year</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Variable">hispanic_prop</td>
+<td class="gt_row gt_left" headers="Data_Type">number</td>
+<td class="gt_row gt_left" headers="Description">Proportion of Hispanic residents in that neighborhood, in that year</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">white_prop</td>
+<td class="gt_row gt_left" headers="Data_Type">number</td>
+<td class="gt_row gt_left" headers="Description">Proportion of white residents in that neighborhood, in that year</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Variable">Estimated Non-High School Graduation Rate</td>
+<td class="gt_row gt_left" headers="Data_Type">number</td>
+<td class="gt_row gt_left" headers="Description">Percentage of people living in that neighborhood, ages 25 and up, in that year, who did not graduate high school</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">Estimated Unemployment Rate</td>
+<td class="gt_row gt_left" headers="Data_Type">number</td>
+<td class="gt_row gt_left" headers="Description">Percentage of people ages 16 and up, living in that neighborhood, in that year, who are unemployed</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Variable">Estimated Rent-Burdened Household Rate</td>
+<td class="gt_row gt_left" headers="Data_Type">number</td>
+<td class="gt_row gt_left" headers="Description">Percentage of people in that neighborhood, in that year, who spend 30% or more of their income on rent and utilities</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">Estimated Non-Owner-Occupied Home Rate</td>
+<td class="gt_row gt_left" headers="Data_Type">number</td>
+<td class="gt_row gt_left" headers="Description">Percentage of people in that neighborhood, in that year, who live in homes they do not own</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Variable">Estimated Child Poverty Rate</td>
+<td class="gt_row gt_left" headers="Data_Type">number</td>
+<td class="gt_row gt_left" headers="Description">Percentage of children under five years old in that neighborhood, in that year, living below the poverty line</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">Estimated Asthma Hospitalization Rate</td>
+<td class="gt_row gt_left" headers="Data_Type">number</td>
+<td class="gt_row gt_left" headers="Description">Number of asthma cases per 10,000 which requires hospitalization per neighborhood, per year</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Variable">Estimated Crowded Household Rate</td>
+<td class="gt_row gt_left" headers="Data_Type">number</td>
+<td class="gt_row gt_left" headers="Description">Percentage of households in that neighborhood, in that year, which have more than one person per room living in it</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Variable">Estimated Non-Health Insurance Rate</td>
+<td class="gt_row gt_left" headers="Data_Type">number</td>
+<td class="gt_row gt_left" headers="Description">Percentage of people in that neighborhood, in that year, which do not have health insurance</td>
+</tr>
+</tbody>
+</table>
+
 </div>
 </div>
 </div>
+<p>Below are some quick graphs of some variables. First, a histogram displaying the values <code>black_prop</code> tends to take on.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df_clean<span class="sc">$</span>Group <span class="ot">&lt;-</span> <span class="fu">paste</span>(df_clean<span class="sc">$</span><span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>, df_clean<span class="sc">$</span>SEX, <span class="at">sep=</span><span class="st">"_"</span>) <span class="co"># group race and sex in a new column </span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>df_clean2 <span class="ot">&lt;-</span> df_clean <span class="sc">|&gt;</span> <span class="fu">group_by</span>(YEAR, <span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>, SEX) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">count=</span><span class="fu">n</span>()) <span class="sc">|&gt;</span> <span class="fu">ungroup</span>() <span class="co"># this is supposed to see how many of each sex are within every race/year </span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># df_clean |&gt; filter(`Neighborhood (U.H.F)`=="All" &amp; Borough=="All" &amp; `SEX`=="All") |&gt; ggplot(</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   mapping = aes(x = YEAR, y = `TOTAL NUMBER OF HIV DIAGNOSES`)) + geom_point() + geom_line() + facet_wrap(~ `RACE/ETHNICITY`) # PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES over the years by race </span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co"># df_clean |&gt; filter(`Neighborhood (U.H.F)`=="All" &amp; Borough=="All")|&gt; ggplot(mapping = aes(x = YEAR, color = SEX , y = `PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES`)) + geom_point() + geom_line() + facet_wrap(~ `RACE/ETHNICITY`) # # PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES over the years by race and sex </span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>df_clean</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6,504 × 12
-    YEAR Borough `Neighborhood (U.H.F)` SEX    `RACE/ETHNICITY`      
-   &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;                  &lt;chr&gt;  &lt;chr&gt;                 
- 1  2021 All     All                    All    All                   
- 2  2021 All     All                    All    Asian/Pacific Islander
- 3  2021 All     All                    All    Black                 
- 4  2021 All     All                    All    Hispanic              
- 5  2021 All     All                    All    Other/Unknown         
- 6  2021 All     All                    All    White                 
- 7  2021 All     All                    Female All                   
- 8  2021 All     All                    Female Asian/Pacific Islander
- 9  2021 All     All                    Female Black                 
-10  2021 All     All                    Female Hispanic              
-# ℹ 6,494 more rows
-# ℹ 7 more variables: `TOTAL NUMBER OF HIV DIAGNOSES` &lt;dbl&gt;,
-#   `HIV DIAGNOSES PER 100,000 POPULATION` &lt;dbl&gt;,
-#   `TOTAL NUMBER OF CONCURRENT HIV/AIDS DIAGNOSES` &lt;dbl&gt;,
-#   `PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES` &lt;dbl&gt;,
-#   `TOTAL NUMBER OF AIDS DIAGNOSES` &lt;dbl&gt;,
-#   `AIDS DIAGNOSES PER 100,000 POPULATION` &lt;dbl&gt;, Group &lt;chr&gt;</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_clean, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(<span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>, <span class="sc">-</span><span class="st">`</span><span class="at">TOTAL NUMBER OF HIV DIAGNOSES</span><span class="st">`</span>), </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">y =</span> <span class="st">`</span><span class="at">TOTAL NUMBER OF HIV DIAGNOSES</span><span class="st">`</span>, <span class="at">fill =</span> <span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"TOTAL NUMBER OF HIV DIAGNOSES by Race/Ethnicity"</span>,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Race/Ethnicity"</span>,</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Total Number of HIV Diagnoses"</span>) <span class="sc">+</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -319,87 +1288,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_clean, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(<span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>, <span class="sc">-</span><span class="st">`</span><span class="at">HIV DIAGNOSES PER 100,000 POPULATION</span><span class="st">`</span>), </span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">y =</span> <span class="st">`</span><span class="at">HIV DIAGNOSES PER 100,000 POPULATION</span><span class="st">`</span>, <span class="at">fill =</span> <span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"TOTAL NUMBER OF HIV DIAGNOSES/100K by Race/Ethnicity"</span>,</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Race/Ethnicity"</span>,</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Total Number of HIV Diagnoses PER 100K"</span>) <span class="sc">+</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="data_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="672"></p>
-</figure>
 </div>
-</div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_clean, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(<span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>, <span class="sc">-</span><span class="st">`</span><span class="at">PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES</span><span class="st">`</span>), </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">y =</span> <span class="st">`</span><span class="at">PROPORTION OF CONCURRENT HIV/AIDS DIAGNOSES AMONG ALL HIV DIAGNOSES</span><span class="st">`</span>, <span class="at">fill =</span> <span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Proportion of Concurrent HIV/AIDS Diagnoses by Race/Ethnicity"</span>,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Race/Ethnicity"</span>,</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Proportion of Concurrent HIV/AIDS Diagnoses"</span>) <span class="sc">+</span></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="data_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_clean, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(<span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>, <span class="sc">-</span><span class="st">`</span><span class="at">TOTAL NUMBER OF AIDS DIAGNOSES</span><span class="st">`</span>), </span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">y =</span> <span class="st">`</span><span class="at">TOTAL NUMBER OF AIDS DIAGNOSES</span><span class="st">`</span>, <span class="at">fill =</span> <span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"TOTAL NUMBER OF AIDS DIAGNOSES by Race/Ethnicity"</span>,</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Race/Ethnicity"</span>,</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"TOTAL NUMBER OF AIDS DIAGNOSES"</span>) <span class="sc">+</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="data_files/figure-html/unnamed-chunk-4-4.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_clean, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(<span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>, <span class="sc">-</span><span class="st">`</span><span class="at">AIDS DIAGNOSES PER 100,000 POPULATION</span><span class="st">`</span>), </span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">y =</span> <span class="st">`</span><span class="at">AIDS DIAGNOSES PER 100,000 POPULATION</span><span class="st">`</span>, <span class="at">fill =</span> <span class="st">`</span><span class="at">RACE/ETHNICITY</span><span class="st">`</span>)) <span class="sc">+</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"AIDS DIAGNOSES PER 100,000 POPULATION by Race/Ethnicity"</span>,</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Race/Ethnicity"</span>,</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"AIDS DIAGNOSES PER 100,000 POPULATION"</span>) <span class="sc">+</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="data_files/figure-html/unnamed-chunk-4-5.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<section id="head" class="level1">
-<h1>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</h1>
+<p>The graph has a right-skewed distribution, indicating many UHF42 neighborhoods are not racially homogeneous. Most neighborhoods seem to be anywhere from 2-8% black. Despite that, there are some neighborhoods which are over 60% black, indicating certain races tend to live together in the same neighborhoods.</p>
+<p>Next, a plot displaying the values <code>Estimated Non-Health Insurance Rate</code> tends to take on.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df_sex_summary <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(SEX <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Male"</span>, <span class="st">"Female"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(SEX) <span class="sc">%&gt;%</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Total_HIV =</span> <span class="fu">sum</span>(<span class="st">`</span><span class="at">TOTAL NUMBER OF HIV DIAGNOSES</span><span class="st">`</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the aggregated totals using geom_col</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_sex_summary, <span class="fu">aes</span>(<span class="at">x =</span> SEX, <span class="at">y =</span> Total_HIV, <span class="at">fill =</span> SEX)) <span class="sc">+</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Total HIV Diagnoses by Sex"</span>, </span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Sex"</span>, </span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Total HIV Diagnoses"</span>) <span class="sc">+</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -407,59 +1299,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df_aids_sex <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(SEX <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Male"</span>, <span class="st">"Female"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(SEX) <span class="sc">%&gt;%</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Total_AIDS =</span> <span class="fu">sum</span>(<span class="st">`</span><span class="at">TOTAL NUMBER OF AIDS DIAGNOSES</span><span class="st">`</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the aggregated totals using geom_col</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_aids_sex, <span class="fu">aes</span>(<span class="at">x =</span> SEX, <span class="at">y =</span> Total_AIDS, <span class="at">fill =</span> SEX)) <span class="sc">+</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Total AIDS Diagnoses by Sex"</span>, </span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Sex"</span>, </span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Total AIDS Diagnoses"</span>) <span class="sc">+</span></span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="data_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="672"></p>
-</figure>
 </div>
-</div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df_hiv_rate_sex <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(SEX <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Male"</span>, <span class="st">"Female"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(SEX) <span class="sc">%&gt;%</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_rate =</span> <span class="fu">mean</span>(<span class="st">`</span><span class="at">HIV DIAGNOSES PER 100,000 POPULATION</span><span class="st">`</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the aggregated average rates using geom_col</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_hiv_rate_sex, <span class="fu">aes</span>(<span class="at">x =</span> SEX, <span class="at">y =</span> avg_rate, <span class="at">fill =</span> SEX)) <span class="sc">+</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.6</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Average HIV Diagnoses per 100,000 by Sex"</span>, </span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Sex"</span>, </span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"HIV Diagnoses per 100,000 Population"</span>) <span class="sc">+</span></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="data_files/figure-html/unnamed-chunk-5-3.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
+<p>This graph displays a more normal distribution than other variables, but still slightly skewed to the right. Most neighborhoods have around 6-16% of their residents uninsured, which makes sense, as with Medicare and Medicaid being available, most people qualify for some sort of health insurance, although that doesn’t prevent outliers, such as one neighborhood with nearly 50% of its residents having no health insurance, potentially indicating extreme underfunding and a lack of attention.</p>
+<p>Finally, below is a graph displaying the values <code>Estimated Poverty Rate</code> tends to take on.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>df_aids_rate <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(SEX <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Male"</span>, <span class="st">"Female"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(SEX) <span class="sc">%&gt;%</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_aids_rate =</span> <span class="fu">mean</span>(<span class="st">`</span><span class="at">AIDS DIAGNOSES PER 100,000 POPULATION</span><span class="st">`</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the aggregated average rates using geom_col</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_aids_rate, <span class="fu">aes</span>(<span class="at">x =</span> SEX, <span class="at">y =</span> avg_aids_rate, <span class="at">fill =</span> SEX)) <span class="sc">+</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.6</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Average AIDS Diagnoses per 100,000 by Sex"</span>, </span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Sex"</span>, </span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"AIDS Diagnoses per 100,000 Population"</span>) <span class="sc">+</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -468,44 +1311,203 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+<p>This graph also displays a right-skewed distribution. Most neighborhoods have around 5-15% of their residents living in poverty, although there are a significant number of times when a neighborhood has 20% or more of its residents living in poverty, with some outliers each surpassing 40%, continuing to indicate some extreme outliers in the data and neighborhoods which may be underfunded and underrepresented.</p>
+<p>The shapefiles we used can be found on New York City’s Environmental Health Services Team’s public GitHub. Specifically, <a href="https://github.com/nycehs/NYC_geography">this repository</a> contains the UHF 42 .shp files and .json files we used in our maps and our interactive.</p>
+</section>
+</section>
+<section id="cleaning-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="cleaning-the-data">Cleaning the Data</h2>
+<p>Here is the link to our <a href="./scripts/clean_data.R">clean_data.R</a> script. This cleaning was done on the main HIV/AIDS dataset.</p>
+<p>The first step in cleaning the dataset was filling in missing borough values for data compiled from 2010-13. The original dataset always compiled the neighborhood, but didn’t start including the borough until 2016. Because of the data not being stored according to borough, but having neighborhoods from different boroughs stored in neighboring cells, the fill command couldn’t be used because it would take the last borough value and fill that in for all missing borough values, which would attribute that borough to incorrect neighborhoods. Instead, we made a copy of the original dataset and used a command within a Microsoft Excel spreadsheet to assign each neighborhood the proper borough and then pasted that command into each blank borough cell and had the spreadsheet fill in the missing values.</p>
+<p>Next, we ensured all variables were stored the same way. In the original dataset, the authors sometimes compiled the same variable in different ways. One of the most common disparities was in how variables with a space in the name were stored. Sometimes, instead of using a space, the authors used a line break. When viewing these names in the .csv file or in an imported dataset in R, the difference was invisible, but when trying to perform analysis, R would consider these variables with the same name to be two different variables, due to the line break. In order to fix this, all line breaks were replaced with spaces, which can be seen in our clean_data.R script. Below is a quick example of what a line of code for adjusting one variable name looks like.</p>
+<p><code>RACE/ETHNICITY</code> = str_replace_all(<code>RACE/ETHNICITY</code>, “”, ” “)</p>
+<p>There were other ways a slightly different spelling made R consider a variable referring to the same place or race as two different variables. Sometimes, it was due to the lack of a space where there sometimes was a space, as in the neighborhood Upper East Side. In the original dataset, sometimes this was stored as “Upper Eastside.” We added a space to variables stored like this, in order for the variable names to coincide with the actual names of the neighborhoods. Another storage difference was with the Hispanic race variable. Sometimes it was stored as “Latino/Hispanic” and other times as just “Hispanic”; we stored every instance of it as “Hispanic” for simplicity. A list of all changes to variable names of this manner can be seen in our clean_data.R script. Below is an example of what this looks like for one name.</p>
+<p><code>RACE/ETHNICITY</code> = str_replace_all(<code>RACE/ETHNICITY</code>, “Latino/Hispanic”, “Hispanic”)</p>
+<p>Finally, we used the complete.cases function to filter out all rows with NA values.</p>
+<p>A similar process was done for the secondary datasets we added. Often, they would store the same UHF 42 neighborhood name differently than the main dataset. For example, they would often store the neighborhood “Fordham - Bronx Park” as “Fordham - Bronx Pk”. Using the same process above, this was changed for all names stored in this way, so the datasets could be joined easier. Joining the datasets occured by doing a simple left_join with the main dataset and joining by <code>YEAR</code> and <code>Neighborhood (U.H.F)</code>. The secondary datasets would then add one column with the predictor value they added, such as poverty rate.</p>
+<p>The last major cleaning step done to get our data was extract single-year values from the secondary datasets. Despite being compiled by the same people who compiled our original dataset, the secondary datasets were often compiled in five-year increments and the assigned values would be the average over that five year period. The HIV dataset was compiled on a year-to-year basis, so assigning the five-year averages to a single year wasn’t plausible. This was the compromise:</p>
+<ol type="1">
+<li><p>Each five-year period would have its midyear calculated. For example, for the period 2017-2021, the midyear is 2019.</p></li>
+<li><p>The five-year averages would be assigned to the midyear.</p></li>
+<li><p>Based on the years the authors compiled, this gave us data for all the years in our original dataset, except 2020 and 2021.</p></li>
+<li><p>Using the averages now assigned to the midyears, a polynomial model was constructed which predicted the values of each variable for 2020 and 2021 and created a tibble containing an estimated rate of each variable in each UHF42 neighborhood, in each year. Below is an example of this process being done for the <code>Estimated Unemployment Rate</code> variable and the resulting table below, filtered to show what it looks like for one neighborhood. This process was repeated for each predictor variable.</p></li>
+</ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>borough_summary <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Borough) <span class="sc">&amp;</span> Borough <span class="sc">!=</span> <span class="st">"All"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Borough) <span class="sc">%&gt;%</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Total_HIV =</span> <span class="fu">sum</span>(<span class="st">`</span><span class="at">TOTAL NUMBER OF HIV DIAGNOSES</span><span class="st">`</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Total_HIV)) <span class="sc">%&gt;%</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a bar chart for the top 10 boroughs by total HIV diagnoses</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(borough_summary, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(Borough, <span class="sc">-</span>Total_HIV), <span class="at">y =</span> Total_HIV, <span class="at">fill =</span> Borough)) <span class="sc">+</span></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.7</span>, <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Top 10 Boroughs by Total HIV Diagnoses"</span>,</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Borough"</span>,</span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Total HIV Diagnoses"</span>) <span class="sc">+</span></span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>unemp <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>, <span class="st">"NYC EH Data Portal - Unemployment (filtered).csv"</span>),</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>unemp_f <span class="ot">&lt;-</span> unemp <span class="sc">|&gt;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">midpoint =</span> <span class="fu">as.integer</span>(<span class="fu">str_extract</span>(TimePeriod, <span class="st">"</span><span class="sc">\\</span><span class="st">d{4}"</span>)) <span class="sc">+</span> <span class="dv">2</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>unemp_by_neighborhood <span class="ot">&lt;-</span> unemp_f <span class="sc">|&gt;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Geography) <span class="sc">|&gt;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(Percent <span class="sc">~</span> <span class="fu">poly</span>(midpoint, <span class="dv">2</span>), <span class="at">data =</span> .x)),</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> <span class="fu">list</span>(<span class="fu">tibble</span>(<span class="at">midpoint =</span> <span class="dv">2007</span><span class="sc">:</span><span class="dv">2021</span>)),</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted =</span> <span class="fu">map2</span>(model, newdata, <span class="sc">~</span> <span class="fu">mutate</span>(.y, <span class="at">estimated_rate =</span> </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>                                          <span class="fu">predict</span>(.x, <span class="at">newdata =</span> .y)))</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Geography, predicted) <span class="sc">|&gt;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(predicted) <span class="sc">|&gt;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>midpoint <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2007</span>, <span class="dv">2008</span>, <span class="dv">2009</span>, <span class="dv">2014</span>, <span class="dv">2015</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">YEAR =</span> midpoint,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> Geography,</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Estimated Unemployment Rate</span><span class="st">`</span> <span class="ot">=</span> estimated_rate</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>                             <span class="st">"Upper East Side"</span>, <span class="st">"Upper Eastside"</span>),</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, </span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>                               <span class="st">"Upper West Side"</span>, <span class="st">"Upper Westside"</span>),</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, </span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Greenwich Village - SoHo"</span>, <span class="st">"Greenwich Village - Soho"</span>),</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>, </span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"Crotona -Tremont"</span>, <span class="st">"Crotona - Tremont"</span>),</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>,</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"Rockaways"</span>, <span class="st">"Rockaway"</span>),</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>,</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"Fordham - Bronx Pk"</span>, <span class="st">"Fordham - Bronx Park"</span>),</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>,</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>   <span class="st">"Downtown - Heights - Slope"</span>, <span class="st">"Downtown - Heights - Park Slope"</span>),</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>,</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Washington Heights"</span>, <span class="st">"Washington Heights - Inwood"</span>)</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(rmarkdown))</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(unemp_by_neighborhood, <span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Neighborhood (U.H.F)</th>
+<th style="text-align: right;">YEAR</th>
+<th style="text-align: right;">Estimated Unemployment Rate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Kingsbridge - Riverdale</td>
+<td style="text-align: right;">2010</td>
+<td style="text-align: right;">9.788671</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Kingsbridge - Riverdale</td>
+<td style="text-align: right;">2011</td>
+<td style="text-align: right;">9.640979</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Kingsbridge - Riverdale</td>
+<td style="text-align: right;">2012</td>
+<td style="text-align: right;">9.442238</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Kingsbridge - Riverdale</td>
+<td style="text-align: right;">2013</td>
+<td style="text-align: right;">9.192448</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Kingsbridge - Riverdale</td>
+<td style="text-align: right;">2016</td>
+<td style="text-align: right;">8.136783</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Kingsbridge - Riverdale</td>
+<td style="text-align: right;">2017</td>
+<td style="text-align: right;">7.682797</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Kingsbridge - Riverdale</td>
+<td style="text-align: right;">2018</td>
+<td style="text-align: right;">7.177762</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Kingsbridge - Riverdale</td>
+<td style="text-align: right;">2019</td>
+<td style="text-align: right;">6.621678</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Kingsbridge - Riverdale</td>
+<td style="text-align: right;">2020</td>
+<td style="text-align: right;">6.014545</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Kingsbridge - Riverdale</td>
+<td style="text-align: right;">2021</td>
+<td style="text-align: right;">5.356364</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Because most of the predictor variables were risk factors, some variables which weren’t risk factors, like high school graduation rate, were turned into risk factors by using that rate to calculate the proportion of people which did not graduate high school. This was done because it was expected that if more people graduated high school, they would have a higher level of education and therefore know more about health and safety measures, so a higher value was beneficial. This seemed like an awkward pairing with other variables, like poverty rate, where a higher value was worse than a lower value. The opposite of each seemingly beneficial predictor was calculated for these purposes. This was done for: <code>Estimated Non-High School Graduation Rate</code>, <code>Estimated Non-Owner-Occupied Home Rate</code> and <code>Estimated Non-Health Insurance Rate</code>. The calculation was very simple. Using the process described above gave the proportion of people who did do these things, for example, the proportion of people who graduated high school. To find the proportion of people who didn’t graduate high school, all that had to be done is do 1 - proportion of people who graduated high school.</p>
+<p>The only predictor variable which required another extra step was <code>Estimated Non-Health Insurance Rate</code>. This is because the data was stored according to UHF34 neighborhoods, instead of UHF42 neighborhoods like the original dataset and the rest of the predictors. New York City’s DOHMH sometimes stored data in UHF34 neighborhoods in order to get more people in each neighborhood. They formed these UHF34 neighborhoods by combing some smaller UHF42 neighborhoods into one neighborhood. Most UHF34 neighborhoods are the same as their UHF42 neighborhood.</p>
+<p>Below are two maps: the first displays New York City broken up into UHF42 neighborhoods, and the second displays New York City broken up into UHF34 neighborhoods.</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Linking to GEOS 3.11.1, GDAL 3.6.2, PROJ 9.1.1; sf_use_s2() is TRUE</code></pre>
+</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="data_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="data_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="data_files/figure-html/unnamed-chunk-8-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<blockquote class="blockquote">
-<blockquote class="blockquote">
-<blockquote class="blockquote">
-<blockquote class="blockquote">
-<blockquote class="blockquote">
-<blockquote class="blockquote">
-<blockquote class="blockquote">
-<p>origin/main</p>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
+<p>As displayed above, Staten Island had its four UHF42 neighborhoods combined into two UHF34 neighborhoods. Manhattan (the most northwestern area) had several small UHF42 neighborhoods condensed, as well as the Bronx (the most northeastern area).</p>
+<p>The way we settled on adding health insurance as a predictor was to map each UHF42 neighborhood to the UHF34 neighborhood it belongs to and then assign the value associated with that UHF34 neighborhood to each UHF42 neighborhood in that neighborhood. This had the downside of only adding 34 unique values, instead of 42, which reduced the integrity of our model, but health insurance was thought to be a valuable enough predictor to do so.</p>
+<p>Below is the entire process through which this was accomplished.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>hi <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"NYC EH Data Portal - Health insurance (adults) (filtered)(1).csv"</span>),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>map_uhf <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"dataset"</span>, <span class="st">"UHF34_to_UHF42 .csv"</span>), <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">str_replace_all</span>(<span class="st">`</span><span class="at">Neighborhood (U.H.F)</span><span class="st">`</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"Staple - St. George"</span>, <span class="st">"Stapleton - St. George"</span>))</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>hi_f <span class="ot">&lt;-</span> hi <span class="sc">|&gt;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(GeoTypeDesc <span class="sc">==</span> <span class="st">"UHF 34"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">YEAR =</span> TimePeriod) <span class="sc">|&gt;</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(YEAR, GeoTypeDesc, Geography, Percent) <span class="sc">|&gt;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">Percent =</span> <span class="fu">str_remove_all</span>(Percent, <span class="st">"</span><span class="sc">\\</span><span class="st">*|</span><span class="sc">\\</span><span class="st">s*</span><span class="sc">\\</span><span class="st">(.*</span><span class="sc">\\</span><span class="st">)"</span>),</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">Percent =</span> <span class="fu">as.numeric</span>(Percent)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Geography) <span class="sc">|&gt;</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">|&gt;</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(<span class="st">`</span><span class="at">Percent</span><span class="st">`</span> <span class="sc">~</span> <span class="fu">poly</span>(YEAR, <span class="dv">2</span>), <span class="at">data =</span> .x)),</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> <span class="fu">list</span>(<span class="fu">tibble</span>(<span class="at">YEAR =</span> <span class="dv">2010</span><span class="sc">:</span><span class="dv">2021</span>)),</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">predicted =</span> <span class="fu">map2</span>(model, newdata, <span class="sc">~</span> <span class="fu">mutate</span>(.y, <span class="at">estimated_rate =</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>                                        <span class="fu">predict</span>(.x, <span class="at">newdata =</span> .y)))</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Geography, predicted) <span class="sc">|&gt;</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(predicted) <span class="sc">|&gt;</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>YEAR <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2014</span>, <span class="dv">2015</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">Estimated Non-Health Insurance Rate</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">100</span> <span class="sc">-</span> <span class="st">`</span><span class="at">estimated_rate</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="st">`</span><span class="at">estimated_rate</span><span class="st">`</span>)</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressWarnings</span>({</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>hi_uhf <span class="ot">&lt;-</span> hi_f <span class="sc">|&gt;</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(map_uhf, <span class="at">by =</span> <span class="st">"Geography"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>Geography)</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>map_uhf is a .csv created created ourselves, which maps each UHF42 neighborhood to its UHF34 neighborhood.</p>
 
 
 </section>

@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="A 538/Upshot style article about the data.">
+<meta name="description" content="Exploring the Racial, Gender, and Geographic Disparities in HIV/AIDS Diagnoses Across New York City">
 
-<title>Big Picture – MA [46]15 Final Project Team 5</title>
+<title>An Unequal Epidemic: How HIV Hits NYC Communities Differently – MA [46]15 Final Project Team 5</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,40 +20,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -129,7 +95,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./big_picture.html" aria-current="page"> 
-<span class="menu-text">Big Picture</span></a>
+<span class="menu-text">An Unequal Epidemic: How HIV Hits NYC Communities Differently</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./analysis.html"> 
@@ -155,13 +121,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#interactive" id="toc-interactive" class="nav-link active" data-scroll-target="#interactive">Interactive</a></li>
-  <li><a href="#rubric-on-this-page" id="toc-rubric-on-this-page" class="nav-link" data-scroll-target="#rubric-on-this-page">Rubric: On this page</a></li>
-  <li><a href="#rubric-other-components" id="toc-rubric-other-components" class="nav-link" data-scroll-target="#rubric-other-components">Rubric: Other components</a>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#visualizing-disparities" id="toc-visualizing-disparities" class="nav-link" data-scroll-target="#visualizing-disparities">Visualizing Disparities</a>
   <ul class="collapse">
-  <li><a href="#video-recording" id="toc-video-recording" class="nav-link" data-scroll-target="#video-recording">Video Recording</a></li>
-  <li><a href="#rest-of-the-site" id="toc-rest-of-the-site" class="nav-link" data-scroll-target="#rest-of-the-site">Rest of the Site</a></li>
+  <li><a href="#disparity-by-race-and-sex" id="toc-disparity-by-race-and-sex" class="nav-link" data-scroll-target="#disparity-by-race-and-sex">Disparity by Race and Sex</a></li>
+  <li><a href="#gender-based-disparities" id="toc-gender-based-disparities" class="nav-link" data-scroll-target="#gender-based-disparities">Gender-Based Disparities</a></li>
   </ul></li>
+  <li><a href="#interactive" id="toc-interactive" class="nav-link" data-scroll-target="#interactive">Interactive</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
     </div>
@@ -170,12 +137,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Big Picture</h1>
+<h1 class="title">An Unequal Epidemic: How HIV Hits NYC Communities Differently</h1>
 </div>
 
 <div>
   <div class="description">
-    A 538/Upshot style article about the data.
+    Exploring the Racial, Gender, and Geographic Disparities in HIV/AIDS Diagnoses Across New York City
   </div>
 </div>
 
@@ -192,108 +159,152 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><img src="images/The_Big_Picture_2.jpeg" class="img-fluid"></p>
-<p>This comes from the file <code>big_picture.qmd</code>.</p>
-<p>Think of this page as your 538/Upshot style article. This means that you should try to tell a story through the data and your analysis. Read articles from those sites and similar sites to get a feeling for what they are like. Try to write in the style of a news or popular article. Importantly, this page should be geared towards the general public. You shouldn’t assume the reader understands how to interpret a linear regression or a complicated plot. Focus on interpretation and visualizations.</p>
-<hr>
-<section id="interactive" class="level3">
-<h3 class="anchored" data-anchor-id="interactive">Interactive</h3>
-<p>Your Big Data page should also include a small interactive dashboard. The dashboard should be created either using Shinylive, as below. This interactive component should in some way support your thesis from your big picture page. Good interactives often provide both high-level understanding of the data while allowing a user to investigate specific scenarios, observations, subgroups, etc.</p>
-<div class="cell" data-standalone="true" data-viewerheight="640">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="st">"readr.edition"</span> <span class="ot">=</span> <span class="dv">1</span>) <span class="co"># keep this to ensure you can download the data</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Define UI for app that draws a histogram ----</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">fluidPage</span>(</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># App title ----</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">titlePanel</span>(<span class="st">"Hello Shiny!"</span>),</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sidebar layout with input and output definitions ----</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">verticalLayout</span>(</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Input: Slider for the number of bins ----</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sliderInput</span>(<span class="at">inputId =</span> <span class="st">"bins"</span>,</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>                  <span class="at">label =</span> <span class="st">"Number of bins:"</span>,</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>                  <span class="at">min =</span> <span class="dv">1</span>,</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>                  <span class="at">max =</span> <span class="dv">50</span>,</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>                  <span class="at">value =</span> <span class="dv">30</span>),</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Output: Histogram ----</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">plotOutput</span>(<span class="at">outputId =</span> <span class="st">"distPlot"</span>)</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Define server logic required to draw a histogram ----</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>server <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output) {</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># The URL below has to point to a dataset on your github pages website</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  <span class="co"># I recommend creating a small-ish rds file that has only the data relevant to </span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  <span class="co"># the interactive.</span></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  data <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"https://sussmanbu.github.io/ma4615-final-project-quarto/dataset_for_shiny/combined_regional_data.rds"</span>)</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>distPlot <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> refusal_rate)) <span class="sc">+</span></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>      <span class="fu">geom_histogram</span>(<span class="at">bins =</span> input<span class="sc">$</span>bins <span class="sc">+</span> <span class="dv">1</span>)</span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Create Shiny app ----</span></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> ui, <span class="at">server =</span> server)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><img src="images/Big_Picture.png" class="img-fluid"></p>
+<section id="overview" class="level1">
+<h1>Overview</h1>
+<p>In New York City, HIV and AIDS have been public health concerns for decades. But not all New Yorkers face the same level of risk. Our analysis reveals a troubling reality: your race, gender, and where you live can dramatically affect your likelihood of being diagnosed with HIV or AIDS. Specifically, Black residents experience a disproportionately high burden of HIV and AIDS, compared to their counterparts. Through accessible visuals and an interactive map, we show how these disparities play out across the five boroughs — and why it matters.</p>
+</section>
+<section id="visualizing-disparities" class="level1">
+<h1>Visualizing Disparities</h1>
+<section id="disparity-by-race-and-sex" class="level3">
+<h3 class="anchored" data-anchor-id="disparity-by-race-and-sex">Disparity by Race and Sex</h3>
+<p>The first thing someone might expect to read about when analyzing HIV and AIDS cases is how many cases there are. To start, we plotted the total number of HIV and AIDS cases per borough.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="big_picture_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
-<p>To get the shinylive-r working.</p>
-<ol type="1">
-<li>Make sure your shiny app works as a regular r chunk.</li>
-<li>Make sure that the chunk is completely self-contained. Meaning all packages and data are loaded inside that chunk. It can’t rely on any other chunks.</li>
-<li>For the data that you are using for shiny, copy the rds file or any other files into the scripts folder, and then publish your website.</li>
-<li>Where you load in your data, change it to use a URL to the data set which will now be on your website. Something like read_rds(“https://sussmanbu.github.io/ma-4615-fa24-final-project-group-a/scripts/dataset_for_shiny.rds”)</li>
-<li>Check that the chunk still works as a regular r chunk.</li>
-<li>Change it to a shinylive-r chunk.</li>
-<li>Commit and publish your work.</li>
-</ol>
-<p>I recommend keeping the data used for the shiny interactive relatively small, though this isn’t completely necessary.</p>
-<hr>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="big_picture_files/figure-html/unnamed-chunk-1-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We also plotted these totals for each race.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="big_picture_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="big_picture_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In these plots, two aspects stand out. In both total HIV and AIDS cases, the Bronx and Brooklyn are at the top for boroughs and Black and Hispanic are at the top for races. But since these are total counts, they don’t factor in population differences. It’s possible these boroughs and races are only at the top because they have the largest populations. In order to account for this, we plotted the average number of HIV cases per 100,000 people per borough and race. Plotting by per 100,000 people rates normalizes the population to be 100,000 people for each area, so areas with higher populations aren’t punished.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="big_picture_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="big_picture_files/figure-html/unnamed-chunk-3-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="big_picture_files/figure-html/unnamed-chunk-3-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="big_picture_files/figure-html/unnamed-chunk-3-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As seen above, population did factor into the higher totals for the boroughs. Brooklyn had the most total HIV diagnoses and the second most total AIDS cases, but is third in both categories when normalizing for population, suggesting Brooklyn’s larger population contributed to its higher rankings. Manhattan went from third in total HIV and AIDS cases to second in terms of rates per 100,000, suggesting its lower total is due to it having a smaller population, which potentially masked socioeconomic inequities causing its increased contraction rates.</p>
+<p>Population didn’t have a significant impact on the races, however. Black people had the most total cases for both HIV and AIDS, and had the largest rate of cases per 100,000 too, suggesting their higher rates aren’t just due to population, but other factors. Hispanic people were also second in totals for both and remained second in per 100,000 rates, suggesting their placement wasn’t solely due to population either.</p>
+<p>Each borough in New York City is split into several different neighborhoods by New York City’s DOHMH, totaling to 42 different neighborhoods, called the UHF42 neighborhoods. Below we plotted the HIV and AIDS totals for each neighborhood, to see which neighborhoods were contributing the most cases to their respective borough’s total.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="big_picture_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="big_picture_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As expected, the neighborhoods at the top are mostly in Brooklyn, the Bronx, and Manhattan, although West Queens is an outlier. As already discovered, Black and Hispanic people had the highest totals and rates of HIV. Now that we see which neighborhoods have the most cases, does it hold that those neighborhoods generally have the highest proportions of Black and Hispanic residents? Below are two maps of New York City, broken up into its UHF42 neighborhoods. The first plot colors each neighborhood by its Black proportion and the second colors each by its Hispanic proportion.</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Linking to GEOS 3.11.1, GDAL 3.6.2, PROJ 9.1.1; sf_use_s2() is TRUE</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="big_picture_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="big_picture_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As seen in the above plots, the assumption that the neighborhoods with the highest totals and rates of HIV and AIDS also have the highest proportion of Black and Hispanic residents checks out. Manhattan (the most northwestern area), the Bronx (the most northeastern area), and Brooklyn (the most southeastern area of the mainland) have the most Black and Hispanic residents. Queens and Staten Island have the least Black and Hispanic residents, matching their lower totals and rates. Although, the West Queens outlier from before does have a relatively high proportion of Hispanic people, which could explain why they had so many cases.</p>
 </section>
-<section id="rubric-on-this-page" class="level2">
-<h2 class="anchored" data-anchor-id="rubric-on-this-page">Rubric: On this page</h2>
-<ul>
-<li>Title
-<ul>
-<li>Your big picture page should have a creative/click-bait-y title/headline that provides a hint about your thesis.</li>
-</ul></li>
-<li>Clarity of Explanation
-<ul>
-<li>You should have a clear thesis/goal for this page. What are you trying to show? Make sure that you explain your analysis in detail but don’t go into top much mathematics or statistics. The audience for this page is the general public (to the extent possible). Your thesis should be a statement, not a question.</li>
-<li>Each figure should be very polished and also not too complicated. There should be a clear interpretation of the figure so the figure has a clear purpose. Even something like a histogram can be difficult to interpret for non-experts.</li>
-</ul></li>
-<li>Creativity
-<ul>
-<li>Do your best to make things interesting. Think of a how a news article or a magazine story might draw you in. Think of how each part of your analysis supports the previous part or provides a different perspective.</li>
-</ul></li>
-<li>Interactive component
-<ul>
-<li>Quality and ease of use of the interactive components. Is it clear what can be explored using your interactive components? Does it enhance and reinforce your conclusions?</li>
-</ul></li>
-<li>This page should be self-contained.</li>
-</ul>
-<p><strong>Note</strong>: This page should have no code visible, i.e.&nbsp;use <code>#| echo: FALSE</code>.</p>
+<section id="gender-based-disparities" class="level3">
+<h3 class="anchored" data-anchor-id="gender-based-disparities">Gender-Based Disparities</h3>
+<p>Across all racial groups, males consistently showed higher diagnosis rates than females—especially pronounced among Asian/Pacific Islanders.This chart highlights a striking gender disparity in the average rate of AIDS diagnoses per 100,000 people in New York City. The data shows that males are diagnosed with AIDS at more than double the rate of females, with an average of about 25 per 100,000 compared to less than 10 for females. This pattern holds across multiple racial and geographic groups and has persisted over time. The reasons behind this disparity are complex and may include differences in risk behaviors, testing frequency, social stigma, or access to early HIV treatment, which can prevent the progression to AIDS. This gap underscores the need for gender-specific public health interventions, especially outreach, education, and prevention programs targeted at high-risk male populations.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="big_picture_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="big_picture_files/figure-html/unnamed-chunk-6-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
-<section id="rubric-other-components" class="level2">
-<h2 class="anchored" data-anchor-id="rubric-other-components">Rubric: Other components</h2>
-<section id="video-recording" class="level3">
-<h3 class="anchored" data-anchor-id="video-recording">Video Recording</h3>
-<p>Make a video recording (probably using Zoom) demonstrating your interactive components. You should provide a quick explanation of your data and demonstrate some of the conclusions from your EDA. This video should be no longer than 4 minutes. Include a link to your video (and password if needed) in your README.md file on your Github repository. You are not required to provide a link on the website. This can be presented by any subset of the team members.</p>
 </section>
-<section id="rest-of-the-site" class="level3">
-<h3 class="anchored" data-anchor-id="rest-of-the-site">Rest of the Site</h3>
-<p>Finally, here are important things to keep in mind for the rest of the site.</p>
-<p>The main title of your page is informative. Each post has an author/description/informative title. All lab required posts are present. Each page (including the home page) has a nice featured image associated with it. Your about page is up to date and clean. You have removed the generic posts from the initial site template.</p>
+<section id="interactive" class="level1">
+<h1>Interactive</h1>
+<p>To make the patterns in our data more accessible and meaningful, we created an interactive map of New York City that allows users to explore HIV and AIDS diagnosis rates by neighborhood. This tool provides a dynamic way to visualize disparities by year, sex, race/ethnicity, and type of diagnosis (HIV vs.&nbsp;AIDS). With just a few clicks, you can see how certain neighborhoods — particularly in the Bronx, Brooklyn, and parts of Manhattan — consistently report higher diagnosis rates. You can also observe how specific demographic groups are impacted differently depending on location. For instance, selecting “Asian/Pacific Islander” and “Male” reveals neighborhoods where HIV rates are unexpectedly high for that group, reinforcing one of our key findings. This map empowers users to interact with the data in real time, uncovering patterns that might be missed in static charts. Ultimately, it reinforces our central message: the HIV/AIDS epidemic in NYC is deeply shaped by geography, race, and gender — and our response must be just as specific and targeted.</p>
+<p>You can explore the interactive map at the link below: <a href="https://jason040510.shinyapps.io/nyc-map/">Click here to open the Interactive Map Explorer</a></p>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>Our analysis makes one thing clear: HIV and AIDS do not affect all New Yorkers equally. The burden of this epidemic falls disproportionately on Black and Hispanic communities, men, and residents of underserved boroughs like Brooklyn and the Bronx. While overall diagnosis rates have declined in recent years, the story is far from one of universal progress. Rising rates among Asian/Pacific Islander males and persistent disparities across neighborhoods show that public health improvements have not been evenly distributed. This isn’t just a health issue — it’s a reflection of deeper structural inequalities in healthcare access, education, income, and stigma. The HIV/AIDS epidemic in NYC is a mirror of the city’s broader social landscape, revealing who is most likely to be overlooked or left behind. Looking ahead, such data should not merely serve as a record, but rather as a call to action. Public health strategies must be precise, inclusive, and equity-oriented to ensure that prevention, testing, and care services truly benefit the people and regions that need them most.</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
